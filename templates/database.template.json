@@ -1,0 +1,116 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This template creates a RDS SQL instance in private subnet",
+    "Parameters": {
+        "SubnetIDs": {
+            "Description": "Comma separated Subnet IDs where Gateway VMs need to be launched",
+            "Type": "String"
+        },
+        "GatewaySecurityGroup": {
+            "Description": "Security Group behind which Storage Gateway VMs would be placed",
+            "Type": "String"
+        },          
+        "RDSDBName": {
+            "Description": "RDS Database Name",
+            "Type": "String"
+        },         
+        "RDSAllocatedStorage": {
+            "Description": "Storage amount to be allocated to RDS DB Instance",
+            "Type": "String"
+        },
+        "RDSUsername": {
+            "Description": "RDS DB username",
+            "Type": "String"
+        },
+        "RDSPassword": {
+            "Description": "RDS DB password",
+            "Type": "String",
+            "NoEcho": "true"
+        }                 
+    },
+    "Conditions": {
+        "2AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        },
+        "3AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        }                
+    },    
+    "Resources": {
+        "DBSubnetGroup": {
+            "Type" : "AWS::RDS::DBSubnetGroup",
+            "Properties" : {
+                "DBSubnetGroupDescription" : { "Fn::Sub": "${AWS::StackName}-RDS-Subnet-Group" },
+                "DBSubnetGroupName" : "RDS-MSSQL private subnet group",
+                "SubnetIds" : [
+                    { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                    {
+                        "Fn::If": [
+                            "2AZCondition",
+                            { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                            { "Ref": "AWS::NoValue" }
+                        ]
+                    },
+                    {
+                        "Fn::If": [
+                            "3AZCondition",
+                            { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                            { "Ref": "AWS::NoValue" }
+                        ]
+                    }
+                ],                 
+                "Tags" : [ { "Key" : "Name", "Value" : { "Fn::Sub": "${AWS::StackName}-RDS-Subnet-Group" } } ]
+            }
+        },
+        "RDSDBInstance": {
+            "Type" : "AWS::RDS::DBInstance",
+            "Properties" : {
+                "AllocatedStorage" : {"Ref": "RDSAllocatedStorage"},
+                "BackupRetentionPeriod" : 1,
+                "DBInstanceClass" : "db.m4.large",
+                "DBInstanceIdentifier" : {"Ref": "RDSDBName"},
+                "DBSubnetGroupName" : {"Ref": "DBSubnetGroup"},
+                "Engine" : "sqlserver-se",
+                "EngineVersion" : "14.00.3049.1.v1",
+                "LicenseModel" : "license-included",
+                "MasterUsername" : {"Ref": "RDSUsername"},
+                "MasterUserPassword" : {"Ref": "RDSPassword"},
+                "MultiAZ" : false,
+                "StorageType" : "gp2",
+                "VPCSecurityGroups" : [ {"Ref": "GatewaySecurityGroup"} ]
+            }
+        }
+    },
+    "Outputs": {
+        "DBSubnetGroup": {
+            "Value":  {"Ref" : "DBSubnetGroup"},
+            "Description": "RDS-MSSQL private subnet group"
+        },
+        "RDSDBInstanceID": {
+            "Value":  {"Ref" : "RDSDBInstance"},
+            "Description": "RDS-MSSQL Database Instance ID"
+        },
+        "RDSDBInstanceEndpointAddress": {
+            "Value":  { "Fn::GetAtt" : ["RDSDBInstance", "Endpoint.Address"] },
+            "Description": "RDS-MSSQL Database Instance Endpoint Address"
+        },
+        "RDSDBInstanceEndpointPort": {
+            "Value":  { "Fn::GetAtt" : ["RDSDBInstance", "Endpoint.Port"] },
+            "Description": "RDS-MSSQL Database Instance Endpoint Port"
+        }                           
+    }
+}

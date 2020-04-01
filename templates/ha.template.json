@@ -1,0 +1,189 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This template creates a cluster to provide high availability",
+    "Parameters": {
+        "SubnetIDs": {
+            "Description": "Comma separated Subnet IDs where Gateway VMs need to be launched",
+            "Type": "String"
+        },  
+        "GatewaySecurityGroup": {
+            "Description": "Security Group behind which Storage Gateway VMs would be placed",
+            "Type": "String"
+        },      
+        "KeyPairName"   : {
+            "Description": "EC2 Instance Key pair name",
+            "Type": "String"
+        },
+        "HAAUser": {
+            "Description": "High Availability Add-on username",
+            "Type": "String"
+        },
+        "HAAPassword": {
+            "Description": "High Availability Add-on password",
+            "Type": "String",
+            "NoEcho": "true"
+        }, 
+        "HAALicense": {
+            "Description": "High Availability Add-on license key",
+            "Type": "String"
+        },                                   
+        "FindAMIFunctionArn": {
+            "Description": "ARN for Lambda function used to find AMI by name",
+            "Type": "String"
+        }          
+    },
+    "Conditions": {
+        "1AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        },
+        "2AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        },
+        "3AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        }                
+    },     
+    "Resources": {
+		"HAInstanceAMI": {
+            "Type": "Custom::HAInstanceAMI",
+            "Properties": {
+                    "ServiceToken": { "Ref" : "FindAMIFunctionArn" },
+                    "RegionName": { "Ref" : "AWS::Region" },                    
+                    "ImageName": "RHEL-7.7*_HVM_GA*",
+                    "Architecture": "x86_64",
+                    "VirtualizationType": "hvm",
+                    "Owners": "309956199498"
+            }
+        },
+        "HAMaster": {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : { "Ref" : "HAInstanceAMI"},
+                "InstanceType" : "m4.xlarge",
+                "KeyName" : {"Ref": "KeyPairName"},
+                "SecurityGroupIds" : [ {"Ref": "GatewaySecurityGroup"} ],
+                "SubnetId" : { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                "UserData" : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [ "\n", [
+                            "#!/bin/bash",
+                            "yum update -y",
+                            "yum install -y wget",
+                            "wget http://download.uipath.com/haa/get-haa.sh",
+                            "chmod +x get-haa.sh",
+                            {
+                                "Fn::Join" : [ " ", [
+                                    "sh get-haa.sh",
+                                    "-u", {"Ref": "HAAUser"},
+                                    "-p", {"Ref": "HAAPassword"},
+                                    "-l ", {"Ref": "HAALicense"}
+                                ]]
+                            }
+                        ] ]
+                    }
+                },                
+                "Tags" : [ { "Key": "Name", "Value": {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "HA-Master" ]]} } ]
+            }
+        },   
+        "HASlave1": {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : { "Ref" : "HAInstanceAMI"},
+                "InstanceType" : "m4.xlarge",
+                "KeyName" : {"Ref": "KeyPairName"},
+                "SecurityGroupIds" : [ {"Ref": "GatewaySecurityGroup"} ],
+                "SubnetId" : { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                "UserData" : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [ "\n", [
+                            "#!/bin/bash",
+                            "yum update -y",
+                            "yum install -y wget",
+                            "wget http://download.uipath.com/haa/get-haa.sh",
+                            "chmod +x get-haa.sh",
+                            {
+                                "Fn::Join" : [ " ", [
+                                    "sh get-haa.sh",
+                                    "-u", {"Ref": "HAAUser"},
+                                    "-p", {"Ref": "HAAPassword"},
+                                    "-j ", {  "Fn::GetAtt": [ "HAMaster", "PrivateIp" ] }
+                                ]]
+                            }
+                        ] ]
+                    }
+                },                  
+                "Tags" : [ { "Key": "Name", "Value": {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "HA-Slave-1" ]]} } ]
+            }
+        },    
+        "HASlave2": {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : { "Ref" : "HAInstanceAMI"},
+                "InstanceType" : "m4.xlarge",
+                "KeyName" : {"Ref": "KeyPairName"},
+                "SecurityGroupIds" : [ {"Ref": "GatewaySecurityGroup"} ],
+                "SubnetId" : { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
+                "UserData" : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [ ",", [
+                            "#!/bin/bash",
+                            "yum update -y",
+                            "yum install -y wget",
+                            "wget http://download.uipath.com/haa/get-haa.sh",
+                            "chmod +x get-haa.sh",
+                            "sh get-haa.sh -u  ", {"Ref": "HAAUser"}, " -p ", {"Ref": "HAAPassword"}, " -j ", {  "Fn::GetAtt": [ "HAMaster", "PrivateIp" ] }
+                        ] ]
+                    }
+                },                
+                "Tags" : [ { "Key": "Name", "Value": {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "HA-Slave-2" ]]} } ]
+            }
+        }                           
+    },
+    "Outputs": {
+        "HAMasterID": {
+            "Value": {"Ref" : "HAMaster"},
+            "Description": "ID of HA Master VM in Private Subnet 1"
+        },
+        "HAMasterPrivateIP": {
+            "Value": {  "Fn::GetAtt": [ "HAMaster", "PrivateIp" ] },
+            "Description": "Private IP of HA Master VM in Private Subnet 1"
+        }, 
+        "HASlave1ID": {
+            "Value": {"Ref" : "HASlave1"},
+            "Description": "ID of HA Slave 1 VM in Private Subnet 1"
+        },
+        "HASlave1PrivateIP": {
+            "Value": {  "Fn::GetAtt": [ "HASlave1", "PrivateIp" ] },
+            "Description": "Private IP of HA Slave 1 VM in Private Subnet 1"
+        },  
+        "HASlave2ID": {
+            "Value": {"Ref" : "HASlave2"},
+            "Description": "ID of HA Slave 2 VM in Private Subnet 1"
+        },
+        "HASlave2PrivateIP": {
+            "Value": {  "Fn::GetAtt": [ "HASlave2", "PrivateIp" ] },
+            "Description": "Private IP of HA Slave 2 VM in Private Subnet 1"
+        }                      
+    }
+}

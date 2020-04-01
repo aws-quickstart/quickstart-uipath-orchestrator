@@ -1,0 +1,436 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This template creates a cluster to provide high availability",
+    "Parameters": {
+        "PrivateSubnetIDs": {
+            "Description": "Comma separated Private Subnet IDs where Orchestrator VMs need to be launched",
+            "Type": "String"
+        }, 
+        "PublicSubnetIDs": {
+            "Description": "Comma separated Public Subnet IDs where Bastion hosts need to be launched",
+            "Type": "String"
+        },        
+        "TargetGroupARN": {
+            "Description": "ARN for Elastic load balancer target group",
+            "Type": "String"
+        },
+        "GatewaySecurityGroup": {
+            "Description": "Security Group behind which Storage Gateway VMs would be placed",
+            "Type": "String"
+        },      
+        "KeyPairName"   : {
+            "Description": "EC2 Instance Key pair name",
+            "Type": "String"
+        },       
+        "InstanceType": {
+            "Description": "Orchestrator Instance type",
+            "Type": "String"
+        },                                  
+        "FindAMIFunctionArn": {
+            "Description": "ARN for Lambda function used to find AMI by name",
+            "Type": "String"
+        },       
+        "OrchestratorVersion": {
+            "Description": "UIPath Orchestrator Version Number",
+            "Type": "String",
+            "Default": "19.10.15"
+        },
+        "OrchestratorInstanceCount": {
+            "Description": "Desired Capacity (instance count) for Orchestrator instances",
+            "Type": "String",
+            "Default": "1"
+        },          
+        "OrchestratorLicense": {
+            "Description": "Orchestrator license code",
+            "Type": "String",
+            "Default": "DSGFSFGAGEHTERSEGW$%^%YHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFHYHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFHYHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFH+ADAAdwBvACEAJwAgADAAKAA="
+        },         
+        "OrchestratorPassPhrase": {
+            "Description": "Orchestrator Passphrase in order to generate NuGet API keys, App encryption key and machine keys.",
+            "Type": "String",
+            "Default": "Aw3s0m3Orch35tr4t0r"
+        },
+        "OrchestratorPassword": {
+            "Description": "Orchestrator Administrator password to login as",
+            "Type": "String",
+            "NoEcho": "true"
+        },  
+        "AdminPassword": {
+            "Description": "Windows Administrator password to login as",
+            "Type": "String",
+            "NoEcho": "true"
+        },             
+        "DatabaseServerName": {
+            "Description": "RDS Instance endpoint URL",
+            "Type": "String"
+        },
+        "DatabaseName"      : {
+            "Description": "Name of Database to be created",
+            "Type": "String"
+        },
+        "DatabaseUsername": {
+            "Description": "RDS DB username",
+            "Type": "String"
+        },
+        "DatabasePassword": {
+            "Description": "RDS DB password",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StorageBucket" :{
+            "Type": "String",
+            "Description": "Bucket to create for file storage",
+            "AllowedPattern": "^([a-z]|(\\d(?!\\d{0,2}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})))([a-z\\d]|(\\.(?!(\\.|-)))|(-(?!\\.))){1,61}[a-z\\d\\.]$",
+            "Default": "uipath-storage-bucket",
+            "ConstraintDescription" : "Should be a Valid S3 Bucket Name"
+        },  
+        "GatewayPrivateIP": {
+            "Description": "Private IP Address of Storage Gateway VM",
+            "Type": "String"
+        },
+        "HAMasterPrivateIP": {
+            "Description": "Private IP Address of HA Master Instance",
+            "Type": "String"
+        },         
+        "HASlavePrivateIP": {
+            "Description": "Private IP Address of HA Slave Instances",
+            "Type": "String"
+        },               
+        "HAAPassword": {
+            "Description": "High Availability Add-on password",
+            "Type": "String",
+            "NoEcho": "true"
+        }                                                     
+    },
+    "Conditions": {
+        "1AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        },
+        "2AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        },
+        "3AZCondition": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                        "-"
+                    ]
+                }
+            ]            
+        }                
+    },     
+    "Resources": {
+		"HostInstanceAMI": {
+            "Type": "Custom::HostInstanceAMI",
+            "Properties": {
+                    "ServiceToken": { "Ref" : "FindAMIFunctionArn" },
+                    "RegionName": { "Ref" : "AWS::Region" },                    
+                    "ImageName": "Windows_Server-2019-English-Full-Base-*",
+                    "Architecture": "x86_64",
+                    "VirtualizationType": "hvm",
+                    "Owners": "amazon"
+            }
+        },        
+        "LaunchConfiguration": {
+            "Type" : "AWS::AutoScaling::LaunchConfiguration",
+            "Properties" : {
+                "AssociatePublicIpAddress" : false,
+                "BlockDeviceMappings" : [ 
+                    {
+                        "DeviceName" : "/dev",
+                        "Ebs" : {
+                            "DeleteOnTermination" : true,
+                            "Encrypted" : false,
+                            "VolumeSize" : 100,
+                            "VolumeType" : "gp2"
+                        }
+                    } 
+                ],                
+                "ImageId" : { "Ref" : "HostInstanceAMI"},
+                "InstanceType" : {"Ref": "InstanceType"},
+                "KeyName" : {"Ref": "KeyPairName"},
+                "LaunchConfigurationName" : {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "Orchestrator-LaunchConfiguration" ]]},
+                "PlacementTenancy" : "default",
+                "SecurityGroups" : [ {"Ref": "GatewaySecurityGroup"} ],
+                "UserData" : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [ "\n", [
+                            "<script>",
+                            "    winrm quickconfig -q & winrm set winrm/config/winrs @{MaxMemoryPerShellMB=\"300\"} & winrm set winrm/config @{MaxTimeoutms=\"1800000\"} & winrm set winrm/config/service @{AllowUnencrypted=\"true\"} & winrm set winrm/config/service/auth @{Basic=\"true\"} & winrm/config @{MaxEnvelopeSizekb=\"8000kb\"}",
+                            "</script>",
+                            "<powershell>",
+                            "netsh advfirewall firewall add rule name=\"WinRM in\" protocol=TCP dir=in profile=any localport=5985 remoteip=any localip=any action=allow",                            
+                            "$admin = [ADSI](\"WinNT://./administrator, user\")",
+                            { "Fn::Sub": [ "$admin.SetPassword(\"${AdminPassword}\")", { "AdminPassword": {"Ref" : "AdminPassword" }} ]},                                
+                            "$temp = \"C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\"",
+                            "$link = \"https://raw.githubusercontent.com/UiPath/Infrastructure/master/Setup/Install-UiPathOrchestrator.ps1\"",
+                            "$file = \"Install-UiPathOrchestrator.ps1\"",
+                            "New-Item $temp -ItemType directory",
+                            "Set-Location -Path $temp",
+                            "Set-ExecutionPolicy Unrestricted -force",
+                            "Invoke-WebRequest -Uri $link -OutFile $file",
+                            {
+                                "Fn::Join" : [ " ", [
+                                    "powershell.exe -ExecutionPolicy Bypass", 
+                                    "-File \"C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\Install-UiPathOrchestrator.ps1\"",
+                                    { "Fn::Sub": [ "-OrchestratorVersion \"${OrchestratorVersion}\"", { "OrchestratorVersion": {"Ref" : "OrchestratorVersion" }} ]},
+                                    { "Fn::Sub": [ "-passphrase \"${OrchestratorPassPhrase}\"", { "OrchestratorPassPhrase": {"Ref" : "OrchestratorPassPhrase" }} ]},
+                                    { "Fn::Sub": [ "-databaseServerName \"${DatabaseServerName}\"", { "DatabaseServerName": {"Ref" : "DatabaseServerName" }} ]},
+                                    { "Fn::Sub": [ "-databaseName \"${DatabaseName}\"", { "DatabaseName": {"Ref" : "DatabaseName" }} ]},
+                                    { "Fn::Sub": [ "-databaseUserName \"${DatabaseUsername}\"", { "DatabaseUsername": {"Ref" : "DatabaseUsername" }} ]},
+                                    { "Fn::Sub": [ "-databaseUserPassword \"${DatabasePassword}\"", { "DatabasePassword": {"Ref" : "DatabasePassword" }} ]},                                        
+                                    { "Fn::Sub": [ "-orchestratorAdminPassword \"${OrchestratorPassword}\"", { "OrchestratorPassword": {"Ref" : "OrchestratorPassword" }} ]},                                           
+                                    { "Fn::Sub": [ "-redisServerHost \"${HAMasterPrivateIP}:10000,${HASlavePrivateIP}:10000,password=${HAAPassword}\"", { "HAMasterPrivateIP": {"Ref" : "HAMasterPrivateIP" }, "HASlavePrivateIP": {"Ref" : "HASlavePrivateIP" }, "HAAPassword": {"Ref" : "HAAPassword" }} ]},
+                                    { "Fn::Sub": [ "-NuGetStoragePath \"${GatewayPrivateIP}\\${StorageBucket}\"", { "GatewayPrivateIP": {"Ref" : "GatewayPrivateIP" }, "StorageBucket": {"Ref" : "StorageBucket" }} ]},
+                                    { "Fn::Sub": [ "-orchestratorLicenseCode \"${OrchestratorLicense}\"", { "OrchestratorLicense": {"Ref" : "OrchestratorLicense" }} ]}
+                                ]]
+                            },
+                            "</powershell>"
+                        ] ]
+                    }
+                }
+            }
+        },
+        "AutoScalingGroup": {
+            "Type" : "AWS::AutoScaling::AutoScalingGroup",
+            "Properties" : {
+                "DesiredCapacity" : {"Ref": "OrchestratorInstanceCount"},
+                "HealthCheckType" : "EC2",
+                "LaunchConfigurationName" : {"Ref": "LaunchConfiguration"},
+                "MaxSize" : "20",
+                "MetricsCollection" : [ 
+                    {
+                        "Granularity" : "1Minute",
+                        "Metrics" : [ "GroupMinSize","GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupTotalInstances" ]
+                    }
+                ],
+                "MinSize" : {"Ref": "OrchestratorInstanceCount"},
+                "Tags" : [ 
+                    {
+                        "Key" : "Name",
+                        "PropagateAtLaunch" : true,
+                        "Value" : { "Fn::Sub": "${AWS::StackName}-UIPath-Orchestrator" }
+                    } 
+                ],
+                "TargetGroupARNs" : [ {"Ref": "TargetGroupARN"} ],
+                "VPCZoneIdentifier" : [ 
+                    { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                    {
+                        "Fn::If": [
+                            "2AZCondition",
+                            { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                            { "Ref": "AWS::NoValue" }
+                        ]
+                    },
+                    {
+                        "Fn::If": [
+                            "3AZCondition",
+                            { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                            { "Ref": "AWS::NoValue" }
+                        ]
+                    }                    
+                ]
+            }
+        },
+        "ScaleUpAutoScalingPolicy" : {
+            "Type" : "AWS::AutoScaling::ScalingPolicy",
+            "Properties" : {
+                "AdjustmentType" : "ChangeInCapacity",
+                "AutoScalingGroupName" : {"Ref": "AutoScalingGroup"},
+                "Cooldown" : "300",
+                "ScalingAdjustment" : 1
+            }
+        },
+        "ScaleDownAutoScalingPolicy" : {
+            "Type" : "AWS::AutoScaling::ScalingPolicy",
+            "Properties" : {
+                "AdjustmentType" : "ChangeInCapacity",
+                "AutoScalingGroupName" : {"Ref": "AutoScalingGroup"},
+                "Cooldown" : "300",
+                "ScalingAdjustment" : -1
+            }
+        },
+        "HighMemoryAlarm": {
+            "Type" : "AWS::CloudWatch::Alarm",
+            "Properties" : {
+                "AlarmName" : "mem-util-high-orchestrator",
+                "AlarmDescription" : "This metric monitors ec2 memory for high utilization on Orchestrator hosts",
+                "Namespace" : "Windows/Default",
+                "MetricName" : "MemoryUtilization",                
+                "ComparisonOperator" : "GreaterThanOrEqualToThreshold",
+                "EvaluationPeriods" : 2,
+                "Period" : 300,
+                "Statistic" : "Average",
+                "Threshold" : 80,
+                "Dimensions" : [
+                    {
+                        "Name": "AutoScalingGroupName",
+                        "Value": {
+                            "Ref": "AutoScalingGroup"
+                        }
+                    }                    
+                ],                
+                "AlarmActions" : [ {"Ref": "ScaleUpAutoScalingPolicy"} ],
+                "ActionsEnabled" : true
+            }
+        },
+        "LowMemoryAlarm": {
+            "Type" : "AWS::CloudWatch::Alarm",
+            "Properties" : {
+                "AlarmName" : "mem-util-low-orchestrator",
+                "AlarmDescription" : "This metric monitors ec2 memory for low utilization on Orchestrator hosts",
+                "Namespace" : "Windows/Default",
+                "MetricName" : "MemoryUtilization",                
+                "ComparisonOperator" : "LessThanOrEqualToThreshold",
+                "EvaluationPeriods" : 2,
+                "Period" : 300,
+                "Statistic" : "Average",
+                "Threshold" : 40,
+                "Dimensions" : [
+                    {
+                        "Name": "AutoScalingGroupName",
+                        "Value": {
+                            "Ref": "AutoScalingGroup"
+                        }
+                    }                    
+                ],                
+                "AlarmActions" : [ {"Ref": "ScaleDownAutoScalingPolicy"} ],
+                "ActionsEnabled" : true
+            }
+        },
+        "HighCPUAlarm": {
+            "Type" : "AWS::CloudWatch::Alarm",
+            "Properties" : {
+                "AlarmName" : "cpu-util-high-orchestrator",
+                "AlarmDescription" : "This metric monitors ec2 cpu for high utilization on Orchestrator hosts",
+                "Namespace" : "AWS/EC2",
+                "MetricName" : "CPUUtilization",                
+                "ComparisonOperator" : "GreaterThanOrEqualToThreshold",
+                "EvaluationPeriods" : 2,
+                "Period" : 120,
+                "Statistic" : "Average",
+                "Threshold" : 60,
+                "Dimensions" : [
+                    {
+                        "Name": "AutoScalingGroupName",
+                        "Value": {
+                            "Ref": "AutoScalingGroup"
+                        }
+                    }                    
+                ],                
+                "AlarmActions" : [ {"Ref": "ScaleUpAutoScalingPolicy"} ],
+                "ActionsEnabled" : true
+            }
+        },
+        "LowCPUAlarm": {
+            "Type" : "AWS::CloudWatch::Alarm",
+            "Properties" : {
+                "AlarmName" : "mem-util-low-orchestrator",
+                "AlarmDescription" : "This metric monitors ec2 memory for low utilization on Orchestrator hosts",
+                "Namespace" : "AWS/EC2",
+                "MetricName" : "CPUUtilization",                
+                "ComparisonOperator" : "LessThanOrEqualToThreshold",
+                "EvaluationPeriods" : 2,
+                "Period" : 120,
+                "Statistic" : "Average",
+                "Threshold" : 10,
+                "Dimensions" : [
+                    {
+                        "Name": "AutoScalingGroupName",
+                        "Value": {
+                            "Ref": "AutoScalingGroup"
+                        }
+                    }                    
+                ],                
+                "AlarmActions" : [ {"Ref": "ScaleDownAutoScalingPolicy"} ],
+                "ActionsEnabled" : true
+            }
+        },
+        "BastionHost": {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : { "Ref" : "HostInstanceAMI"},
+                "InstanceType" : {"Ref": "InstanceType"},
+                "KeyName" : {"Ref": "KeyPairName"},
+                "SecurityGroupIds" : [ {"Ref": "GatewaySecurityGroup"} ],
+                "SubnetId" : { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "PublicSubnetIDs"}]}] },
+                "UserData" : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [ "\n", [                         
+                            "<script>",
+                            "    winrm quickconfig -q & winrm set winrm/config/winrs @{MaxMemoryPerShellMB=\"300\"} & winrm set winrm/config @{MaxTimeoutms=\"1800000\"} & winrm set winrm/config/service @{AllowUnencrypted=\"true\"} & winrm set winrm/config/service/auth @{Basic=\"true\"} & winrm/config @{MaxEnvelopeSizekb=\"8000kb\"}",
+                            "</script>",
+                            "<powershell>",
+                            "netsh advfirewall firewall add rule name=\"WinRM in\" protocol=TCP dir=in profile=any localport=5985 remoteip=any localip=any action=allow",                            
+                            "$admin = [ADSI](\"WinNT://./administrator, user\")",
+                            { "Fn::Sub": [ "$admin.SetPassword(\"${AdminPassword}\")", { "AdminPassword": {"Ref" : "AdminPassword" }} ]},                                
+                            "</powershell>"
+                        ] ]
+                    }
+                },                
+                "Tags" : [ { "Key": "Name", "Value": {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "BastionHost" ]]} } ]
+            }
+        }                                           
+    },
+    "Outputs": {
+        "LaunchTemplate": {
+            "Value": {"Ref" : "LaunchConfiguration"},
+            "Description": "Launch configuration template"
+        }, 
+        "AutoScalingGroup": {
+            "Value": {"Ref" : "AutoScalingGroup"},
+            "Description": "Auto sclaing group"
+        },
+        "ScaleUpAutoScalingPolicy": {
+            "Value": {"Ref" : "ScaleUpAutoScalingPolicy"},
+            "Description": "Auto scaling policy to scale up resources"
+        },
+        "ScaleDownAutoScalingPolicy": {
+            "Value": {"Ref" : "ScaleDownAutoScalingPolicy"},
+            "Description": "Auto scaling policy to scale down resources"
+        },
+        "HighMemoryAlarm": {
+            "Value": {"Ref" : "HighMemoryAlarm"},
+            "Description": "High memory usage alarm"
+        },
+        "LowMemoryAlarm": {
+            "Value": {"Ref" : "LowMemoryAlarm"},
+            "Description": "Low memory usage alarm"
+        },
+        "HighCPUAlarm": {
+            "Value": {"Ref" : "HighCPUAlarm"},
+            "Description": "High cpu usage alarm"
+        },
+        "LowCPUAlarm": {
+            "Value": {"Ref" : "LowCPUAlarm"},
+            "Description": "Low cpu usage alarm"
+        },
+        "BastionHostID": {
+            "Value": {"Ref" : "BastionHost"},
+            "Description": "ID of BastionHost VM in Public Subnet 1"
+        },
+        "BastionHostPrivateIP": {
+            "Value": {  "Fn::GetAtt": [ "BastionHost", "PrivateIp" ] },
+            "Description": "Private IP of BastionHost in Public Subnet 1"
+        },   
+        "BastionHostPublicIP": {
+            "Value": {  "Fn::GetAtt": [ "BastionHost", "PublicIp" ] },
+            "Description": "Private IP of BastionHost in Public Subnet 1"
+        }                                                                       
+    }
+}

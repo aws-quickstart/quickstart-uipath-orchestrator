@@ -1,0 +1,16 @@
+project:
+  name: uipath-aws-delpoyment-quickstart
+  regions:
+  - us-east-1
+tests:
+  default:
+    template: ./templates/master.template.json
+    regions:
+    - us-east-1
+    parameters:
+      AvailabilityZones: "$[taskcat_getaz_1]"
+      KeyPairName: BinoysUSEast1KeyPair
+      StorageBucket: "mogoj-test"
+      GatewayName: "uipath-gateway"
+      QSS3KeyPrefix: "templates"
+      QSS3BucketName: "$[taskcat_autobucket]"    

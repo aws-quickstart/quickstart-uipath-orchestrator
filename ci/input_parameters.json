@@ -1,0 +1,26 @@
+[
+    {
+        "ParameterKey": "AvailabilityZones",
+        "ParameterValue": "$[taskcat_getaz_2]"
+    },
+    {
+        "ParameterKey": "KeyPairName",
+        "ParameterValue": "BinoysUSEast1KeyPair"
+    },
+    {
+        "ParameterKey": "StorageBucket",
+        "ParameterValue": "mogoj-test"
+    },
+    {
+        "ParameterKey": "GatewayName",
+        "ParameterValue": "uipath-gateway"
+    },    
+    {
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "$[taskcat_autobucket]"
+    },    
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "templates"
+    }
+]

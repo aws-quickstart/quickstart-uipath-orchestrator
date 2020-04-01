@@ -1,0 +1,12 @@
+global:
+  qsname: uipath-aws-delpoyment-quickstart
+  regions:
+    - us-east-1
+    - us-west-2
+  reporting: true
+tests:
+  lab-master-vpc:
+    parameter_input: input_parameters.json 
+    template_file: master.template.json
+    regions:
+      - us-east-1
