@@ -152,7 +152,7 @@
                 "AssociatePublicIpAddress" : false,
                 "BlockDeviceMappings" : [ 
                     {
-                        "DeviceName" : "/dev",
+                        "DeviceName" : "/dev/sda1",
                         "Ebs" : {
                             "DeleteOnTermination" : true,
                             "Encrypted" : false,
@@ -340,7 +340,7 @@
         "LowCPUAlarm": {
             "Type" : "AWS::CloudWatch::Alarm",
             "Properties" : {
-                "AlarmName" : "mem-util-low-orchestrator",
+                "AlarmName" : "cpu-util-low-orchestrator",
                 "AlarmDescription" : "This metric monitors ec2 memory for low utilization on Orchestrator hosts",
                 "Namespace" : "AWS/EC2",
                 "MetricName" : "CPUUtilization",                

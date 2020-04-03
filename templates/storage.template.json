@@ -353,7 +353,7 @@
                         "            break",
                         "    print(f'Adding Disk Cache to Gateway {gatewayARN} ...')",
                         "    if len(diskIds) > 0:",
-                        "        response = gatewayClient.add_cache(",
+                        "        gatewayClient.add_cache(",
                         "            GatewayARN=gatewayARN,",
                         "            DiskIds=diskIds",
                         "        )",
