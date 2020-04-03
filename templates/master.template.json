@@ -1340,14 +1340,7 @@
             "Export": {
                 "Name": { "Fn::Sub": "${AWS::StackName}-AWSCertificate" }
             }            
-        },
-        "CertificateValidationRecordSet": {
-            "Description": "Route53 CNAME Record",
-            "Value": {"Fn::GetAtt" : ["RoutingStack", "Outputs.CertificateValidationRecordSet"]},
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-CertificateValidationRecordSet" }
-            }            
-        },        
+        },    
         "HttpListener": {
             "Description": "HTTP Listener ARN",
             "Value": {"Fn::GetAtt" : ["RoutingStack", "Outputs.HttpListener"]},
