@@ -54,8 +54,8 @@
         "DBSubnetGroup": {
             "Type" : "AWS::RDS::DBSubnetGroup",
             "Properties" : {
-                "DBSubnetGroupDescription" : { "Fn::Sub": "${AWS::StackName}-RDS-Subnet-Group" },
-                "DBSubnetGroupName" : "RDS-MSSQL private subnet group",
+                "DBSubnetGroupDescription" : "RDS-MSSQL private subnet group",
+                "DBSubnetGroupName" : { "Fn::Sub": "${AWS::StackName}-RDS-Subnet-Group" },
                 "SubnetIds" : [
                     { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "SubnetIDs"}]}] },
                     {
