@@ -35,26 +35,6 @@
             "Type": "String"
         }                          		
     }, 
-    "Mappings" : {
-        "RegionMap" : {
-          "eu-north-1": {"GatewayAMI" : "ami-067021c6c213bc18c"},
-          "ap-south-1": {"GatewayAMI" : "ami-00b39cb984abcf7a5"},
-          "eu-west-3": {"GatewayAMI" : "ami-0854d00f6cf62b610"},
-          "eu-west-2": {"GatewayAMI" : "ami-09e094b464a94256f"},
-          "eu-west-1": {"GatewayAMI" : "ami-0c272dce1c089a306"},
-          "ap-northeast-2": {"GatewayAMI" : "ami-0e97cbed11ad41ecb"},
-          "ap-northeast-1": {"GatewayAMI" : "ami-0d21cb1b750ea098e"},
-          "sa-east-1": {"GatewayAMI" : "ami-06dddf863e1ad7fd6"},
-          "ca-central-1": {"GatewayAMI" : "ami-06952523be5453b27"},
-          "ap-southeast-1": {"GatewayAMI" : "ami-09c48f03b7936f5ab"},
-          "ap-southeast-2": {"GatewayAMI" : "ami-0fa14693d3879c977"},
-          "eu-central-1": {"GatewayAMI" : "ami-0b994cd0e9d642d82"},
-          "us-east-1": {"GatewayAMI" : "ami-0c38bb1899ad0b177"},
-          "us-east-2": {"GatewayAMI" : "ami-0859f19661167ba58"},
-          "us-west-1": {"GatewayAMI" : "ami-0789969abc7d40293"},
-          "us-west-2": {"GatewayAMI" : "ami-08ebd155179e1a64b"}          
-        }
-    },
     "Conditions": {
         "1AZCondition": {
             "Fn::Not": [
@@ -88,6 +68,79 @@
         }                
     },           
 	"Resources": {
+        "FindStorageGatewayAMIFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Description" : "Finds AMI for creating a Storage Gateway VM from an AWS owned SSM data store",
+                "Handler": "index.handler",
+                "Role": {"Ref" : "CustomLambdaRoleArn"},
+                "Code": {
+                    "ZipFile" : { "Fn::Join" : ["\n", [
+                        "import json",
+                        "import boto3",
+                        "import cfnresponse",
+                        "ec2 = boto3.client('ec2')",
+                        "def create(properties, physical_id):",
+                        "    regionName = properties['RegionName']",
+                        "    ssm = boto3.client('ssm', region_name=regionName)",
+                        "    imageId = ''",
+                        "    try:",
+                        "        imageId = ssm.get_parameter(",
+                        "            Name='/aws/service/storagegateway/ami/FILE_S3/latest'",
+                        "        )['Parameter']['Value']",
+                        "    except:",
+                        "        return cfnresponse.FAILED, '', {}",
+                        "    print(regionName, imageId)",
+                        "    returnAttribute = {}",
+                        "    returnAttribute['ImageId'] = imageId",
+                        "    returnAttribute['Action'] = 'CREATE'",
+                        "    return cfnresponse.SUCCESS, imageId, returnAttribute",
+                        "def update(properties, physical_id):",
+                        "    imageId = physical_id",
+                        "    returnAttribute = {}",
+                        "    returnAttribute['ImageId'] = imageId",
+                        "    returnAttribute['Action'] = 'UPDATE'",
+                        "    return cfnresponse.SUCCESS, imageId, returnAttribute",
+                        "def delete(properties, physical_id):",
+                        "    imageId = physical_id",
+                        "    returnAttribute = {}",
+                        "    returnAttribute['ImageId'] = imageId",
+                        "    returnAttribute['Action'] = 'DELETE'",
+                        "    return cfnresponse.SUCCESS, imageId, returnAttribute",                        
+                        "def handler(event, context):",
+                        "    print('Received event: ' + json.dumps(event))",
+                        "    status = cfnresponse.FAILED",
+                        "    new_physical_id = None",
+                        "    returnAttribute = {}",
+                        "    try:",
+                        "        properties = event.get('ResourceProperties')",
+                        "        physical_id = event.get('PhysicalResourceId')",
+                        "        status, new_physical_id, returnAttribute = {",
+                        "            'Create': create,",
+                        "            'Update': update,",
+                        "            'Delete': delete",
+                        "        }.get(event['RequestType'], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)",
+                        "    except Exception as e:",
+                        "        print('Exception: ' + str(e))",
+                        "        status = cfnresponse.FAILED",
+                        "    finally:",
+                        "        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)"
+                    ]]}
+                },
+                "Runtime": "python3.6",
+                "Timeout": 30,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        },   
+		"StorageGatewayAMI": {
+            "Type": "Custom::StorageGatewayAMI",
+            "Properties": {
+                    "ServiceToken": { "Fn::GetAtt" : ["FindStorageGatewayAMIFunction", "Arn"] },
+                    "RegionName": { "Ref" : "AWS::Region" }
+            }
+        },                      
         "Gateway": {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
@@ -103,7 +156,7 @@
                     } 
                 ],
                 "EbsOptimized" : true,
-                "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "GatewayAMI"]},
+                "ImageId" : {"Ref": "StorageGatewayAMI"},
                 "InstanceType" : "m4.xlarge",
                 "KeyName" : {"Ref": "KeyPairName"},
                 "NetworkInterfaces" : [ 
