@@ -296,7 +296,9 @@
         "GatewayName": {
             "Description": "Name of S3 File Storage Gateway.",
             "Type": "String",
-            "Default": "uipathgateway"            
+            "Default": "uipathgateway",
+            "AllowedPattern": "^[a-zA-Z]*$",
+            "ConstraintDescription": "Gateway name should contain alphabetic characters only, and cannot be left blank."                         
         },
         "GatewayTimezone": {
             "Description": "Timezone to choose for File Gateway",
@@ -883,93 +885,122 @@
         "Domain": {
             "Description": "The domain to use to host the project. This should already exist as a hosted zone in Route 53.",
             "Type": "String",
-            "Default": "corp.com"
+            "Default": "corp.com",
+            "AllowedPattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$",
+            "ConstraintDescription": "Domain should be a top level domain name."            
         },
         "SubDomain": {
             "Description": "Application subdomain under the parent domain where the delpoyed app would be accessible.",
             "Type": "String",
-            "Default": "app"
+            "Default": "app",
+            "AllowedPattern": "^[a-z]*$",
+            "ConstraintDescription": "Subdomain cannot be left blank, and must contain only lowercase alphabet."
         },           
         "HAAUser": {
             "Description": "High Availability Add-on username.",
             "Type": "String",
-            "Default": "test@corp.com"
+            "AllowedPattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+            "ConstraintDescription": "A valid email must be used as HA username"
         },
         "HAAPassword": {
             "Description": "High Availability Add-on password.",
             "Type": "String",
-            "Default": "123456",
-            "NoEcho": "true"
+            "NoEcho": "true",
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
+            "ConstraintDescription": "HA Password must contain at least one letter, at least one number, and be longer than six charaters."            
         }, 
         "HAALicense": {
             "Description": "license key, purchased from UIPath, to be used with optional High Availability Add-on.",
             "Type": "String",
-            "Default": "2353tgewsdfweg34t342rftg23g2g23t2r32r2353tgewsdfweg34t342rftg23g2g23t2r32r2353tgewsdfweg34t342rftg23g2g23t2r32r2353tgewsdfweg34t342rftg23g2g23t2r32r"
+            "AllowedPattern": "^[0-9a-z]{148}$",
+            "ConstraintDescription": "HA License key must contain only numbers and lowercase letters, and be 148 characters long."
         },    
         "RDSDBName": {
             "Description": "Name for UIPath Database to be created.",
             "Type": "String",
-            "Default": "uipathdb"
+            "Default": "uipathdb",
+            "AllowedPattern": "^[a-zA-Z]*$",
+            "ConstraintDescription": "Database name should contain alphabetic characters only, and cannot be left blank."            
         },         
         "RDSAllocatedStorage": {
             "Description": "Storage amount to be allocated to RDS DB Instance.",
             "Type": "String",
-            "Default": "100"
+            "Default": "100",
+            "AllowedPattern": "^(?:[1-9]\\d{0,3}|1[0-5]\\d{3}|16[0-2]\\d{2}|163[0-7]\\d|1638[0-4])$",
+            "ConstraintDescription": "RDS Allocated storage should be less or equal to 16384 GB" 
         },
         "RDSUsername": {
             "Description": "Username to be used to log on to Database.",
             "Type": "String",
-            "Default": "devtestaws"
+            "AllowedPattern": "^[0-9a-zA-Z]*$",
+            "ConstraintDescription": "Database username cannot be left blank."
         },
         "RDSPassword": {
             "Description": "Password to be used to log on to Database.",
             "Type": "String",
             "NoEcho": "true",
-            "Default": "!Aw3s0m3Orch35tr4t0r"
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
+            "ConstraintDescription": "Database Password must contain at least one letter, at least one number, and be longer than six charaters."            
         },  
         "OrchestratorVersion": {
             "Description": "UIPath Orchestrator Version to be installed.",
             "Type": "String",
-            "Default": "19.10.15"
+            "Default": "19.10.15",
+            "AllowedPattern": "^(\\d+\\.)?(\\d+\\.)*(\\d+)+$",
+            "ConstraintDescription": "Orchestrator version number can contain only digits and dot(.), and must ."            
         },
         "OrchestratorInstanceCount": {
             "Description": "Desired Capacity (instance count) for Orchestrator instances.",
             "Type": "String",
-            "Default": "1"
+            "Default": "1",
+            "AllowedPattern": "^(?:[1-9]|0[1-9]|1[0-9]|20)$",
+            "ConstraintDescription": "Orchestrator Instances can be between 1 to 20."
         },                 
         "OrchestratorLicense": {
             "Description": "License key, purchased from UIPath, to be used with Orchestrator.",
             "Type": "String",
-            "Default": "DSGFSFGAGEHTERSEGW$%^%YHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFHYHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFHYHFDHDFHTTYJTKDGVXCFHGDSFSHJHMHKDGDFH+ADAAdwBvACEAJwAgADAAKAA="
+            "AllowedPattern": "^[0-9a-zA-Z\\$\\%\\^\\=\\+]{158}$",
+            "ConstraintDescription": "Orchestrator License key must contain only numbers, letters, and special characters - dollar($), percent(%), caret(^), equal(=),and plus(+) and be 158 characters long."            
         },         
         "OrchestratorPassPhrase": {
             "Description": "Orchestrator Passphrase in order to generate NuGet API keys, App encryption key and machine keys.",
             "Type": "String",
-            "Default": "Aw3s0m3Orch35tr4t0r"
+            "NoEcho": "true",
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
+            "ConstraintDescription": "Orchestrator Passphrase must contain at least one letter, at least one number, and be longer than six charaters."               
         }, 
         "OrchestratorPassword": {
             "Description": "Orchestrator Administrator password to login as.",
             "Type": "String",
             "NoEcho": "true",
-            "Default": "123456@4dmin"
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
+            "ConstraintDescription": "Orchestrator Password must contain at least one letter, at least one number, and be longer than six charaters."             
         }, 
         "AdminPassword": {
             "Description": "Windows Administrator password to login as.",
             "Type": "String",
             "NoEcho": "true",
-            "Default": "Q123!w3s0m3Orch35tr4t0r"
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
+            "ConstraintDescription": "Windows Administrator Password must contain at least one letter, at least one number, and be longer than six charaters."               
         },                                                          
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Description": "S3 bucket name hosting the Quickstart templates.",
             "Type": "String",
-            "Default": "aws-partner-quickstart"
+            "Default": "aws-quickstart"
         },
+        "QSS3BucketRegion": {
+            "Default": "us-east-1",
+            "Description": "The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.",
+            "Type": "String",
+            "AllowedPattern": "(us(-gov)?|ap|ca|cn|eu|sa)-(central|(north|south)?(east|west)?)-\\d",
+            "ConstraintDescription": "Quick Start bucket region must be a valid AWS Region code."
+        },   
         "QSS3KeyPrefix": {
-            "AllowedPattern": "^[0-9a-zA-Z-]*$",
-            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, and hyphens (-).",
-            "Default": "templates",
+            "AllowedPattern": "^[0-9a-zA-Z-/]*/$",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, and hyphens (-), and ending with a slash(/).",
+            "Default": "quickstart-uipath/",
             "Description": "S3 key prefix under which Quick Start templates are hosted.",
             "Type": "String"
         }
@@ -997,6 +1028,14 @@
                 },
                 "3"
             ]
+        },
+        "UsingDefaultBucket": {
+            "Fn::Equals": [
+                {
+                    "Ref": "QSS3BucketName"
+                },
+                "aws-quickstart"
+            ]            
         }                                                      
     },    
     "Resources": {
@@ -1004,9 +1043,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "network.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/network.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},
                 "Parameters" : {
                     "AvailabilityZones": {"Fn::Join": [",", {"Ref": "AvailabilityZones"} ]},
                     "NumberOfAZs": {"Ref": "NumberOfAZs"},
@@ -1024,9 +1068,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "security.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/security.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                    
                 "Parameters" : {
                     "VPCID": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCID"] },
                     "VPCCIDR": {"Ref": "VPCCIDR"},
@@ -1114,9 +1163,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "storage.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/storage.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                      
                 "Parameters" : {
                     "StorageBucketARN": { "Fn::GetAtt" : ["SecurityStack", "Outputs.StorageBucketARN"] },
                     "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
@@ -1133,9 +1187,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "routing.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/routing.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                     
                 "Parameters" : {
                     "VPCID": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCID"] },
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
@@ -1150,9 +1209,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "ha.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/ha.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                        
                 "Parameters" : {
                     "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
@@ -1168,9 +1232,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "database.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/database.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                        
                 "Parameters" : {
                     "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
@@ -1185,9 +1254,14 @@
             "Type" : "AWS::CloudFormation::Stack",
             "Condition": "2AZCondition",
             "Properties" : {
-                "TemplateURL" : {"Fn::Join": ["/", ["https:", "",
-                                    {"Fn::Join": [".", [ {"Ref": "QSS3BucketName"}, "s3", {"Ref": "AWS::Region"}, "amazonaws", "com" ]]},
-                                    {"Ref": "QSS3KeyPrefix"}, "server.template.json" ]]},
+                "TemplateURL" : {
+                    "Fn::Sub": [
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/server.template.json", 
+                        { 
+                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
+                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
+                        }
+                ]},                                       
                 "Parameters" : {
                     "PrivateSubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
                     "PublicSubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
