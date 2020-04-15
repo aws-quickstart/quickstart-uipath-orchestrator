@@ -28,55 +28,31 @@
                 "Tags" :  [ {"Key" : "Name", "Value" : {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "SecurityGroup" ]]}  } ],
                 "VpcId" : {"Ref": "VPCID"},
                 "SecurityGroupIngress" : [
-                    { "IpProtocol" : "tcp", "FromPort" : 5985, "ToPort" : 5986, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 5985, "ToPort" : 5986, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 443, "ToPort" : 443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 443, "ToPort" : 443, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 6379, "ToPort" : 6379, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 6379, "ToPort" : 6379, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 10000, "ToPort" : 10000, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 10000, "ToPort" : 10000, "CidrIp" : {"Ref": "VPCCIDR"} },    
-                    { "IpProtocol" : "tcp", "FromPort" : 22, "ToPort" : 22, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 22, "ToPort" : 22, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 8443, "ToPort" : 8443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 8443, "ToPort" : 8443, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 9443, "ToPort" : 9443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 9443, "ToPort" : 9443, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 80, "ToPort" : 80, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 80, "ToPort" : 80, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 3389, "ToPort" : 3389, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 3389, "ToPort" : 3389, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 1433, "ToPort" : 1433, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 1433, "ToPort" : 1433, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 2049, "ToPort" : 2049, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 2049, "ToPort" : 2049, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "udp", "FromPort" : 2049, "ToPort" : 2049, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "udp", "FromPort" : 2049, "ToPort" : 2049, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 111, "ToPort" : 111, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 111, "ToPort" : 111, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "udp", "FromPort" : 111, "ToPort" : 111, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "udp", "FromPort" : 111, "ToPort" : 111, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 20048, "ToPort" : 20048, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 20048, "ToPort" : 20048, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "udp", "FromPort" : 20048, "ToPort" : 20048, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "udp", "FromPort" : 20048, "ToPort" : 20048, "CidrIp" : {"Ref": "VPCCIDR"} }                                                                                                                                                                                                                                                                               
                 ],
                 "SecurityGroupEgress" : [
-                    { "IpProtocol" : "tcp", "FromPort" : 80, "ToPort" : 80, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 80, "ToPort" : 80, "CidrIp" : {"Ref": "VPCCIDR"} }, 
-                    { "IpProtocol" : "tcp", "FromPort" : 443, "ToPort" : 443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 443, "ToPort" : 443, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 6379, "ToPort" : 6379, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 6379, "ToPort" : 6379, "CidrIp" : {"Ref": "VPCCIDR"} },
-                    { "IpProtocol" : "tcp", "FromPort" : 10000, "ToPort" : 10000, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 10000, "ToPort" : 10000, "CidrIp" : {"Ref": "VPCCIDR"} }, 
-                    { "IpProtocol" : "tcp", "FromPort" : 22, "ToPort" : 22, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 22, "ToPort" : 22, "CidrIp" : {"Ref": "VPCCIDR"} },   
-                    { "IpProtocol" : "tcp", "FromPort" : 8443, "ToPort" : 8443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 8443, "ToPort" : 8443, "CidrIp" : {"Ref": "VPCCIDR"} },      
-                    { "IpProtocol" : "tcp", "FromPort" : 9443, "ToPort" : 9443, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 9443, "ToPort" : 9443, "CidrIp" : {"Ref": "VPCCIDR"} },                      
-                    { "IpProtocol" : "tcp", "FromPort" : 1433, "ToPort" : 1433, "CidrIp" : "0.0.0.0/0" },
                     { "IpProtocol" : "tcp", "FromPort" : 1433, "ToPort" : 1433, "CidrIp" : {"Ref": "VPCCIDR"} }   
                                                                                                                                                                 
                 ]                
@@ -224,6 +200,18 @@
 									],
 									"Resource": "*"
                                 },
+								{
+									"Effect": "Allow",
+									"Action": [
+                                        "ssm:DescribeParameters",
+                                        "ssm:GetParametersByPath",
+                                        "ssm:GetParameters",
+                                        "ssm:GetParameter",
+                                        "ssm:SendCommand",
+                                        "ssm:GetCommandInvocation"
+									],
+									"Resource": "*"
+                                },                              
 								{
 									"Effect": "Allow",
 									"Action": [
