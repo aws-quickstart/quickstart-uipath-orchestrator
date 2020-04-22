@@ -62,7 +62,13 @@
                     ]
                 }
             ]            
-        }                
+        },
+        "TrialHAA" : {
+            "Fn::Equals": [
+               {"Ref": "HAALicense"},
+               ""
+            ]
+         }               
     },     
     "Resources": {
 		"HAInstanceAMI": {
@@ -97,7 +103,8 @@
                                     "sh get-haa.sh",
                                     "-u", {"Ref": "HAAUser"},
                                     "-p", {"Ref": "HAAPassword"},
-                                    "-l ", {"Ref": "HAALicense"}
+                                    {"Fn::If": [ "TrialHAA","", {"Fn::Join": ["", ["-l ", {"Ref": "HAALicense"}]]}]}
+                                    
                                 ]]
                             }
                         ] ]
@@ -152,7 +159,14 @@
                             "yum install -y wget",
                             "wget http://download.uipath.com/haa/get-haa.sh",
                             "chmod +x get-haa.sh",
-                            "sh get-haa.sh -u  ", {"Ref": "HAAUser"}, " -p ", {"Ref": "HAAPassword"}, " -j ", {  "Fn::GetAtt": [ "HAMaster", "PrivateIp" ] }
+                            {
+                                "Fn::Join" : [ " ", [
+                                    "sh get-haa.sh",
+                                    "-u", {"Ref": "HAAUser"},
+                                    "-p", {"Ref": "HAAPassword"},
+                                    "-j ", {  "Fn::GetAtt": [ "HAMaster", "PrivateIp" ] }
+                                ]]
+                            }
                         ] ]
                     }
                 },                

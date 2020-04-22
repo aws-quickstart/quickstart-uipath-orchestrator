@@ -1,0 +1,32 @@
+general:
+  parameters:
+    OrchestratorURL: https://corp-orchestrator.com/
+    OrchestratorAPIUser: apiuser
+    OrchestratorAPIPassword: QWbGk1VhWiN8m
+    OrchestratorTenant: Default
+    LocalVMName: awesomerobot1
+    AdminPassword: QWbGk1VhWiN8m
+    UiRobotType: Unattended
+    RobotRole: localadmin
+    UiRobotName: awesome.robot
+    UiRobotPassword: QWbGk1VhWiN8m
+
+project:
+  name: uipath
+  regions:
+    - us-east-1
+  shorten_stack_name: true
+tests:
+  default:
+    template: master.template.json
+    regions:
+    - us-east-1
+    parameters:
+      AvailabilityZones: "$[taskcat_getaz_2]"
+      KeyPairName: existing_key
+      StorageBucket: "uip-$[taskcat_autobucket]"
+      GatewayName: "uipathgateway"
+      QSS3KeyPrefix: "uip/"
+      QSS3BucketName: "$[taskcat_autobucket]"
+      QSS3BucketRegion: us-east-1
+

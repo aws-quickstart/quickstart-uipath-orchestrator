@@ -132,7 +132,13 @@
                     ]
                 }
             ]            
-        }                
+        },
+        "TrialOrchestrator" : {
+            "Fn::Equals": [
+               {"Ref": "OrchestratorLicense"},
+               ""
+            ]
+         }               
     },     
     "Resources": {
 		"HostInstanceAMI": {
@@ -197,7 +203,7 @@
                                     { "Fn::Sub": [ "-orchestratorAdminPassword \"${OrchestratorPassword}\"", { "OrchestratorPassword": {"Ref" : "OrchestratorPassword" }} ]},                                           
                                     { "Fn::Sub": [ "-redisServerHost \"${HAMasterPrivateIP}:10000,${HASlavePrivateIP}:10000,password=${HAAPassword}\"", { "HAMasterPrivateIP": {"Ref" : "HAMasterPrivateIP" }, "HASlavePrivateIP": {"Ref" : "HASlavePrivateIP" }, "HAAPassword": {"Ref" : "HAAPassword" }} ]},
                                     { "Fn::Sub": [ "-NuGetStoragePath \"${GatewayPrivateIP}\\${StorageBucket}\"", { "GatewayPrivateIP": {"Ref" : "GatewayPrivateIP" }, "StorageBucket": {"Ref" : "StorageBucket" }} ]},
-                                    { "Fn::Sub": [ "-orchestratorLicenseCode \"${OrchestratorLicense}\"", { "OrchestratorLicense": {"Ref" : "OrchestratorLicense" }} ]}
+                                    {"Fn::If": [ "TrialOrchestrator","", {"Fn::Join": ["", ["-orchestratorLicenseCode ", {"Ref": "OrchestratorLicense"}]]}]}
                                 ]]
                             },
                             "</powershell>"
