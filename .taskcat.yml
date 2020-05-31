@@ -1,16 +1,40 @@
+general:
+  parameters:
+    LocalVMName: awesomerobot1
+    AdminPassword: QWbGk1VhWiN8m
+    UiRobotType: Unattended
+    RobotRole: localadmin
+    UiRobotName: awesome.robot
+    UiRobotPassword: QWbGk1VhWiN8m
+    Domain: corp.com
+    SubDomain: app
+    HAAUser: admin@corp.com
+    HAAPassword: QWbGk1VhWiN8m
+    RDSUsername: corpaws
+    RDSPassword: QWbGk1VhWiN8m
+    OrchestratorPassPhrase: QWbGk1VhWiN8m
+    OrchestratorPassword: QWbGk1VhWiN8m
+    OrchestratorLicense: ""
+    HAALicense: ""
+    OrchestratorURL: https://corp-orchestrator.com/
+    OrchestratorAPIUser: apiuser
+    OrchestratorAPIPassword: QWbGk1VhWiN8m
+    OrchestratorTenant: Default
 project:
-  name: uipath-aws-delpoyment-quickstart
+  name: uipath
   regions:
-  - us-east-1
+    - us-east-1
+  shorten_stack_name: true
 tests:
   default:
-    template: ./templates/master.template.json
+    template: ./templates/orchestrator/master.template.json # ./templates/robot/master.template.json
     regions:
     - us-east-1
     parameters:
-      AvailabilityZones: "$[taskcat_getaz_1]"
-      KeyPairName: BinoysUSEast1KeyPair
-      StorageBucket: "mogoj-test"
-      GatewayName: "uipath-gateway"
-      QSS3KeyPrefix: "templates"
-      QSS3BucketName: "$[taskcat_autobucket]"    
+      AvailabilityZones: "$[taskcat_getaz_2]"
+      KeyPairName: existing_key
+      StorageBucket: "uip$[taskcat_autobucket]"
+      GatewayName: "uipathgateway"
+      QSS3KeyPrefix: "uip/"
+      QSS3BucketName: "$[taskcat_autobucket]"
+      QSS3BucketRegion: us-east-1
