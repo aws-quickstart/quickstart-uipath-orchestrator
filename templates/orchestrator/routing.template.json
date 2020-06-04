@@ -195,7 +195,7 @@
                     ]]}
                 },
                 "Runtime": "python3.6",
-                "Timeout": 30,
+                "Timeout": 900,
                 "TracingConfig": {
                     "Mode": "Active"
                 }
@@ -207,17 +207,7 @@
                     "ServiceToken": { "Fn::GetAtt" : ["RequestAWSCertificateFunction", "Arn"] },
                     "DomainName" : {"Ref": "Domain"}
             }
-        },  
-        "HostedZone": {
-            "Type" : "AWS::Route53::HostedZone",
-            "DependsOn": "RequestedAWSCertificate",
-            "Properties" : {
-                "Name" : {"Ref": "Domain"},
-                "HostedZoneConfig" : {
-                    "Comment": { "Fn::Join" : [" ", ["Hosted Zone for", {"Ref": "Domain"}]]}
-                }
-            }
-        },        
+        },         
         "ValidateAWSCertificateFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -331,7 +321,7 @@
                     ]]}
                 },
                 "Runtime": "python3.6",
-                "Timeout": 30,
+                "Timeout": 900,
                 "TracingConfig": {
                     "Mode": "Active"
                 }
@@ -341,7 +331,12 @@
             "Type": "Custom::ValidatedAWSCertificate",
             "Properties": {
                     "ServiceToken": { "Fn::GetAtt" : ["ValidateAWSCertificateFunction", "Arn"] },
-                    "HostedZoneId" : {"Ref": "HostedZone"},
+                    "HostedZoneId": {
+                        "Fn::GetAtt": [
+                            "GetHostedZoneId",
+                            "HostedZoneId"
+                        ]
+                    },
                     "CertificateArn" : {"Ref": "RequestedAWSCertificate"},
                     "RecordName" : {"Fn::GetAtt" : ["RequestedAWSCertificate", "RecordName"]},
                     "RecordValue" : {"Fn::GetAtt" : ["RequestedAWSCertificate", "RecordValue"]}
@@ -384,17 +379,106 @@
                     } 
                 ]
             }
-        },        
+        },
+        "GetHostedZoneIdFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Description": "Performs query of hosted zone id by Domain Name",
+                "Handler": "index.handler",
+                "Role": {"Ref" : "CustomLambdaRoleArn"},
+                "Code": {
+                    "ZipFile": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "import json",
+                                "import boto3",
+                                "import time",
+                                "import cfnresponse",
+                                "r53 = boto3.client('route53')",
+                                "def create(properties):",
+                                "    domain = properties['DomainName']",
+                                "    zones = r53.list_hosted_zones_by_name(DNSName=domain)",
+                                "    if not zones or len(zones['HostedZones']) == 0:",
+                                "        raise Exception('Could not find DNS zone to update')",
+                                "    zone_id = zones['HostedZones'][0]['Id']",
+                                "    rta = {}",
+                                "    rta['HostedZoneId'] = zone_id",
+                                "    return cfnresponse.SUCCESS, rta",
+                                "def update(properties):",
+                                "    rta = {}",
+                                "    rta['Action'] = 'UPDATE'",
+                                "    return cfnresponse.SUCCESS, rta",
+                                "def delete(properties):",
+                                "    rta = {}",
+                                "    rta['Action'] = 'DELETE'",
+                                "    return cfnresponse.SUCCESS, rta",
+                                "def handler(event, context):",
+                                "    print('Received event: ' + json.dumps(event))",
+                                "    status = cfnresponse.FAILED",
+                                "    rta = {}",
+                                "    try:",
+                                "        properties = event.get('ResourceProperties')",
+                                "        status, rta = {",
+                                "            'Create': create,",
+                                "            'Update': create,",
+                                "            'Delete': delete",
+                                "        }.get(event['RequestType'], lambda x, y: (cfnresponse.FAILED, None))(properties)",
+                                "    except Exception as e:",
+                                "        print('Exception: ' + str(e))",
+                                "        status = cfnresponse.FAILED",
+                                "    finally:",
+                                "        cfnresponse.send(event, context, status, rta)"
+                            ]
+                        ]
+                    }
+                },
+                "Runtime": "python3.6",
+                "Timeout": 900,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        },
+        "GetHostedZoneId": {
+            "Type": "Custom::GetHostedZoneId",
+            "Properties": {
+                "ServiceToken": {
+                    "Fn::GetAtt": [
+                        "GetHostedZoneIdFunction",
+                        "Arn"
+                    ]
+                },
+                "DomainName": {
+                    "Ref": "Domain"
+                }
+            }
+        },
         "RecordSet": {
-            "Type" : "AWS::Route53::RecordSet",
-            "Properties" : {
-                "HostedZoneId" : {"Ref" : "HostedZone"},
-                "Name" : { "Fn::Join" : [".", [{"Ref": "SubDomain"}, {"Ref": "Domain"}]]},
-                "Type" : "A",                
-                "AliasTarget" : {
-                    "EvaluateTargetHealth" : false,
-                    "DNSName" : {"Fn::GetAtt" : ["ApplicationLoadBalancer", "DNSName"]},                    
-                    "HostedZoneId" : {"Fn::GetAtt" : ["ApplicationLoadBalancer", "CanonicalHostedZoneID"]}
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "HostedZoneId": {
+                    "Fn::GetAtt": [
+                        "GetHostedZoneId",
+                        "HostedZoneId"
+                    ]
+                },
+                "Name": {"Fn::Join": [".",[{"Ref": "SubDomain"},{"Ref": "Domain"}]]},
+                "Type": "A",
+                "AliasTarget": {
+                    "EvaluateTargetHealth": false,
+                    "DNSName": {
+                        "Fn::GetAtt": [
+                            "ApplicationLoadBalancer",
+                            "DNSName"
+                        ]
+                    },
+                    "HostedZoneId": {
+                        "Fn::GetAtt": [
+                            "ApplicationLoadBalancer",
+                            "CanonicalHostedZoneID"
+                        ]
+                    }
                 }
             }
         }
@@ -412,10 +496,6 @@
             "Value": {"Fn::GetAtt" : ["TargetGroup", "TargetGroupFullName"]},
             "Description": "Target Group Name"
         },                 
-        "HostedZoneID": {
-            "Value": {"Ref" : "HostedZone"},
-            "Description": "Route53 Hosted Zone ID"
-        },        
         "AWSCertificate": {
             "Value":  {"Ref" : "ValidatedAWSCertificate"},
             "Description": "AWS Certificate Manager Certificate Resource"

@@ -912,7 +912,6 @@
         "HAALicense": {
             "Description": "license key, purchased from UIPath, to be used with optional High Availability Add-on.",
             "Type": "String",
-            "AllowedPattern": "^[0-9a-z]{148}$",
             "ConstraintDescription": "HA License key must contain only numbers and lowercase letters, and be 148 characters long."
         },    
         "RDSDBName": {
@@ -959,7 +958,6 @@
         "OrchestratorLicense": {
             "Description": "License key, purchased from UIPath, to be used with Orchestrator.",
             "Type": "String",
-            "AllowedPattern": "^[0-9a-zA-Z\\$\\%\\^\\=\\+]{158}$",
             "ConstraintDescription": "Orchestrator License key must contain only numbers, letters, and special characters - dollar($), percent(%), caret(^), equal(=),and plus(+) and be 158 characters long."            
         },         
         "OrchestratorPassPhrase": {
@@ -1045,7 +1043,7 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/network.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
@@ -1055,12 +1053,15 @@
                     "AvailabilityZones": {"Fn::Join": [",", {"Ref": "AvailabilityZones"} ]},
                     "NumberOfAZs": {"Ref": "NumberOfAZs"},
                     "VPCCIDR": {"Ref": "VPCCIDR"},
+                    "CreatePrivateSubnets": "true",
+                    "CreateAdditionalPrivateSubnets": "true",
+                    "KeyPairName": {"Ref": "KeyPairName"},
                     "PublicSubnetTag1": {"Ref": "PublicSubnetTag1"},
                     "PublicSubnetTag2": {"Ref": "PublicSubnetTag2"},
                     "PublicSubnetTag3": {"Ref": "PublicSubnetTag3"},
-                    "PrivateSubnetTag1": {"Ref": "PrivateSubnetTag1"},
-                    "PrivateSubnetTag2": {"Ref": "PrivateSubnetTag2"},
-                    "PrivateSubnetTag3": {"Ref": "PrivateSubnetTag3"}                                         
+                    "PrivateSubnetATag1": {"Ref": "PrivateSubnetTag1"},
+                    "PrivateSubnetBTag1": {"Ref": "PrivateSubnetTag2"},
+                    "PrivateSubnetBTag2": {"Ref": "PrivateSubnetTag3"}                                         
                 }
             }
         },
@@ -1070,7 +1071,7 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/security.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/security.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
@@ -1165,7 +1166,7 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/storage.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/storage.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
@@ -1173,7 +1174,11 @@
                 ]},                                      
                 "Parameters" : {
                     "StorageBucketARN": { "Fn::GetAtt" : ["SecurityStack", "Outputs.StorageBucketARN"] },
-                    "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
+                    "SubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
+                    ]]},
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
                     "FileShareIAMRole": { "Fn::GetAtt" : ["SecurityStack", "Outputs.FileShareIAMRole"] },
                     "KeyPairName": {"Ref": "KeyPairName"},
@@ -1189,7 +1194,7 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/routing.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/routing.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
@@ -1198,7 +1203,11 @@
                 "Parameters" : {
                     "VPCID": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCID"] },
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
-                    "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
+                    "SubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
+                    ]]},
                     "Domain": {"Ref": "Domain"},
                     "SubDomain": {"Ref": "SubDomain"},                    
                     "CustomLambdaRoleArn": { "Fn::GetAtt" : ["SecurityStack", "Outputs.CustomLambdaRoleArn"] }
@@ -1211,14 +1220,18 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/ha.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/ha.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
                         }
                 ]},                                        
                 "Parameters" : {
-                    "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
+                    "SubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
+                    ]]},
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
                     "KeyPairName": {"Ref": "KeyPairName"},
                     "HAAUser": {"Ref": "HAAUser"},
@@ -1234,14 +1247,18 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/database.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/database.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
                         }
                 ]},                                        
                 "Parameters" : {
-                    "SubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
+                    "SubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
+                    ]]},
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
                     "RDSDBName": {"Ref": "RDSDBName"},
                     "RDSAllocatedStorage": {"Ref": "RDSAllocatedStorage"},
@@ -1256,15 +1273,23 @@
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/server.template.json", 
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/server.template.json", 
                         { 
                             "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
                             "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
                         }
                 ]},                                       
                 "Parameters" : {
-                    "PrivateSubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
-                    "PublicSubnetIDs": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
+                    "PrivateSubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
+                    ]]},
+                    "PublicSubnetIDs": {"Fn::Join": [",", [
+                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
+                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
+                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
+                    ]]},
                     "TargetGroupARN": { "Fn::GetAtt" : ["RoutingStack", "Outputs.TargetGroupARN"] },
                     "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
                     "KeyPairName": {"Ref": "KeyPairName"},
@@ -1302,14 +1327,22 @@
         },   
         "PrivateSubnetIDs" : {
             "Description" : "Private Subnet IDs",
-            "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnetIDs"] },
+            "Value": {"Fn::Join": [",", [
+                { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
+                {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
+                {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
+            ]]},
             "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-PrivateSubnetIDs" }}
         },
         "PublicSubnetIDs" : {
             "Description" : "Public Subnet IDs",
-            "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnetIDs"] },
+            "Value": {"Fn::Join": [",", [
+                { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
+                {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
+                {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
+            ]]},
             "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-PublicSubnetIDs" }}
-        },                         
+        },                        
         "S3VPCEndpoint": {
             "Description": "S3 VPC Endpoint",
             "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.S3VPCEndpoint"] },
@@ -1400,14 +1433,7 @@
             "Export": {
                 "Name": { "Fn::Sub": "${AWS::StackName}-TargetGroupARN" }
             }            
-        },                         
-        "HostedZoneID": {
-            "Description": "Route53 Hosted Zone ID",
-            "Value": {"Fn::GetAtt" : ["RoutingStack", "Outputs.HostedZoneID"]},
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-HostedZoneID" }
-            }            
-        },        
+        },                               
         "AWSCertificate": {
             "Description": "AWS Certificate Manager Certificate Resource",
             "Value": {"Fn::GetAtt" : ["RoutingStack", "Outputs.AWSCertificate"]},
