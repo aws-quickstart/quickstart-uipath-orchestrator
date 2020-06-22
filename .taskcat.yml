@@ -6,7 +6,7 @@ general:
     RobotRole: localadmin
     UiRobotName: awesome.robot
     UiRobotPassword: QWbGk1VhWiN8m
-    Domain: corp.com
+    Domain: shivansh.dev
     SubDomain: app
     HAAUser: admin@corp.com
     HAAPassword: QWbGk1VhWiN8m
@@ -21,10 +21,27 @@ general:
     OrchestratorAPIPassword: QWbGk1VhWiN8m
     OrchestratorTenant: Default
 project:
-  name: uipath
+  name: quickstart-uipath-orchestrator
   regions:
-    - us-east-1
-  shorten_stack_name: true
+  - ap-northeast-1
+  - ap-northeast-2
+  - ap-south-1
+  - ap-southeast-1
+  - ap-southeast-2
+  - ap-east-1
+  - ca-central-1
+  - eu-central-1
+  - eu-west-1
+  - eu-west-2
+  - eu-west-3
+  - me-south-1
+  - sa-east-1
+  - us-east-1
+  - us-east-2
+  - us-west-1
+  - us-west-2
+  #shorten_stack_name: true
+  #s3_bucket: tcat-quickstart-uipath-orchestratorlnc7yiwd
 tests:
   default:
     template: ./templates/orchestrator/master.template.json # ./templates/robot/master.template.json
@@ -32,9 +49,9 @@ tests:
     - us-east-1
     parameters:
       AvailabilityZones: "$[taskcat_getaz_2]"
-      KeyPairName: existing_key
+      KeyPairName: sshvans
       StorageBucket: "uip$[taskcat_autobucket]"
       GatewayName: "uipathgateway"
-      QSS3KeyPrefix: "uip/"
+      QSS3KeyPrefix: "quickstart-uipath-orchestrator/"
       QSS3BucketName: "$[taskcat_autobucket]"
-      QSS3BucketRegion: us-east-1
+      QSS3BucketRegion: $[taskcat_current_region]
