@@ -885,9 +885,7 @@
         "Domain": {
             "Description": "The domain to use to host the project. This should already exist as a hosted zone in Route 53.",
             "Type": "String",
-            "Default": "corp.com",
-            "AllowedPattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$",
-            "ConstraintDescription": "Domain should be a top level domain name."            
+            "Default": "corp.com"
         },
         "SubDomain": {
             "Description": "Application subdomain under the parent domain where the delpoyed app would be accessible.",
