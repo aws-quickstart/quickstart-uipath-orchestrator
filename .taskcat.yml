@@ -6,7 +6,6 @@ general:
     RobotRole: localadmin
     UiRobotName: awesome.robot
     UiRobotPassword: QWbGk1VhWiN8m
-    Domain: shivansh.dev
     SubDomain: app
     HAAUser: admin@corp.com
     HAAPassword: QWbGk1VhWiN8m
@@ -55,3 +54,4 @@ tests:
       QSS3KeyPrefix: "quickstart-uipath-orchestrator/"
       QSS3BucketName: "$[taskcat_autobucket]"
       QSS3BucketRegion: $[taskcat_current_region]
+      Domain: uipathqs.t.quickstart.awspartner.com
