@@ -24,7 +24,7 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Security Group allowing access to WindowsRM from anywhere",
-                "GroupName" : {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "MogojRDSSecurityGroup" ]]},
+                "GroupName" : {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "UiPathSecurityGroup" ]]},
                 "Tags" :  [ {"Key" : "Name", "Value" : {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "SecurityGroup" ]]}  } ],
                 "VpcId" : {"Ref": "VPCID"},
                 "SecurityGroupIngress" : [

@@ -1,11 +1,17 @@
 general:
   parameters:
+    SubnetId: "subnet-040207590a7c81393"
+    SecurityGroup: "sg-03d8a2c81db1a4dc8"
     LocalVMName: awesomerobot1
     AdminPassword: QWbGk1VhWiN8m
     UiRobotType: Unattended
     RobotRole: localadmin
     UiRobotName: awesome.robot
     UiRobotPassword: QWbGk1VhWiN8m
+    OrchestratorURL: https://corp-orchestrator.com/
+    OrchestratorAPIUser: apiuser
+    OrchestratorAPIPassword: QWbGk1VhWiN8m
+    OrchestratorTenant: Default
     Domain: corp.com
     SubDomain: app
     HAAUser: admin@corp.com
@@ -16,10 +22,6 @@ general:
     OrchestratorPassword: QWbGk1VhWiN8m
     OrchestratorLicense: ""
     HAALicense: ""
-    OrchestratorURL: https://corp-orchestrator.com/
-    OrchestratorAPIUser: apiuser
-    OrchestratorAPIPassword: QWbGk1VhWiN8m
-    OrchestratorTenant: Default
 project:
   name: uipath
   regions:

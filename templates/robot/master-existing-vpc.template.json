@@ -6,25 +6,11 @@
             "ParameterGroups": [
                 {
                     "Label": {
-                        "default": "Availability Zone Configuration"
-                    },
-                    "Parameters": [
-                        "AvailabilityZones",
-                        "NumberOfAZs"
-                    ]
-                },
-                {
-                    "Label": {
                         "default": "Network Configuration"
                     },
                     "Parameters": [
-                        "VPCCIDR",
-                        "PublicSubnetTag1",
-                        "PublicSubnetTag2",
-                        "PublicSubnetTag3",
-                        "PrivateSubnetTag1",
-                        "PrivateSubnetTag2",
-                        "PrivateSubnetTag3"
+                        "SubnetId",
+                        "SecurityGroup"
                     ]
                 },
                 {
@@ -54,14 +40,6 @@
                 },
                 {
                     "Label": {
-                        "default": "Bastion Host Configuration"
-                    },
-                    "Parameters": [
-                        "AdminPassword"
-                    ]
-                },                                                                             
-                {
-                    "Label": {
                         "default": "Quickstart Bucket configuration"
                     },
                     "Parameters": [
@@ -70,33 +48,12 @@
                     ]
                 }                                                                                    
             ],
-            "ParameterLabels": {
-                "AvailabilityZones": {
-                    "default": "Availability Zone(s) selection"
+            "ParameterLabels": {            
+                "SubnetId": {
+                    "default": "Existing subnet."
                 },
-                "NumberOfAZs": {
-                    "default": "Number of AZs to use"
-                },
-                "VPCCIDR": {
-                    "default": "VPC CIDR"
-                },                   
-                "PrivateSubnetTag1": {
-                    "default": "Private subnet 1 tag"
-                },      
-                "PrivateSubnetTag2": {
-                    "default": "Private subnet 2 tag"
-                },         
-                "PrivateSubnetTag3": {
-                    "default": "Private subnet 3 tag"
-                },                    
-                "PublicSubnetTag1": {
-                    "default": "Public subnet 1 tag"
-                },  
-                "PublicSubnetTag2": {
-                    "default": "Public subnet 2 tag"
-                },      
-                "PublicSubnetTag3": {
-                    "default": "Public subnet 3 tag"
+                "SecurityGroup": {
+                    "default": "Existing SecurityGroup."
                 },                                                                      
                 "KeyPairName": {
                     "default": "Instance Key pair"
@@ -130,10 +87,7 @@
                 },
                 "OrchestratorAPIPassword": {
                     "default": "Orchestrator API password.s"
-                },                     
-                "AdminPassword": {
-                    "default": "Admin Password"
-                },                                              
+                },                                                                 
                 "QSS3BucketName": {
                     "default": "Template hosting Bucket"
                 },
@@ -143,68 +97,15 @@
             }
         }
     },
-    "Parameters": {       
-        "AvailabilityZones": {
-            "Description": "List of Availability Zones to use for the subnets in the VPC - maximum of 3 AZs are used for this deployment (logical order of your selections is preserved).",
-            "Type": "List<AWS::EC2::AvailabilityZone::Name>"
+    "Parameters": {   
+        "SubnetId": {
+            "Type": "AWS::EC2::Subnet::Id",
+            "Description": "SubnetId of an existing subnet in your existing Virtual Private Cloud (VPC).",
+            "ConstraintDescription": "Must be an existing subnet in the selected Virtual Private Cloud."
         },
-        "NumberOfAZs": {
-            "AllowedValues": [
-                "2",
-                "3"
-            ],
-            "Default": "2",
-            "Description": "Number of Availability Zones to use in the VPC (upto 3), must match your selections in the list of Availability Zones parameter.",
-            "Type": "String"
-        }, 
-        "VPCCIDR": {
-            "AllowedPattern": "^([0-9]{1,3}\\.){2}([0]{1}.)[0]{1}(\\/[16]{2})$",
-            "ConstraintDescription": "CIDR block parameter must be in the form x.x.0.0/16",
-            "Default": "10.0.0.0/16",
-            "Description": "CIDR block for the VPC, must be in the form x.x.0.0/16.",
-            "Type": "String"
-        },
-        "PrivateSubnetTag1": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Private1",
-            "Description": "Tag to add to private subnet 1 in format Key=Value (Optional).",
-            "Type": "String"
-        },
-        "PrivateSubnetTag2": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Private2",
-            "Description": "Tag to add to private subnet 2 in format Key=Value (Optional).",
-            "Type": "String"
-        },
-        "PrivateSubnetTag3": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Private3",
-            "Description": "Tag to add to private subnet 3 in format Key=Value (Optional).",
-            "Type": "String"
-        },            
-        "PublicSubnetTag1": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Public1",
-            "Description": "Tag to add to public subnet 1 in format Key=Value (Optional)",
-            "Type": "String"
-        },
-        "PublicSubnetTag2": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Public2", 
-            "Description": "Tag to add to public subnet 2 in format Key=Value (Optional).",
-            "Type": "String"
-        },
-        "PublicSubnetTag3": {
-            "AllowedPattern": "^([a-zA-Z0-9+\\-._:/@]+=[a-zA-Z0-9+\\-.,_:/@ *\\\\\"'\\[\\]\\{\\}]*)?$",
-            "ConstraintDescription": "tags must be in format \"Key=Value\" keys can only contain [a-zA-Z0-9+\\-._:/@], values can contain [a-zA-Z0-9+\\-._:/@ *\\\\\"'\\[\\]\\{\\}]",
-            "Default": "Network=Public3",
-            "Description": "Tag to add to public subnet 3 in format Key=Value (Optional).",
-            "Type": "String"
+        "SecurityGroup": {
+            "Description": "ID of an existing SecurityGroup.",
+            "Type": "AWS::EC2::SecurityGroup::Id"
         },                        
         "KeyPairName": {
             "Description": "Existing Key Pair, which is to be used to Log in to VM instances.",
@@ -236,15 +137,6 @@
             "Default": "t2.medium",
             "Description": "EC2 instance type",
             "Type": "String"
-        },
-        "AdminPassword": {
-            "Description": "Windows Administrator password to login as.",
-            "Type": "String",
-            "NoEcho": "true",
-            "MinLength" : "6",
-            "MaxLength" : "124",
-            "AllowedPattern" : "(?=^.{6,124}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Windows Administrator Password must contain at least one uppercase letter and be longer than six charaters."                  
         },
         "RobotRole" : {
             "Type" : "String",
@@ -279,7 +171,7 @@
         },
         "OrchestratorTenant": {
             "Type" : "String",
-            "Default" : "default",
+            "Default": "default",
             "Description" : "Tenant name where the Robot will be created."
         },
         "OrchestratorAPIUser": {
@@ -314,29 +206,6 @@
         }
     },
     "Conditions": {
-        "2AZCondition": {
-            "Fn::Or": [
-                {
-                    "Fn::Equals": [
-                        {
-                            "Ref": "NumberOfAZs"
-                        },
-                        "2"
-                    ]
-                },
-                {
-                    "Condition": "3AZCondition"
-                }
-            ]
-        }, 
-        "3AZCondition": {
-            "Fn::Equals": [
-                {
-                    "Ref": "NumberOfAZs"
-                },
-                "3"
-            ]
-        },
         "UsingDefaultBucket": {
             "Fn::Equals": [
                 {
@@ -347,34 +216,6 @@
         }                                                      
     },    
     "Resources": {
-        "NetworkStack": {
-            "Type" : "AWS::CloudFormation::Stack",
-            "Condition": "2AZCondition",
-            "Properties" : {
-                "TemplateURL" : {
-                    "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template", 
-                        { 
-                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
-                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
-                        }
-                ]},
-                "Parameters" : {
-                    "AvailabilityZones": {"Fn::Join": [",", {"Ref": "AvailabilityZones"} ]},
-                    "NumberOfAZs": {"Ref": "NumberOfAZs"},
-                    "VPCCIDR": {"Ref": "VPCCIDR"},
-                    "CreatePrivateSubnets": "true",
-                    "CreateAdditionalPrivateSubnets": "true",
-                    "KeyPairName": {"Ref": "KeyPairName"},
-                    "PublicSubnetTag1": {"Ref": "PublicSubnetTag1"},
-                    "PublicSubnetTag2": {"Ref": "PublicSubnetTag2"},
-                    "PublicSubnetTag3": {"Ref": "PublicSubnetTag3"},
-                    "PrivateSubnetATag1": {"Ref": "PrivateSubnetTag1"},
-                    "PrivateSubnetBTag1": {"Ref": "PrivateSubnetTag2"},
-                    "PrivateSubnetBTag2": {"Ref": "PrivateSubnetTag3"}                             
-                }
-            }
-        },
         "LambdaRoleStack": {
             "Type" : "AWS::CloudFormation::Stack",
             "Properties" : {
@@ -388,27 +229,8 @@
                 ]}
             }
         },
-        "SecurityStack": {
-            "Type" : "AWS::CloudFormation::Stack",
-            "Condition": "2AZCondition",
-            "Properties" : {
-                "TemplateURL" : {
-                    "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/robot/security.template.json", 
-                        { 
-                            "S3Bucket": {"Fn::If": [ "UsingDefaultBucket", {"Fn::Sub": "${QSS3BucketName}-${AWS::Region}"},{ "Ref": "QSS3BucketName" }]},
-                            "S3Region": {"Fn::If": [ "UsingDefaultBucket", { "Ref": "AWS::Region" },{ "Ref": "QSS3BucketRegion" }]}
-                        }
-                ]},                                    
-                "Parameters" : {
-                    "VPCID": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCID"] },
-                    "VPCCIDR": {"Ref": "VPCCIDR"}
-                }
-            }
-        },
         "FindAMIFunction": {
             "Type": "AWS::Lambda::Function",
-            "Condition": "2AZCondition",
             "Properties": {
                 "Description" : "Finds a matching AMI Id",
                 "Handler": "index.handler",
@@ -476,7 +298,7 @@
                     ]]}
                 },
                 "Runtime": "python3.6",
-                "Timeout": 30,
+                "Timeout": 600,
                 "TracingConfig": {
                     "Mode": "Active"
                 }
@@ -484,7 +306,6 @@
         },        
         "ServerStack": {
             "Type" : "AWS::CloudFormation::Stack",
-            "Condition": "2AZCondition",
             "Properties" : {
                 "TemplateURL" : {
                     "Fn::Sub": [
@@ -495,21 +316,11 @@
                         }
                 ]},                                       
                 "Parameters" : {
-                    "PrivateSubnetIDs": {"Fn::Join": [",", [
-                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
-                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
-                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
-                    ]]},
-                    "PublicSubnetIDs": {"Fn::Join": [",", [
-                        { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
-                        {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
-                        {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
-                    ]]},
-                    "GatewaySecurityGroup": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
+                    "PrivateSubnetIDs": { "Ref": "SubnetId" },
+                    "GatewaySecurityGroup": { "Ref": "SecurityGroup"},
                     "KeyPairName": {"Ref": "KeyPairName"},
                     "InstanceType": {"Ref": "InstanceType"},
                     "FindAMIFunctionArn": { "Fn::GetAtt" : ["FindAMIFunction", "Arn"] },
-                    "AdminPassword": {"Ref": "AdminPassword"},
                     "RobotRole":  {"Ref": "RobotRole"},
                     "UiRobotName":  {"Ref": "UiRobotName"},
                     "UiRobotPassword":  {"Ref": "UiRobotPassword"},
@@ -524,68 +335,12 @@
         }                                                        
     },
     "Outputs": {
-        "VPCID" : {
-            "Description" : "VPC ID",
-            "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCID"] },
-            "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-VPCID" }}
-        },        
-        "VPCCIDR" : {
-            "Description" : "VPC CIDR",
-            "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.VPCCIDR"] },
-            "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-VPCCIDR" }}
-        },   
-        "PrivateSubnetIDs" : {
-            "Description" : "Private Subnet IDs",
-            "Value": {"Fn::Join": [",", [
-                { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet1AID" ] }, 
-                {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet2BID" ] },"-"]},
-                {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PrivateSubnet3CID" ] },"-"]}
-            ]]},
-            "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-PrivateSubnetIDs" }}
-        },
-        "PublicSubnetIDs" : {
-            "Description" : "Public Subnet IDs",
-            "Value": {"Fn::Join": [",", [
-                { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet1ID" ] }, 
-                {"Fn::If": [ "2AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet2ID" ] },"-"]},
-                {"Fn::If": [ "3AZCondition", { "Fn::GetAtt" : ["NetworkStack", "Outputs.PublicSubnet3ID" ] },"-"]}
-            ]]},
-            "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-PublicSubnetIDs" }}
-        },                        
-        "S3VPCEndpoint": {
-            "Description": "S3 VPC Endpoint",
-            "Value": { "Fn::GetAtt" : ["NetworkStack", "Outputs.S3VPCEndpoint"] },
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-S3VPCEndpoint" }
-            }
-        },
-        "SecurityGroup": {
-            "Description": "Security Group allowing access to WindowsRM from anywhere",
-            "Value": { "Fn::GetAtt" : ["SecurityStack", "Outputs.SecurityGroup"] },
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-SecurityGroup" }
-            }
-        },
-        "BastionHostID": {
-            "Description": "ID of BastionHost VM in Public Subnet 1",
-            "Value": { "Fn::GetAtt" : ["ServerStack", "Outputs.BastionHostID"] },
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-BastionHostID" }
-            }             
-        },
-        "BastionHostPrivateIP": {
-            "Description": "Private IP of BastionHost in Public Subnet 1",
-            "Value": { "Fn::GetAtt" : ["ServerStack", "Outputs.BastionHostPrivateIP"] },
-            "Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}-BastionHostPrivateIP" }
-            }             
-        },   
         "UiPathRobotPrivateIP": {
             "Description": "Private IP of UiPathRobot in Public Subnet 1",
             "Value": { "Fn::GetAtt" : ["ServerStack", "Outputs.UiPathRobotPrivateIP"] },
             "Export": {
                 "Name": { "Fn::Sub": "${AWS::StackName}-UiPathRobotPrivateIP" }
             }             
-        }                                                                                                           
+        }                                                                                                         
     }
 }
