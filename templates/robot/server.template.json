@@ -8,7 +8,8 @@
         }, 
         "PublicSubnetIDs": {
             "Description": "Comma separated Public Subnet IDs where Bastion hosts need to be launched",
-            "Type": "String"
+            "Type": "String",
+            "Default": "-"
         },        
         "GatewaySecurityGroup": {
             "Description": "Security Group behind which Storage Gateway VMs would be placed",
@@ -29,7 +30,8 @@
         "AdminPassword": {
             "Description": "Windows Administrator password to login as",
             "Type": "String",
-            "NoEcho": "true"
+            "NoEcho": "true",
+            "Default": ""
         },         
         "RobotRole" : {
             "Type" : "String",
@@ -77,36 +79,16 @@
         }
     },
     "Conditions": {
-        "1AZCondition": {
+        "BastionCondition": {
             "Fn::Not": [
                 {
                     "Fn::Equals": [
-                        { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
+                        { "Fn::Select" : [ "0", { "Fn::Split": [",", {"Ref": "PublicSubnetIDs"}]}] },
                         "-"
                     ]
                 }
             ]            
-        },
-        "2AZCondition": {
-            "Fn::Not": [
-                {
-                    "Fn::Equals": [
-                        { "Fn::Select" : [ "1", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
-                        "-"
-                    ]
-                }
-            ]            
-        },
-        "3AZCondition": {
-            "Fn::Not": [
-                {
-                    "Fn::Equals": [
-                        { "Fn::Select" : [ "2", { "Fn::Split": [",", {"Ref": "PrivateSubnetIDs"}]}] },
-                        "-"
-                    ]
-                }
-            ]            
-        }                
+        } 
     },     
     "Resources": {
 		"HostInstanceAMI": {
@@ -184,6 +166,7 @@
         },         
         "BastionHost": {
             "Type" : "AWS::EC2::Instance",
+            "Condition" : "BastionCondition",
             "Properties" : {
                 "ImageId" : { "Ref" : "HostInstanceAMI"},
                 "InstanceType" : {"Ref": "InstanceType"},
@@ -218,15 +201,22 @@
     "Outputs": {
         "BastionHostID": {
             "Value": {"Ref" : "BastionHost"},
-            "Description": "ID of BastionHost VM in Public Subnet 1"
+            "Description": "ID of BastionHost VM in Public Subnet 1",
+            "Condition" : "BastionCondition"
         },
         "BastionHostPrivateIP": {
             "Value": {  "Fn::GetAtt": [ "BastionHost", "PrivateIp" ] },
-            "Description": "Private IP of BastionHost in Public Subnet 1"
+            "Description": "Private IP of BastionHost in Public Subnet 1",
+            "Condition" : "BastionCondition"
         },   
         "BastionHostPublicIP": {
             "Value": {  "Fn::GetAtt": [ "BastionHost", "PublicIp" ] },
-            "Description": "Private IP of BastionHost in Public Subnet 1"
-        }                                                                       
+            "Description": "Private IP of BastionHost in Public Subnet 1",
+            "Condition" : "BastionCondition"
+        },
+        "UiPathRobotPrivateIP": {
+            "Value": {  "Fn::GetAtt": [ "UiPathRobot", "PrivateIp" ] },
+            "Description": "Private IP of UiPathRobot in Public Subnet 1"
+        }                                                                         
     }
 }

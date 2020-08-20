@@ -1,3 +1,5 @@
 taskcat_outputs/
 .taskcat/
 .DS_Store
+ci/
+functions/

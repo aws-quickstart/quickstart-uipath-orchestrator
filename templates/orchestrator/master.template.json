@@ -904,13 +904,14 @@
             "Description": "High Availability Add-on password.",
             "Type": "String",
             "NoEcho": "true",
-            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-            "ConstraintDescription": "HA Password must contain at least one letter, at least one number, and be longer than six charaters."            
+            "MinLength" : "6",
+            "MaxLength" : "124",
+            "AllowedPattern" : "(?=^.{6,124}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "HA Password must contain at least one uppercase letter and be longer than six charaters."            
         }, 
         "HAALicense": {
-            "Description": "license key, purchased from UIPath, to be used with optional High Availability Add-on.",
-            "Type": "String",
-            "ConstraintDescription": "HA License key must contain only numbers and lowercase letters, and be 148 characters long."
+            "Description": "License key, purchased from UIPath, to be used with optional High Availability Add-on.",
+            "Type": "String"
         },    
         "RDSDBName": {
             "Description": "Name for UIPath Database to be created.",
@@ -936,8 +937,9 @@
             "Description": "Password to be used to log on to Database.",
             "Type": "String",
             "NoEcho": "true",
-            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-            "ConstraintDescription": "Database Password must contain at least one letter, at least one number, and be longer than six charaters."            
+            "MinLength" : "8",
+            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{8,}$",
+            "ConstraintDescription": "Database Password must contain at least one letter, at least one number, and be longer than eight characters."            
         },  
         "OrchestratorVersion": {
             "Description": "UIPath Orchestrator Version to be installed.",
@@ -956,28 +958,33 @@
         "OrchestratorLicense": {
             "Description": "License key, purchased from UIPath, to be used with Orchestrator.",
             "Type": "String",
-            "ConstraintDescription": "Orchestrator License key must contain only numbers, letters, and special characters - dollar($), percent(%), caret(^), equal(=),and plus(+) and be 158 characters long."            
         },         
         "OrchestratorPassPhrase": {
             "Description": "Orchestrator Passphrase in order to generate NuGet API keys, App encryption key and machine keys.",
             "Type": "String",
             "NoEcho": "true",
-            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-            "ConstraintDescription": "Orchestrator Passphrase must contain at least one letter, at least one number, and be longer than six charaters."               
+            "MinLength" : "6",
+            "MaxLength" : "124",
+            "AllowedPattern" : "(?=^.{6,124}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Orchestrator Passphrase must contain at least one uppercase letter and be longer than six charaters." 
         }, 
         "OrchestratorPassword": {
             "Description": "Orchestrator Administrator password to login as.",
             "Type": "String",
             "NoEcho": "true",
-            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-            "ConstraintDescription": "Orchestrator Password must contain at least one letter, at least one number, and be longer than six charaters."             
+            "MinLength" : "6",
+            "MaxLength" : "124",
+            "AllowedPattern" : "(?=^.{6,124}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Orchestrator Password must contain at least one uppercase letter and be longer than six charaters." 
         }, 
         "AdminPassword": {
             "Description": "Windows Administrator password to login as.",
             "Type": "String",
             "NoEcho": "true",
-            "AllowedPattern": "^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-            "ConstraintDescription": "Windows Administrator Password must contain at least one letter, at least one number, and be longer than six charaters."               
+            "MinLength" : "6",
+            "MaxLength" : "124",
+            "AllowedPattern" : "(?=^.{6,124}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Windows Administrator Password must contain at least one uppercase letter and be longer than six charaters."               
         },                                                          
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
