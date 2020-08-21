@@ -1,0 +1,550 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  This template creates an S3 Bucket and a File Storage Gateway mapping to the
+  S3 bucket. (qs-1r2g41227)
+Parameters:
+  StorageBucketARN:
+    Type: String
+    Description: ARN for file storage bucket
+  SubnetIDs:
+    Description: Comma separated Subnet IDs where Gateway VMs need to be launched
+    Type: String
+  GatewaySecurityGroup:
+    Description: Security Group behind which Storage Gateway VMs would be placed
+    Type: String
+  FileShareIAMRole:
+    Description: IAM Role to be attached to NFS File Share
+    Type: String
+  KeyPairName:
+    Description: EC2 Instance Key pair name
+    Type: String
+  GatewayName:
+    Description: Name of Storage Gateway
+    Type: String
+  GatewayTimezone:
+    Description: Timezone to choose for File Gateway
+    Type: String
+  CustomLambdaRoleArn:
+    Description: >-
+      ARN for IAM Role to be assumed by Lambda functinos creating Storage
+      Gateway custom resources
+    Type: String
+Conditions:
+  1AZCondition: !Not 
+    - !Equals 
+      - !Select 
+        - '0'
+        - !Split 
+          - ','
+          - !Ref SubnetIDs
+      - '-'
+  2AZCondition: !Not 
+    - !Equals 
+      - !Select 
+        - '1'
+        - !Split 
+          - ','
+          - !Ref SubnetIDs
+      - '-'
+  3AZCondition: !Not 
+    - !Equals 
+      - !Select 
+        - '2'
+        - !Split 
+          - ','
+          - !Ref SubnetIDs
+      - '-'
+Resources:
+  FindStorageGatewayAMIFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: >-
+        Finds AMI for creating a Storage Gateway VM from an AWS owned SSM data
+        store
+      Handler: index.handler
+      Role: !Ref CustomLambdaRoleArn
+      Code:
+        ZipFile: !Join 
+          - |+
+
+          - - import json
+            - import boto3
+            - import cfnresponse
+            - ec2 = boto3.client('ec2')
+            - 'def create(properties, physical_id):'
+            - '    regionName = properties[''RegionName'']'
+            - '    ssm = boto3.client(''ssm'', region_name=regionName)'
+            - '    imageId = '''''
+            - '    try:'
+            - '        imageId = ssm.get_parameter('
+            - '            Name=''/aws/service/storagegateway/ami/FILE_S3/latest'''
+            - '        )[''Parameter''][''Value'']'
+            - '    except:'
+            - '        return cfnresponse.FAILED, '''', {}'
+            - '    print(regionName, imageId)'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''ImageId''] = imageId'
+            - '    returnAttribute[''Action''] = ''CREATE'''
+            - '    return cfnresponse.SUCCESS, imageId, returnAttribute'
+            - 'def update(properties, physical_id):'
+            - '    imageId = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''ImageId''] = imageId'
+            - '    returnAttribute[''Action''] = ''UPDATE'''
+            - '    return cfnresponse.SUCCESS, imageId, returnAttribute'
+            - 'def delete(properties, physical_id):'
+            - '    imageId = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''ImageId''] = imageId'
+            - '    returnAttribute[''Action''] = ''DELETE'''
+            - '    return cfnresponse.SUCCESS, imageId, returnAttribute'
+            - 'def handler(event, context):'
+            - '    print(''Received event: '' + json.dumps(event))'
+            - '    status = cfnresponse.FAILED'
+            - '    new_physical_id = None'
+            - '    returnAttribute = {}'
+            - '    try:'
+            - '        properties = event.get(''ResourceProperties'')'
+            - '        physical_id = event.get(''PhysicalResourceId'')'
+            - '        status, new_physical_id, returnAttribute = {'
+            - '            ''Create'': create,'
+            - '            ''Update'': update,'
+            - '            ''Delete'': delete'
+            - '        }.get(event[''RequestType''], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)'
+            - '    except Exception as e:'
+            - '        print(''Exception: '' + str(e))'
+            - '        status = cfnresponse.FAILED'
+            - '    finally:'
+            - '        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)'
+      Runtime: python3.6
+      Timeout: 30
+      TracingConfig:
+        Mode: Active
+  StorageGatewayAMI:
+    Type: 'Custom::StorageGatewayAMI'
+    Properties:
+      ServiceToken: !GetAtt 
+        - FindStorageGatewayAMIFunction
+        - Arn
+      RegionName: !Ref 'AWS::Region'
+  Gateway:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: /dev/sdb
+          Ebs:
+            DeleteOnTermination: true
+            Encrypted: false
+            VolumeSize: 150
+            VolumeType: gp2
+      EbsOptimized: true
+      ImageId: !Ref StorageGatewayAMI
+      InstanceType: m4.xlarge
+      KeyName: !Ref KeyPairName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeleteOnTermination: true
+          DeviceIndex: '0'
+          GroupSet:
+            - !Ref GatewaySecurityGroup
+          SubnetId: !Select 
+            - '0'
+            - !Split 
+              - ','
+              - !Ref SubnetIDs
+      Tags:
+        - Key: Name
+          Value: UIPath Storage Gateway VM 1
+      Tenancy: default
+  ActivationKeyFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Activates a Storage Gateway
+      Handler: index.handler
+      Role: !Ref CustomLambdaRoleArn
+      Code:
+        ZipFile: !Join 
+          - |+
+
+          - - import os
+            - import time
+            - import json
+            - import boto3
+            - import cfnresponse
+            - ec2 = boto3.client('ec2')
+            - 'def create(properties, physical_id):'
+            - '    instanceId = properties[''InstanceId'']'
+            - '    instanceIP = properties[''InstanceIP'']'
+            - '    instanceRegion = properties[''InstanceRegion'']'
+            - '    instancestatuses = ec2.describe_instance_status(InstanceIds=[instanceId])[''InstanceStatuses'']'
+            - '    while len(instancestatuses) <= 0:'
+            - '        instancestatuses = ec2.describe_instance_status(InstanceIds=[instanceId])[''InstanceStatuses'']'
+            - '        print(f''Waiting for Instance-{instanceId} to be launched ...'')'
+            - '        time.sleep(10)'
+            - '    instancedetails = instancestatuses[0][''InstanceStatus''][''Details''][0][''Status'']'
+            - '    systemstatus = instancestatuses[0][''SystemStatus''][''Status'']'
+            - '    while instancedetails != ''passed'' and systemstatus != ''ok'':'
+            - '        instancestatuses = ec2.describe_instance_status(InstanceIds=[instanceId])[''InstanceStatuses'']'
+            - '        instancedetails = instancestatuses[0][''InstanceStatus''][''Details''][0][''Status'']'
+            - '        systemstatus = instancestatuses[0][''SystemStatus''][''Status'']'
+            - '        print(f''Waiting for Instance-{instanceId} to pass status check ...'')'
+            - '        time.sleep(30)'
+            - '    print(''Retrieving activation key ...'')'
+            - '    activationKey = '''''
+            - '    url = ''redirect_url=$(curl -f -s -S -w \''%%{redirect_url}\'' "http://%s/?activationRegion=%s")  && echo $redirect_url'' % (instanceIP,instanceRegion)'
+            - '    redirect_url = os.popen(url).read()'
+            - '    if redirect_url == '''' or redirect_url is None:'
+            - '        raise Exception(f''No redirect url returned for ip: {instanceIP}'')'
+            - '    activationKey = redirect_url[redirect_url.find(''activationKey='')+14:len(redirect_url)-1]'
+            - '    if activationKey is None or activationKey is '''':'
+            - '        raise Exception(f''Unable to extract the key from the returned redirect url: {redirect_url}'')'
+            - '    print(f''Actiavtion Key = "{activationKey}"'')'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Key''] = activationKey'
+            - '    returnAttribute[''Action''] = ''CREATE'''
+            - '    return cfnresponse.SUCCESS, activationKey, returnAttribute'
+            - 'def update(properties, physical_id):'
+            - '    activationKey = physical_id'
+            - '    gatewayName = properties[''GatewayName'']'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Key''] = activationKey'
+            - '    returnAttribute[''Action''] = ''UPDATE'''
+            - '    return cfnresponse.SUCCESS, activationKey, returnAttribute'
+            - 'def delete(properties, physical_id):'
+            - '    activationKey = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Key''] = activationKey'
+            - '    returnAttribute[''Action''] = ''DELETE'''
+            - '    return cfnresponse.SUCCESS, activationKey, returnAttribute'
+            - 'def handler(event, context):'
+            - '    print(''Received event: '' + json.dumps(event))'
+            - '    status = cfnresponse.FAILED'
+            - '    new_physical_id = None'
+            - '    returnAttribute = {}'
+            - '    try:'
+            - '        properties = event.get(''ResourceProperties'')'
+            - '        physical_id = event.get(''PhysicalResourceId'')'
+            - '        status, new_physical_id, returnAttribute = {'
+            - '            ''Create'': create,'
+            - '            ''Update'': update,'
+            - '            ''Delete'': delete'
+            - '        }.get(event[''RequestType''], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)'
+            - '    except Exception as e:'
+            - '        print(''Exception: '' + str(e))'
+            - '        status = cfnresponse.FAILED'
+            - '    finally:'
+            - '        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)'
+      Runtime: python3.6
+      Timeout: 30
+      TracingConfig:
+        Mode: Active
+  ActivationKey:
+    Type: 'Custom::ActivationKey'
+    Properties:
+      ServiceToken: !GetAtt 
+        - ActivationKeyFunction
+        - Arn
+      InstanceId: !Ref Gateway
+      InstanceIP: !GetAtt 
+        - Gateway
+        - PublicIp
+      InstanceRegion: !Ref 'AWS::Region'
+  ActivateGatewayFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Activates a Storage Gateway
+      Handler: index.handler
+      Role: !Ref CustomLambdaRoleArn
+      Code:
+        ZipFile: !Join 
+          - |+
+
+          - - import time
+            - import json
+            - import boto3
+            - import cfnresponse
+            - from datetime import datetime
+            - from dateutil import tz
+            - gatewayClient = boto3.client('storagegateway')
+            - 'def create(properties, physical_id):'
+            - '    activationKey = properties[''ActivationKey'']'
+            - '    instanceRegion = properties[''InstanceRegion'']'
+            - '    gatewayName = properties[''GatewayName'']'
+            - '    gatewayTimezone = properties[''GatewayTimezone'']'
+            - '    zone=datetime.now(tz.gettz(gatewayTimezone)).strftime(''%z'')'
+            - '    timezonesign = zone[0:1]'
+            - '    timezonehour = str(int(zone[1:3]))'
+            - '    timezoneminute = zone[3:5]'
+            - '    gatewayTimezoneOffset = f''GMT{timezonesign}{timezonehour}:{timezoneminute}'''
+            - '    print(f''GatewayTimezoneOffset = {gatewayTimezoneOffset}'')'
+            - '    gatewayARN = gatewayClient.activate_gateway('
+            - '        ActivationKey=activationKey,'
+            - '        GatewayName=gatewayName,'
+            - '        GatewayTimezone=gatewayTimezoneOffset,'
+            - '        GatewayRegion=instanceRegion,'
+            - '        GatewayType=''FILE_S3'''
+            - '    )[''GatewayARN'']'
+            - '    print(f''Gateway ARN = {gatewayARN}, Gateway Name = {gatewayName}'')'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Name''] = gatewayName'
+            - '    returnAttribute[''Action''] = ''CREATE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def update(properties, physical_id):'
+            - '    gatewayARN = physical_id'
+            - '    gatewayName = properties[''GatewayName'']'
+            - '    gatewayTimezone = properties[''GatewayTimezone'']'
+            - '    zone=datetime.now(tz.gettz(gatewayTimezone)).strftime(''%z'')'
+            - '    timezonesign = zone[0:1]'
+            - '    timezonehour = str(int(zone[1:3]))'
+            - '    timezoneminute = zone[3:5]'
+            - '    gatewayTimezoneOffset = f''GMT{timezonesign}{timezonehour}:{timezoneminute}'''
+            - '    gatewayName = gatewayClient.update_gateway_information('
+            - '        GatewayARN=gatewayARN,'
+            - '        GatewayName=gatewayName,'
+            - '        GatewayTimezone=gatewayTimezoneOffset'
+            - '    )[''GatewayName'']'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Name''] = gatewayName'
+            - '    returnAttribute[''Action''] = ''UPDATE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def delete(properties, physical_id):'
+            - '    gatewayARN = physical_id'
+            - '    gatewayName = properties[''GatewayName'']'
+            - '    gatewayARN = gatewayClient.delete_gateway('
+            - '        GatewayARN=gatewayARN'
+            - '    )[''GatewayARN'']'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Name''] = gatewayName'
+            - '    returnAttribute[''Action''] = ''DELETE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def handler(event, context):'
+            - '    print(''Received event: '' + json.dumps(event))'
+            - '    status = cfnresponse.FAILED'
+            - '    new_physical_id = None'
+            - '    returnAttribute = {}'
+            - '    try:'
+            - '        properties = event.get(''ResourceProperties'')'
+            - '        physical_id = event.get(''PhysicalResourceId'')'
+            - '        status, new_physical_id, returnAttribute = {'
+            - '            ''Create'': create,'
+            - '            ''Update'': update,'
+            - '            ''Delete'': delete'
+            - '        }.get(event[''RequestType''], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)'
+            - '    except Exception as e:'
+            - '        print(''Exception: '' + str(e))'
+            - '        status = cfnresponse.FAILED'
+            - '    finally:'
+            - '        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)'
+      Runtime: python3.6
+      Timeout: 30
+      TracingConfig:
+        Mode: Active
+  StorageGateway:
+    Type: 'Custom::StorageGateway'
+    Properties:
+      ServiceToken: !GetAtt 
+        - ActivateGatewayFunction
+        - Arn
+      ActivationKey: !Ref ActivationKey
+      InstanceRegion: !Ref 'AWS::Region'
+      GatewayName: !Ref GatewayName
+      GatewayTimezone: !Ref GatewayTimezone
+  AddDiskCacheFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Adds a disk cache to storage gateway VM
+      Handler: index.handler
+      Role: !Ref CustomLambdaRoleArn
+      Code:
+        ZipFile: !Join 
+          - |+
+
+          - - import boto3
+            - import json
+            - import cfnresponse
+            - gatewayClient = boto3.client('storagegateway')
+            - 'def create(properties, physical_id):'
+            - '    gatewayARN = properties[''GatewayARN'']'
+            - '    print(f''Getting disks for Gateway {gatewayARN} ...'')'
+            - '    disks = []'
+            - '    while len(disks) <= 0:'
+            - '        try:'
+            - '            disks = gatewayClient.list_local_disks('
+            - '                GatewayARN=gatewayARN'
+            - '            )[''Disks'']'
+            - '            print(disks)'
+            - '        except gatewayClient.exceptions.InvalidGatewayRequestException as e:'
+            - '            print(''Exception: '' + str(e))'
+            - '    print(f''Found {len(disks)} disks'')'
+            - '    diskIds = []'
+            - '    for disk in disks:'
+            - '        if disk[''DiskAllocationType''] == ''AVAILABLE'':'
+            - '            diskId = disk[''DiskId'']'
+            - '            diskIds.append(diskId)'
+            - '            print(f''Disk to be added to cache: {diskId}'')'
+            - '            break'
+            - '    print(f''Adding Disk Cache to Gateway {gatewayARN} ...'')'
+            - '    if len(diskIds) > 0:'
+            - '        gatewayClient.add_cache('
+            - '            GatewayARN=gatewayARN,'
+            - '            DiskIds=diskIds'
+            - '        )'
+            - '        print(''Disk Cache added'')'
+            - '    else:'
+            - '        print(''No Disks to be added'')'
+            - '    print(f''Gateway ARN = {gatewayARN}, Disk Id = {diskIds[0]}'')'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Action''] = ''CREATE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def update(properties, physical_id):'
+            - '    gatewayARN = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Action''] = ''UPDATE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def delete(properties, physical_id):'
+            - '    gatewayARN = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = gatewayARN'
+            - '    returnAttribute[''Action''] = ''DELETE'''
+            - '    return cfnresponse.SUCCESS, gatewayARN, returnAttribute'
+            - 'def handler(event, context):'
+            - '    print(''Received event: '' + json.dumps(event))'
+            - '    status = cfnresponse.FAILED'
+            - '    new_physical_id = None'
+            - '    returnAttribute = {}'
+            - '    try:'
+            - '        properties = event.get(''ResourceProperties'')'
+            - '        physical_id = event.get(''PhysicalResourceId'')'
+            - '        status, new_physical_id, returnAttribute = {'
+            - '            ''Create'': create,'
+            - '            ''Update'': update,'
+            - '            ''Delete'': delete'
+            - '        }.get(event[''RequestType''], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)'
+            - '    except Exception as e:'
+            - '        print(''Exception: '' + str(e))'
+            - '        status = cfnresponse.FAILED'
+            - '    finally:'
+            - '        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)'
+      Runtime: python3.6
+      Timeout: 30
+      TracingConfig:
+        Mode: Active
+  DiskCache:
+    Type: 'Custom::DiskCache'
+    Properties:
+      ServiceToken: !GetAtt 
+        - AddDiskCacheFunction
+        - Arn
+      GatewayARN: !Ref StorageGateway
+  CreateFileShareFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Creates a gateway S3 file share
+      Handler: index.handler
+      Role: !Ref CustomLambdaRoleArn
+      Code:
+        ZipFile: !Join 
+          - |+
+
+          - - import boto3
+            - import json
+            - import cfnresponse
+            - gatewayClient = boto3.client('storagegateway')
+            - 'def create(properties, physical_id):'
+            - '    gatewayARN = properties[''GatewayARN'']'
+            - '    storageBucketARN = properties[''StorageBucketARN'']'
+            - '    fileShareIAMRole = properties[''FileShareIAMRole'']'
+            - '    print(f''Creating NFS File Share for Gateway {gatewayARN} ...'')'
+            - '    fileShareARN = gatewayClient.create_nfs_file_share('
+            - '        ClientToken=''UIPathS3FileStorageGatewayClient'','
+            - '        GatewayARN=gatewayARN,'
+            - '        KMSEncrypted=False,'
+            - '        Role=fileShareIAMRole,'
+            - '        LocationARN=storageBucketARN,'
+            - '        DefaultStorageClass=''S3_STANDARD'','
+            - '        ObjectACL=''private'','
+            - '        ClientList=[ ''0.0.0.0/0''],'
+            - '        Squash=''RootSquash'','
+            - '        ReadOnly=False,'
+            - '        GuessMIMETypeEnabled=True,'
+            - '        RequesterPays=False,'
+            - '        Tags=[ { ''Key'': ''Name'', ''Value'': ''UIPathS3FileStorageGatewayShare'' } ]'
+            - '    )[''FileShareARN'']'
+            - '    print(f''Gateway ARN = {gatewayARN}, Fileshare ARN = {fileShareARN}'')'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = fileShareARN'
+            - '    returnAttribute[''Action''] = ''CREATE'''
+            - '    return cfnresponse.SUCCESS, fileShareARN, returnAttribute'
+            - 'def update(properties, physical_id):'
+            - '    fileShareARN = physical_id'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = fileShareARN'
+            - '    returnAttribute[''Action''] = ''UPDATE'''
+            - '    return cfnresponse.SUCCESS, fileShareARN, returnAttribute'
+            - 'def delete(properties, physical_id):'
+            - '    fileShareARN = physical_id'
+            - '    print(f''Deleting file share {fileShareARN} ...'')'
+            - '    fileShareARN = gatewayClient.delete_file_share('
+            - '        FileShareARN=fileShareARN,'
+            - '        ForceDelete=True'
+            - '    )[''FileShareARN'']'
+            - '    returnAttribute = {}'
+            - '    returnAttribute[''Arn''] = fileShareARN'
+            - '    returnAttribute[''Action''] = ''DELETE'''
+            - '    return cfnresponse.SUCCESS, fileShareARN, returnAttribute'
+            - 'def handler(event, context):'
+            - '    print(''Received event: '' + json.dumps(event))'
+            - '    status = cfnresponse.FAILED'
+            - '    new_physical_id = None'
+            - '    returnAttribute = {}'
+            - '    try:'
+            - '        properties = event.get(''ResourceProperties'')'
+            - '        physical_id = event.get(''PhysicalResourceId'')'
+            - '        status, new_physical_id, returnAttribute = {'
+            - '            ''Create'': create,'
+            - '            ''Update'': update,'
+            - '            ''Delete'': delete'
+            - '        }.get(event[''RequestType''], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)'
+            - '    except Exception as e:'
+            - '        print(''Exception: '' + str(e))'
+            - '        status = cfnresponse.FAILED'
+            - '    finally:'
+            - '        cfnresponse.send(event, context, status, returnAttribute, new_physical_id)'
+      Runtime: python3.6
+      Timeout: 30
+      TracingConfig:
+        Mode: Active
+  FileShare:
+    Type: 'Custom::FileShare'
+    Properties:
+      ServiceToken: !GetAtt 
+        - CreateFileShareFunction
+        - Arn
+      GatewayARN: !Ref StorageGateway
+      StorageBucketARN: !Ref StorageBucketARN
+      FileShareIAMRole: !Ref FileShareIAMRole
+Outputs:
+  GatewayVMID1:
+    Value: !Ref Gateway
+    Description: ID of Gateway VM in Public Subnet 1
+  GatewayVMPublicIP1:
+    Value: !GetAtt 
+      - Gateway
+      - PublicIp
+    Description: Public IP of Gateway VM in Public Subnet 1
+  GatewayVMPrivateIP1:
+    Value: !GetAtt 
+      - Gateway
+      - PrivateIp
+    Description: Private IP of Gateway VM in Public Subnet 1
+  GatewayARN1:
+    Value: !Ref StorageGateway
+    Description: ARN of Storage Gateway in Public Subnet 1
+  FileShareARN1:
+    Value: !Ref FileShare
+    Description: ARN of S3 File Share in Public Subnet 1

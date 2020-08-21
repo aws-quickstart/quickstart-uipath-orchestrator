@@ -43,7 +43,7 @@ project:
   #s3_bucket: tcat-quickstart-uipath-orchestratort0qmj35p
 tests:
   default:
-    template: ./templates/orchestrator/master.template.json # ./templates/robot/master.template.json
+    template: ./templates/orchestrator/master.template.yaml # ./templates/robot/master.template.yaml
     regions:
     - us-east-1
     parameters:
