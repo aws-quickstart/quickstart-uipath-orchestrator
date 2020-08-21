@@ -12,10 +12,7 @@ general:
     OrchestratorAPIUser: apiuser
     OrchestratorAPIPassword: QWbGk1VhWiN8m
     OrchestratorTenant: Default
-    Domain: corp.com
     SubDomain: app
-    HAAUser: admin@corp.com
-    HAAPassword: QWbGk1VhWiN8m
     RDSUsername: corpaws
     RDSPassword: QWbGk1VhWiN8m
     OrchestratorPassPhrase: QWbGk1VhWiN8m
@@ -43,7 +40,7 @@ project:
   - us-west-1
   - us-west-2
   shorten_stack_name: true
-  #s3_bucket: tcat-quickstart-uipath-orchestratorlnc7yiwd
+  #s3_bucket: tcat-quickstart-uipath-orchestratort0qmj35p
 tests:
   default:
     template: ./templates/orchestrator/master.template.json # ./templates/robot/master.template.json
@@ -57,4 +54,7 @@ tests:
       QSS3KeyPrefix: "quickstart-uipath-orchestrator/"
       QSS3BucketName: "$[taskcat_autobucket]"
       QSS3BucketRegion: $[taskcat_current_region]
-      Domain: uipathqs.t.quickstart.awspartner.com
+      Domain: shivansh.dev #uipathqs.t.quickstart.awspartner.com
+      HAAUser: admin@shivansh.dev
+      HAAPassword: QWbGk1VhWiN8m
+    

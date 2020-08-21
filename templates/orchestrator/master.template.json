@@ -957,7 +957,7 @@
         },                 
         "OrchestratorLicense": {
             "Description": "License key, purchased from UIPath, to be used with Orchestrator.",
-            "Type": "String",
+            "Type": "String"
         },         
         "OrchestratorPassPhrase": {
             "Description": "Orchestrator Passphrase in order to generate NuGet API keys, App encryption key and machine keys.",

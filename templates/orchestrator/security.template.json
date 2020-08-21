@@ -98,8 +98,7 @@
 							}
 						]
 					},
-					"Description" : "IAM Role providing S3 Access to Storage Gateway",
-					"RoleName": {"Fn::Join": ["-", [{"Ref": "AWS::StackName"}, "FileShareIAMRole"]]}
+					"Description" : "IAM Role providing S3 Access to Storage Gateway"
 				}
 		},
 		"FileShareIAMPolicy": {
