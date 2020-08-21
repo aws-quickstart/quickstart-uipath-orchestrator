@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a security group with Ingress and Egress rules and IAM role to allow access to S3 bucket",
+    "Description": "This template creates a security group with Ingress and Egress rules and IAM role to allow access to S3 bucket. (qs-1r2g41234)",
 	"Parameters": {
 		"VPCID": {
 			"Type": "AWS::EC2::VPC::Id"

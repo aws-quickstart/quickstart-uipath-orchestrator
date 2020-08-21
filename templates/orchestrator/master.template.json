@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a Multi-AZ, multi-subnet VPC infrastructure with UIPath Orchestrator deployed in private Subnets, with an ALB behind a Route53 in public subnets",
+    "Description": "This template creates a Multi-AZ, multi-subnet VPC infrastructure with UIPath Orchestrator deployed in private Subnets, with an ALB behind a Route53 in public subnets. (qs-1r2g41245)",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [

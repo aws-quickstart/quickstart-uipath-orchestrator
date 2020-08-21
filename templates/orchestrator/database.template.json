@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a RDS SQL instance in private subnet",
+    "Description": "This template creates a RDS SQL instance in private subnet. (qs-1r2g4124k)",
     "Parameters": {
         "SubnetIDs": {
             "Description": "Comma separated Subnet IDs where Gateway VMs need to be launched",

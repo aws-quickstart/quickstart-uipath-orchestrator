@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a security group with Ingress and Egress rules.",
+    "Description": "This template creates a security group with Ingress and Egress rules. (qs-1r2g4120u)",
 	"Parameters": {
 		"VPCID": {
 			"Type": "AWS::EC2::VPC::Id"

@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates an S3 Bucket and a File Storage Gateway mapping to the S3 bucket",
+    "Description": "This template creates an S3 Bucket and a File Storage Gateway mapping to the S3 bucket. (qs-1r2g41227)",
 	"Parameters": {
         "StorageBucketARN" :{
             "Type": "String",

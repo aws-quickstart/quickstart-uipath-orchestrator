@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a cluster to provide high availability",
+    "Description": "This template creates a cluster to provide high availability. (qs-1r2g4124c)",
     "Parameters": {
         "SubnetIDs": {
             "Description": "Comma separated Subnet IDs where Gateway VMs need to be launched",

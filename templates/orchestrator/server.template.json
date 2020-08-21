@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template creates a cluster to provide high availability",
+    "Description": "This template creates a cluster to provide high availability. (qs-1r2g4122s)",
     "Parameters": {
         "PrivateSubnetIDs": {
             "Description": "Comma separated Private Subnet IDs where Orchestrator VMs need to be launched",
