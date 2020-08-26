@@ -955,7 +955,7 @@ Parameters:
     ConstraintDescription: >-
       Quick Start key prefix can include numbers, lowercase letters, uppercase
       letters, and hyphens (-), and ending with a slash(/).
-    Default: quickstart-uipath/
+    Default: quickstart-uipath-orchestrator/
     Description: S3 key prefix under which Quick Start templates are hosted.
     Type: String
 Conditions:
