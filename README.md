@@ -12,4 +12,4 @@ The AWS CloudFormation templates included with the Quick Start automate the foll
 
 You can also use the AWS CloudFormation templates as a starting point for your own implementation.
 
-![Quick Start architecture for UiPath Orchestrator on AWS](./architecture.png)
+![Quick Start architecture for UiPath Orchestrator on AWS](./UIPath-Orchestrator-arch.png)
