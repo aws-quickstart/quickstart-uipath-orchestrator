@@ -1,15 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This template creates a cluster to provide high availability (qs-1r2g411te)
 Parameters:
-  PrivateSubnetIDs:
+  PrivateSubnetID:
     Description: >-
-      Comma separated Private Subnet IDs where Orchestrator VMs need to be
-      launched
-    Type: String
-  PublicSubnetIDs:
-    Description: Comma separated Public Subnet IDs where Bastion hosts need to be launched
-    Type: String
-    Default: '-'
+      Private Subnet ID where the Robot VM needs to be launched
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnetID:
+    Description: Comma separated Public Subnet ID where Bastion host needs to be launched
+    Type: AWS::EC2::Subnet::Id
   GatewaySecurityGroup:
     Description: Security Group behind which Storage Gateway VMs would be placed
     Type: String
@@ -27,36 +25,26 @@ Parameters:
     Type: String
     NoEcho: 'true'
     Default: ''
-  RobotRole:
-    Type: String
-    Default: localuser
-    AllowedValues:
-      - localuser
-      - localadmin
-    Description: >-
-      Choose a role for the Robot application: localuser only for RDP permission
-      or localadmin for Administrator permission. Default is localuser.
-  UiRobotName:
-    Description: UiPath Robot name.
-    Type: String
-    Default: awesome.robot
-  UiRobotPassword:
-    Description: UiPath Robot password
-    Type: String
-    NoEcho: 'true'
-  LocalVMName:
-    Description: Local VM name.
-    Type: String
-    Default: awesomerobot01
-  UiRobotType:
+  RobotType:
     Type: String
     Default: Attended
     AllowedValues:
       - Attended
       - Unattended
-      - Development
-      - Nonproduction
-    Description: 'Robot type : Attended, Unattended, Development or Nonproduction.'
+    Description: >-
+      Choose what type of UiPath Robot you want to be installed. Options are: Attended or Unattended.
+  RobotVersion:
+    Description: UIPath Robot Version Number
+    Type: String
+  QSS3BucketName:
+    Type: String
+    Description: Name of bucket storing the quickstart files
+  QSS3BucketRegion:
+    Type: String
+    Description: Name of region where the bucket storing the quickstart files is located
+  QSS3KeyPrefix:
+    Type: String
+    Description: Quickstart bucket prefix
   OrchestratorURL:
     Type: String
     Description: URL of an existing and licensed Orchestrator.
@@ -71,15 +59,47 @@ Parameters:
     Description: Orchestrator API password.
     NoEcho: 'true'
 Conditions:
-  BastionCondition: !Not 
-    - !Equals 
-      - !Select 
-        - '0'
-        - !Split 
-          - ','
-          - !Ref PublicSubnetIDs
-      - '-'
+  UsingDefaultBucket: !Equals
+    - !Ref QSS3BucketName
+    - aws-quickstart
+  IsAttendedRobot: !Equals
+    - !Ref RobotType
+    - Attended
 Resources:
+  RobotIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: IAM Role providing S3 Access to EC2 instance
+  RobotInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Roles:
+        - !Ref RobotIAMRole
+      Path: '/'
+  RobotIAMPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement: 
+          - Action: 
+            - s3:GetObject 
+            Resource: !Sub 
+            - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}* 
+            - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName] 
+            Effect: Allow 
+      PolicyName: aws-quick-start-s3-policy
+      Roles:
+        - !Ref RobotIAMRole
   HostInstanceAMI:
     Type: 'Custom::HostInstanceAMI'
     Properties:
@@ -91,103 +111,132 @@ Resources:
       Owners: amazon
   UiPathRobot:
     Type: 'AWS::EC2::Instance'
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref 'RobotIAMRole'
+          buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      AWS::CloudFormation::Init:
+        configSets:
+          config:
+            - setup
+            - prerequisites
+            - install
+        setup:
+          files:
+            c:\cfn\cfn-hup.conf:
+              content: !Join
+                - ''
+                - - "[main]\n"
+                  - stack=
+                  - !Ref 'AWS::StackName'
+                  - "\n"
+                  - region=
+                  - !Ref 'AWS::Region'
+                  - "\n"
+            c:\cfn\hooks.d\cfn-auto-reloader.conf:
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.UiPathRobot.Metadata
+                action=cfn-init.exe -v -c config -s ${AWS::StackName} -r UiPathRobot --region ${AWS::Region}
+            c:\cfn\sources\Install-UiPathRobots.ps1:
+              source:
+                !Sub
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/Install-UiPathRobots.ps1'
+                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              authentication: S3AccessCreds
+          services:
+            windows:
+              cfn-hup:
+                enabled: 'true'
+                ensureRunning: 'true'
+                files:
+                  - c:\cfn\cfn-hup.conf
+                  - c:\cfn\hooks.d\cfn-auto-reloader.conf
+          commands:
+            a-set-execution-policy:
+              command: powershell.exe -command Set-ExecutionPolicy RemoteSigned -Force
+              waitAfterCompletion: '0'
+        prerequisites:
+          files:
+            c:\cfn\sources\UiPathStudio.msi:
+              source: !Sub 'https://download.uipath.com/versions/${RobotVersion}/UiPathStudio.msi'
+        install:
+          commands:
+            a-execute-install:
+              command: !Join
+                - ' '
+                - - 'powershell.exe -command C:\cfn\sources\Install-UiPathRobots.ps1'
+                  - '-artifactFileName'
+                  - 'UiPathStudio.msi'
+                  - '-orchestratorUrl'
+                  - !Join 
+                    - ''
+                    - - '\"'
+                      - !Ref OrchestratorURL
+                      - '\"'
+                  - '-tenant'
+                  - !Join 
+                    - ''
+                    - - '\"'
+                      - !Ref OrchestratorTenant
+                      - '\"'
+                  - '-orchAdmin'
+                  - !Join 
+                    - ''
+                    - - '\"'
+                      - !Ref OrchestratorAPIUser
+                      - '\"'
+                  - '-orchPassword'
+                  - !Join 
+                    - ''
+                    - - '\"'
+                      - !Ref OrchestratorAPIPassword
+                      - '\"'
+                  - '-hostingType'
+                  - 'Standard'
+                  - '-robotType'
+                  - !Ref RobotType
+                  - '-cloudName'
+                  - 'AWS' 
+                  - !If 
+                    - IsAttendedRobot
+                    - !Join 
+                      - ' '
+                      - - '-machinePassword'
+                        - !Join 
+                          - ''
+                          - - '\"'
+                            - !Ref AdminPassword
+                            - '\"'
+                        - '-credType'
+                        - 'Default' 
+                    - ''
+              waitAfterCompletion: '0'
+              cwd: 'C:\cfn\sources\'
     Properties:
-      ImageId: !Ref HostInstanceAMI
+      ImageId: !GetAtt HostInstanceAMI.ImageId
+      IamInstanceProfile: !Ref RobotInstanceProfile
       InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyPairName
+      KeyName: !Ref KeyPairName      
       SecurityGroupIds:
         - !Ref GatewaySecurityGroup
-      SubnetId: !Select 
-        - '0'
-        - !Split 
-          - ','
-          - !Ref PrivateSubnetIDs
-      UserData: !Base64 
-        'Fn::Join':
-          - |+
-
-          - - <powershell>
-            - !Sub 
-              - '$robotRole = "${RobotRole}"'
-              - RobotRole: !Ref RobotRole
-            - 'if($robotRole -eq "localuser") { '
-            - '  $localRobotRole = "Remote Desktop Users" '
-            - '} else { $localRobotRole = "Administrators" } '
-            - !Sub 
-              - '$UserName = "${UiRobotName}"'
-              - UiRobotName: !Ref UiRobotName
-            - !Sub 
-              - '$Password = "${UiRobotPassword}"'
-              - UiRobotPassword: !Ref UiRobotPassword
-            - '$Computer = [ADSI]"WinNT://$Env:COMPUTERNAME,Computer" '
-            - '$User = $Computer.Create("User", $UserName) '
-            - '$User.SetPassword("$Password") '
-            - '$User.SetInfo() '
-            - $User.FullName = $UserName
-            - $User.SetInfo()
-            - '$User.Put("Description", "UiPath Robot Account") '
-            - '$User.SetInfo() '
-            - '$User.UserFlags = 65536 '
-            - '$User.SetInfo() '
-            - >-
-              $Group =
-              [ADSI]("WinNT://$Env:COMPUTERNAME/$localRobotRole,Group") 
-            - '$Group.add("WinNT://$Env:COMPUTERNAME/$UserName") '
-            - !Sub 
-              - '$newMachineName = "${LocalVMName}"'
-              - LocalVMName: !Ref LocalVMName
-            - 'Rename-Computer -NewName $newMachineName -Force '
-            - '$temp = "C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts" '
-            - >-
-              $link =
-              "https://raw.githubusercontent.com/UiPath/Infrastructure/master/Setup/Install-UiRobot.ps1" 
-            - '$file = "Install-UiRobot.ps1"  '
-            - 'Set-Location -Path $temp  '
-            - 'Set-ExecutionPolicy Unrestricted -force '
-            - 'Invoke-WebRequest -Uri $link -OutFile $file '
-            - !Join 
-              - ' '
-              - - powershell.exe -ExecutionPolicy Bypass
-                - >-
-                  -File
-                  "C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\Install-UiRobot.ps1"
-                - !Sub 
-                  - '-orchestratorUrl "${OrchestratorURL}"'
-                  - OrchestratorURL: !Ref OrchestratorURL
-                - !Sub 
-                  - '-Tennant "${OrchestratorTenant}"'
-                  - OrchestratorTenant: !Ref OrchestratorTenant
-                - !Sub 
-                  - '-orchAdmin "${OrchestratorAPIUser}"'
-                  - OrchestratorAPIUser: !Ref OrchestratorAPIUser
-                - !Sub 
-                  - '-orchPassword "${OrchestratorAPIPassword}"'
-                  - OrchestratorAPIPassword: !Ref OrchestratorAPIPassword
-                - !Sub 
-                  - '-adminUsername "${UiRobotName}"'
-                  - UiRobotName: !Ref UiRobotName
-                - !Sub 
-                  - '-machinePassword "${UiRobotPassword}"'
-                  - UiRobotPassword: !Ref UiRobotPassword
-                - !Sub 
-                  - '-RobotType "${UiRobotType}"'
-                  - UiRobotType: !Ref UiRobotType
-                - !Sub 
-                  - '-machineName "${LocalVMName}"'
-                  - LocalVMName: !Ref LocalVMName
-                - '-HostingType "Standard"'
-            - shutdown /r /f /t 5 /c "forced reboot"
-            - </powershell>
-      Tags:
-        - Key: Name
-          Value: !Join 
-            - '-'
-            - - !Ref 'AWS::StackName'
-              - UiPathRobot
-              - !Ref LocalVMName
+      SubnetId: !Ref PrivateSubnetID
+      UserData: !Base64
+        Fn::Sub: |
+          <script>
+          cfn-init.exe -v -c config -s ${AWS::StackId} -r UiPathRobot --region ${AWS::Region}
+          cfn-signal.exe -e %errorlevel% --stack ${AWS::StackId} --resource UiPathRobot --region ${AWS::Region}
+          </script>
+    CreationPolicy:
+      ResourceSignal:
+        Count: 1
+        Timeout: PT1H
   BastionHost:
     Type: 'AWS::EC2::Instance'
-    Condition: BastionCondition
     Properties:
       ImageId: !Ref HostInstanceAMI
       InstanceType: !Ref InstanceType
@@ -198,28 +247,7 @@ Resources:
           DeviceIndex: '0'
           GroupSet:
             - !Ref GatewaySecurityGroup
-          SubnetId: !Select 
-            - '0'
-            - !Split 
-              - ','
-              - !Ref PublicSubnetIDs
-      UserData: !Base64 
-        'Fn::Join':
-          - |+
-
-          - - <script>
-            - '    winrm quickconfig -q & winrm set winrm/config/winrs @{MaxMemoryPerShellMB="300"} & winrm set winrm/config @{MaxTimeoutms="1800000"} & winrm set winrm/config/service @{AllowUnencrypted="true"} & winrm set winrm/config/service/auth @{Basic="true"} & winrm/config @{MaxEnvelopeSizekb="8000kb"}'
-            - </script>
-            - <powershell>
-            - >-
-              netsh advfirewall firewall add rule name="WinRM in" protocol=TCP
-              dir=in profile=any localport=5985 remoteip=any localip=any
-              action=allow
-            - '$admin = [ADSI]("WinNT://./administrator, user")'
-            - !Sub 
-              - '$admin.SetPassword("${AdminPassword}")'
-              - AdminPassword: !Ref AdminPassword
-            - </powershell>
+          SubnetId: !Ref PublicSubnetID
       Tags:
         - Key: Name
           Value: !Join 
@@ -227,22 +255,11 @@ Resources:
             - - !Ref 'AWS::StackName'
               - BastionHost
 Outputs:
-  BastionHostID:
-    Value: !Ref BastionHost
-    Description: ID of BastionHost VM in Public Subnet 1
-    Condition: BastionCondition
-  BastionHostPrivateIP:
-    Value: !GetAtt 
-      - BastionHost
-      - PrivateIp
-    Description: Private IP of BastionHost in Public Subnet 1
-    Condition: BastionCondition
   BastionHostPublicIP:
     Value: !GetAtt 
       - BastionHost
       - PublicIp
     Description: Private IP of BastionHost in Public Subnet 1
-    Condition: BastionCondition
   UiPathRobotPrivateIP:
     Value: !GetAtt 
       - UiPathRobot

@@ -3,3 +3,8 @@ taskcat_outputs/
 .DS_Store
 ci/
 functions/
+.idea/
+*.pem
+.vscode/
+dev-docs/input-parameters.json
+
