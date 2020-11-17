@@ -29,25 +29,26 @@ Metadata:
       - Label:
           default: Storage Gateway Configuration
         Parameters:
-          - StorageBucket
           - GatewayName
           - GatewayTimezone
       - Label:
-          default: Domain Configuration
+          default: DNS or SSL Configuration
         Parameters:
-          - Domain
-          - SubDomain
+          - UiPathFQDN
+          - HostedZoneID
       - Label:
           default: High Availability Configuration
         Parameters:
           - HAAUser
           - HAAPassword
+          - HAPort
           - HAALicense
       - Label:
           default: RDS Database Configuration
         Parameters:
           - RDSDBName
           - RDSAllocatedStorage
+          - RDSMaxAllocatedStorage
           - RDSUsername
           - RDSPassword
       - Label:
@@ -56,9 +57,7 @@ Metadata:
           - OrchestratorVersion
           - OrchestratorInstanceCount
           - OrchestratorLicense
-          - OrchestratorPassPhrase
           - OrchestratorPassword
-          - AdminPassword
       - Label:
           default: Quickstart Bucket configuration
         Parameters:
@@ -87,24 +86,26 @@ Metadata:
         default: Instance Key pair
       InstanceType:
         default: Instance type
-      StorageBucket:
-        default: Bucket to create for file storage
       GatewayName:
-        deafult: Storage Gateway
-      Domain:
-        deafult: Hosting FQDN
-      SubDomain:
-        deafult: App Subdomain
+        default: Storage Gateway
+      UiPathFQDN:
+        default: Hosting FQDN
+      HostedZoneID:
+        default: Route 53 Hosted Zone Id
       HAAUser:
         default: HA Addon Username
       HAAPassword:
         default: HA Addon Password
+      HAPort:
+        default: HA Addon Port
       HAALicense:
         default: HA Addon License Key
       RDSDBName:
         default: RDS Database Name
       RDSAllocatedStorage:
         default: RDS Allocated Storage
+      RDSMaxAllocatedStorage:
+        default: Maximum allocated storage
       RDSUsername:
         default: DB Username
       RDSPassword:
@@ -115,12 +116,8 @@ Metadata:
         default: Orchestrator Instance Count
       OrchestratorLicense:
         default: Orchestrator License Key
-      OrchestratorPassPhrase:
-        default: Orchestrator Pass Phrase
       OrchestratorPassword:
         default: Orchestrator Password
-      AdminPassword:
-        default: Admin Password
       QSS3BucketName:
         default: Template hosting Bucket
       QSS3KeyPrefix:
@@ -200,39 +197,26 @@ Parameters:
     Type: 'AWS::EC2::KeyPair::KeyName'
   InstanceType:
     AllowedValues:
-      - t2.micro
-      - t2.small
-      - t2.medium
-      - t2.large
-      - m4.large
+      - a1.xlarge
+      - a1.2xlarge
+      - a1.4xlarge
+      - t2.xlarge
       - m4.xlarge
       - m4.2xlarge
       - m4.4xlarge
       - m4.10xlarge
-      - c4.large
       - c4.xlarge
       - c4.2xlarge
       - c4.4xlarge
       - c4.8xlarge
-      - r4.large
       - r4.xlarge
       - r4.2xlarge
       - r4.4xlarge
       - r4.8xlarge
     ConstraintDescription: 'Class of instance, must be a valid EC2 instance type from the list.'
-    Default: t2.medium
+    Default: m4.xlarge
     Description: EC2 instance type
     Type: String
-  StorageBucket:
-    Type: String
-    Description: >-
-      S3 Bucket name storing UIPath files from Storage Gateway, should be a
-      Valid S3 Bucket Name.
-    AllowedPattern: >-
-      ^([a-z]|(\d(?!\d{0,2}\.\d{1,3}\.\d{1,3}\.\d{1,3})))([a-z\d]|(\.(?!(\.|-)))|(-(?!\.))){1,61}[a-z\d\.]$
-    ConstraintDescription: >-
-      Bucket to be used to store files for syncing with gateway, should be a
-      Valid S3 Bucket Name
   GatewayName:
     Description: Name of S3 File Storage Gateway.
     Type: String
@@ -821,22 +805,14 @@ Parameters:
       - W-SU
       - Zulu
     Default: US/Eastern
-  Domain:
-    Description: >-
-      The domain to use to host the project. This should already exist as a
-      hosted zone in Route 53.
+  UiPathFQDN:
+    Description: The fully qualified domain name where the UiPath Orchestrator should be installed
     Type: String
-    Default: corp.com
-  SubDomain:
-    Description: >-
-      Application subdomain under the parent domain where the delpoyed app would
-      be accessible.
-    Type: String
-    Default: app
-    AllowedPattern: '^[a-z]*$'
-    ConstraintDescription: 'Subdomain cannot be left blank, and must contain only lowercase alphabet.'
+  HostedZoneID:
+    Description: The Route 53 hosted zone Id
+    Type: AWS::Route53::HostedZone::Id
   HAAUser:
-    Description: High Availability Add-on username.
+    Description: High Availability Add-on username. A valid email must be used as username
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
     ConstraintDescription: A valid email must be used as HA username
@@ -851,10 +827,17 @@ Parameters:
     ConstraintDescription: >-
       HA Password must contain at least one uppercase letter and be longer than
       six charaters.
+  HAPort:
+    Description: Port on which High Availability Add-on listens to
+    Type: String
+    Default: 10000
+    AllowedValues:
+      - 10000
   HAALicense:
     Description: >-
-      License key, purchased from UIPath, to be used with optional High
+      License key, purchased from UIPath, to be used with the High
       Availability Add-on.
+    Default: ''
     Type: String
   RDSDBName:
     Description: Name for UIPath Database to be created.
@@ -867,9 +850,15 @@ Parameters:
   RDSAllocatedStorage:
     Description: Storage amount to be allocated to RDS DB Instance.
     Type: String
-    Default: '100'
+    Default: '200'
     AllowedPattern: '^(?:[1-9]\d{0,3}|1[0-5]\d{3}|16[0-2]\d{2}|163[0-7]\d|1638[0-4])$'
     ConstraintDescription: RDS Allocated storage should be less or equal to 16384 GB
+  RDSMaxAllocatedStorage:
+    Description: The upper limit to which Amazon RDS can automatically scale the storage of the DB instance.
+    Type: Number
+    Default: '1000'
+    MaxValue: '16384'
+    ConstraintDescription: RDS Max Allocated storage should be less or equal to RDS Allocated Storage
   RDSUsername:
     Description: Username to be used to log on to Database.
     Type: String
@@ -887,31 +876,20 @@ Parameters:
   OrchestratorVersion:
     Description: UIPath Orchestrator Version to be installed.
     Type: String
-    Default: 19.10.15
-    AllowedPattern: ^(\d+\.)?(\d+\.)*(\d+)+$
+    Default: 20.10.2
+    AllowedValues:
+      - 20.10.2
     ConstraintDescription: 'Orchestrator version number can contain only digits and dot(.), and must .'
   OrchestratorInstanceCount:
     Description: Desired Capacity (instance count) for Orchestrator instances.
     Type: String
-    Default: '1'
+    Default: '2'
     AllowedPattern: '^(?:[1-9]|0[1-9]|1[0-9]|20)$'
     ConstraintDescription: Orchestrator Instances can be between 1 to 20.
   OrchestratorLicense:
-    Description: 'License key, purchased from UIPath, to be used with Orchestrator.'
+    Description: 'License key, purchased from UiPath, or trial key. If not provided, Orchestrator will be unlicensed'
+    Default: ''
     Type: String
-  OrchestratorPassPhrase:
-    Description: >-
-      Orchestrator Passphrase in order to generate NuGet API keys, App
-      encryption key and machine keys.
-    Type: String
-    NoEcho: 'true'
-    MinLength: '6'
-    MaxLength: '124'
-    AllowedPattern: >-
-      (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
-    ConstraintDescription: >-
-      Orchestrator Passphrase must contain at least one uppercase letter and be
-      longer than six charaters.
   OrchestratorPassword:
     Description: Orchestrator Administrator password to login as.
     Type: String
@@ -922,18 +900,7 @@ Parameters:
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
       Orchestrator Password must contain at least one uppercase letter and be
-      longer than six charaters.
-  AdminPassword:
-    Description: Windows Administrator password to login as.
-    Type: String
-    NoEcho: 'true'
-    MinLength: '6'
-    MaxLength: '124'
-    AllowedPattern: >-
-      (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
-    ConstraintDescription: >-
-      Windows Administrator Password must contain at least one uppercase letter
-      and be longer than six charaters.
+      longer than six characters.
   QSS3BucketName:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: >-
@@ -959,35 +926,29 @@ Parameters:
     Description: S3 key prefix under which Quick Start templates are hosted.
     Type: String
 Conditions:
-  2AZCondition: !Or 
-    - !Equals 
-      - !Ref NumberOfAZs
-      - '2'
-    - !Condition 3AZCondition
-  3AZCondition: !Equals 
-    - !Ref NumberOfAZs
-    - '3'
-  UsingDefaultBucket: !Equals 
+  UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
     - aws-quickstart
+  3AZCondition: !Equals
+    - !Ref NumberOfAZs
+    - '3'
 Resources:
   NetworkStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        AvailabilityZones: !Join 
+        AvailabilityZones: !Join
           - ','
           - !Ref AvailabilityZones
         NumberOfAZs: !Ref NumberOfAZs
@@ -1001,38 +962,48 @@ Resources:
         PrivateSubnetATag1: !Ref PrivateSubnetTag1
         PrivateSubnetBTag1: !Ref PrivateSubnetTag2
         PrivateSubnetBTag2: !Ref PrivateSubnetTag3
-  SecurityStack:
-    Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
+  FindAmiLambdaRole:
+    Type: 'AWS::IAM::Role'
     Properties:
-      TemplateURL: !Sub 
-        - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/security.template.yaml
-        - S3Bucket: !If 
-            - UsingDefaultBucket
-            - !Sub '${QSS3BucketName}-${AWS::Region}'
-            - !Ref QSS3BucketName
-          S3Region: !If 
-            - UsingDefaultBucket
-            - !Ref 'AWS::Region'
-            - !Ref QSS3BucketRegion
-      Parameters:
-        VPCID: !GetAtt 
-          - NetworkStack
-          - Outputs.VPCID
-        VPCCIDR: !Ref VPCCIDR
-        StorageBucket: !Ref StorageBucket
+      Description: >-
+        IAM Role to be assumed by Lambda functions which find AMI ids
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ec2:DescribeImages'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: Allow
+                Action:
+                  - 'xray:PutTraceSegments'
+                Resource: '*'
   FindAMIFunction:
     Type: 'AWS::Lambda::Function'
-    Condition: 2AZCondition
     Properties:
       Description: Finds a matching AMI Id
       Handler: index.handler
-      Role: !GetAtt 
-        - SecurityStack
-        - Outputs.CustomLambdaRoleArn
+      Role: !GetAtt FindAmiLambdaRole.Arn
       Code:
-        ZipFile: !Join 
+        ZipFile: !Join
           - |+
 
           - - import boto3
@@ -1099,583 +1070,210 @@ Resources:
         Mode: Active
   StorageStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/storage.template.yaml
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        StorageBucketARN: !GetAtt 
-          - SecurityStack
-          - Outputs.StorageBucketARN
-        SubnetIDs: !Join 
-          - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PublicSubnet1ID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet2ID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet3ID
-              - '-'
-        GatewaySecurityGroup: !GetAtt 
-          - SecurityStack
-          - Outputs.SecurityGroup
-        FileShareIAMRole: !GetAtt 
-          - SecurityStack
-          - Outputs.FileShareIAMRole
+        SubnetId: !GetAtt NetworkStack.Outputs.PrivateSubnet1AID
         KeyPairName: !Ref KeyPairName
         GatewayName: !Ref GatewayName
         GatewayTimezone: !Ref GatewayTimezone
-        CustomLambdaRoleArn: !GetAtt 
-          - SecurityStack
-          - Outputs.CustomLambdaRoleArn
+        VPCID: !GetAtt NetworkStack.Outputs.VPCID
+        VPCCIDR: !Ref VPCCIDR
   RoutingStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/routing.template.yaml
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        VPCID: !GetAtt 
+        VPCID: !GetAtt
           - NetworkStack
           - Outputs.VPCID
-        GatewaySecurityGroup: !GetAtt 
-          - SecurityStack
-          - Outputs.SecurityGroup
-        SubnetIDs: !Join 
+        VPCCIDR: !Ref VPCCIDR
+        SubnetIDs: !Join
           - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PublicSubnet1ID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet2ID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet3ID
-              - '-'
-        Domain: !Ref Domain
-        SubDomain: !Ref SubDomain
-        CustomLambdaRoleArn: !GetAtt 
-          - SecurityStack
-          - Outputs.CustomLambdaRoleArn
+          - - !GetAtt NetworkStack.Outputs.PublicSubnet1ID
+            - !GetAtt NetworkStack.Outputs.PublicSubnet2ID
+            - !If [3AZCondition, !GetAtt NetworkStack.Outputs.PublicSubnet3ID, !Ref "AWS::NoValue"]
+        Fqdn: !Ref UiPathFQDN
+        HostedZoneID: !Ref HostedZoneID
+        SSLCertificateArn: !GetAtt ConfigureSSLStack.Outputs.ACMCertificate
   HAStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/ha.template.yaml
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        SubnetIDs: !Join 
+        VPCID: !GetAtt NetworkStack.Outputs.VPCID
+        VPCCIDR: !Ref VPCCIDR
+        SubnetIDs: !Join
           - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PrivateSubnet1AID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet2BID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet3CID
-              - '-'
-        GatewaySecurityGroup: !GetAtt 
-          - SecurityStack
-          - Outputs.SecurityGroup
+          - - !GetAtt NetworkStack.Outputs.PrivateSubnet1AID
+            - !GetAtt NetworkStack.Outputs.PrivateSubnet2BID
+            - !If [3AZCondition, !GetAtt NetworkStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue"]
         KeyPairName: !Ref KeyPairName
         HAAUser: !Ref HAAUser
         HAAPassword: !Ref HAAPassword
         HAALicense: !Ref HAALicense
-        FindAMIFunctionArn: !GetAtt 
+        FindAMIFunctionArn: !GetAtt
           - FindAMIFunction
           - Arn
   DatabaseStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/database.template.yaml
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        SubnetIDs: !Join 
+        VPCID: !GetAtt NetworkStack.Outputs.VPCID
+        VPCCIDR: !Ref VPCCIDR
+        SubnetIDs: !Join
           - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PrivateSubnet1AID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet2BID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet3CID
-              - '-'
-        GatewaySecurityGroup: !GetAtt 
-          - SecurityStack
-          - Outputs.SecurityGroup
+          - - !GetAtt NetworkStack.Outputs.PrivateSubnet1AID
+            - !GetAtt NetworkStack.Outputs.PrivateSubnet2BID
+            - !If [3AZCondition, !GetAtt NetworkStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue"]
         RDSDBName: !Ref RDSDBName
         RDSAllocatedStorage: !Ref RDSAllocatedStorage
+        RDSMaxAllocatedStorage: !Ref RDSMaxAllocatedStorage
         RDSUsername: !Ref RDSUsername
         RDSPassword: !Ref RDSPassword
   ServerStack:
     Type: 'AWS::CloudFormation::Stack'
-    Condition: 2AZCondition
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/orchestrator/server.template.yaml
-        - S3Bucket: !If 
+        - S3Bucket: !If
             - UsingDefaultBucket
             - !Sub '${QSS3BucketName}-${AWS::Region}'
             - !Ref QSS3BucketName
-          S3Region: !If 
+          S3Region: !If
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        PrivateSubnetIDs: !Join 
+        VPCID: !GetAtt NetworkStack.Outputs.VPCID
+        VPCCIDR: !Ref VPCCIDR
+        PrivateSubnetIDs: !Join
           - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PrivateSubnet1AID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet2BID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PrivateSubnet3CID
-              - '-'
-        PublicSubnetIDs: !Join 
+          - - !GetAtt NetworkStack.Outputs.PrivateSubnet1AID
+            - !GetAtt NetworkStack.Outputs.PrivateSubnet2BID
+            - !If [3AZCondition, !GetAtt NetworkStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue"]
+        PublicSubnetIDs: !Join
           - ','
-          - - !GetAtt 
-              - NetworkStack
-              - Outputs.PublicSubnet1ID
-            - !If 
-              - 2AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet2ID
-              - '-'
-            - !If 
-              - 3AZCondition
-              - !GetAtt 
-                - NetworkStack
-                - Outputs.PublicSubnet3ID
-              - '-'
-        TargetGroupARN: !GetAtt 
+          - - !GetAtt NetworkStack.Outputs.PublicSubnet1ID
+            - !GetAtt NetworkStack.Outputs.PublicSubnet2ID
+            - !If [3AZCondition, !GetAtt NetworkStack.Outputs.PublicSubnet3ID, !Ref "AWS::NoValue"]
+        TargetGroupARN: !GetAtt
           - RoutingStack
           - Outputs.TargetGroupARN
-        GatewaySecurityGroup: !GetAtt 
-          - SecurityStack
-          - Outputs.SecurityGroup
         KeyPairName: !Ref KeyPairName
         InstanceType: !Ref InstanceType
-        FindAMIFunctionArn: !GetAtt 
+        FindAMIFunctionArn: !GetAtt
           - FindAMIFunction
           - Arn
         OrchestratorVersion: !Ref OrchestratorVersion
         OrchestratorInstanceCount: !Ref OrchestratorInstanceCount
         OrchestratorLicense: !Ref OrchestratorLicense
-        OrchestratorPassPhrase: !Ref OrchestratorPassPhrase
         OrchestratorPassword: !Ref OrchestratorPassword
-        AdminPassword: !Ref AdminPassword
-        DatabaseServerName: !GetAtt 
+        DatabaseServerName: !GetAtt
           - DatabaseStack
           - Outputs.RDSDBInstanceEndpointAddress
         DatabaseName: !Ref RDSDBName
         DatabaseUsername: !Ref RDSUsername
         DatabasePassword: !Ref RDSPassword
-        StorageBucket: !Ref StorageBucket
-        GatewayPrivateIP: !GetAtt 
+        NugetStorageBucketName: !GetAtt
+          - StorageStack
+          - Outputs.NugetStorageBucketName
+        NugetStorageBucketArn: !GetAtt
+          - StorageStack
+          - Outputs.NugetStorageBucketArn
+        GatewayPrivateIP: !GetAtt
           - StorageStack
           - Outputs.GatewayVMPrivateIP1
-        HAMasterPrivateIP: !GetAtt 
+        HAMasterPrivateIP: !GetAtt
           - HAStack
           - Outputs.HAMasterPrivateIP
-        HASlavePrivateIP: !GetAtt 
+        HASlave1PrivateIP: !GetAtt
           - HAStack
           - Outputs.HASlave1PrivateIP
+        HASlave2PrivateIP: !GetAtt
+          - HAStack
+          - Outputs.HASlave2PrivateIP
+        HAPort: !Ref HAPort
         HAAPassword: !Ref HAAPassword
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        Fqdn: !Ref UiPathFQDN
+  ConfigureSSLStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-acm-certificate/templates/quickstart-aws-acm-certificate.template.yml"
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3KeyPrefix: !Sub "${QSS3KeyPrefix}submodules/quickstart-aws-acm-certificate/"
+        DomainName: !Ref UiPathFQDN
+        HostedZoneID: !Ref HostedZoneID
+
 Outputs:
-  VPCID:
-    Description: VPC ID
-    Value: !GetAtt 
-      - NetworkStack
-      - Outputs.VPCID
-    Export:
-      Name: !Sub '${AWS::StackName}-VPCID'
-  VPCCIDR:
-    Description: VPC CIDR
-    Value: !GetAtt 
-      - NetworkStack
-      - Outputs.VPCCIDR
-    Export:
-      Name: !Sub '${AWS::StackName}-VPCCIDR'
-  PrivateSubnetIDs:
-    Description: Private Subnet IDs
-    Value: !Join 
-      - ','
-      - - !GetAtt 
-          - NetworkStack
-          - Outputs.PrivateSubnet1AID
-        - !If 
-          - 2AZCondition
-          - !GetAtt 
-            - NetworkStack
-            - Outputs.PrivateSubnet2BID
-          - '-'
-        - !If 
-          - 3AZCondition
-          - !GetAtt 
-            - NetworkStack
-            - Outputs.PrivateSubnet3CID
-          - '-'
-    Export:
-      Name: !Sub '${AWS::StackName}-PrivateSubnetIDs'
-  PublicSubnetIDs:
-    Description: Public Subnet IDs
-    Value: !Join 
-      - ','
-      - - !GetAtt 
-          - NetworkStack
-          - Outputs.PublicSubnet1ID
-        - !If 
-          - 2AZCondition
-          - !GetAtt 
-            - NetworkStack
-            - Outputs.PublicSubnet2ID
-          - '-'
-        - !If 
-          - 3AZCondition
-          - !GetAtt 
-            - NetworkStack
-            - Outputs.PublicSubnet3ID
-          - '-'
-    Export:
-      Name: !Sub '${AWS::StackName}-PublicSubnetIDs'
-  S3VPCEndpoint:
-    Description: S3 VPC Endpoint
-    Value: !GetAtt 
-      - NetworkStack
-      - Outputs.S3VPCEndpoint
-    Export:
-      Name: !Sub '${AWS::StackName}-S3VPCEndpoint'
-  StorageBucketARN:
-    Description: Storage Bucket ARN
-    Value: !GetAtt 
-      - SecurityStack
-      - Outputs.StorageBucketARN
-    Export:
-      Name: !Sub '${AWS::StackName}-StorageBucketARN'
-  SecurityGroup:
-    Description: Security Group allowing access to WindowsRM from anywhere
-    Value: !GetAtt 
-      - SecurityStack
-      - Outputs.SecurityGroup
-    Export:
-      Name: !Sub '${AWS::StackName}-SecurityGroup'
-  FileShareIAMRole:
-    Description: IAM Role providing S3 Access to Storage Gateway
-    Value: !GetAtt 
-      - SecurityStack
-      - Outputs.FileShareIAMRole
-    Export:
-      Name: !Sub '${AWS::StackName}-FileShareIAMRole'
-  FileShareIAMPolicy:
-    Description: Storage Gateway IAM Policy
-    Value: !GetAtt 
-      - SecurityStack
-      - Outputs.FileShareIAMPolicy
-    Export:
-      Name: !Sub '${AWS::StackName}-FileShareIAMPolicy'
-  GatewayVMID1:
-    Description: ID of Gateway VM in Public Subnet 1
-    Value: !GetAtt 
-      - StorageStack
-      - Outputs.GatewayVMID1
-    Export:
-      Name: !Sub '${AWS::StackName}-GatewayVMID1'
-  GatewayVMPublicIP1:
-    Description: Public IP of Gateway VM in Public Subnet 1
-    Value: !GetAtt 
-      - StorageStack
-      - Outputs.GatewayVMPublicIP1
-    Export:
-      Name: !Sub '${AWS::StackName}-GatewayVMPublicIP1'
-  GatewayVMPrivateIP1:
-    Description: Private IP of Gateway VM in Public Subnet 1
-    Value: !GetAtt 
-      - StorageStack
-      - Outputs.GatewayVMPrivateIP1
-    Export:
-      Name: !Sub '${AWS::StackName}-GatewayVMPrivateIP1'
-  GatewayARN1:
-    Description: ARN of Storage Gateway in Public Subnet 1
-    Value: !GetAtt 
-      - StorageStack
-      - Outputs.GatewayARN1
-    Export:
-      Name: !Sub '${AWS::StackName}-GatewayARN1'
-  FileShareARN1:
-    Description: ARN of S3 File Share in Public Subnet 1
-    Value: !GetAtt 
-      - StorageStack
-      - Outputs.GatewayARN1
-    Export:
-      Name: !Sub '${AWS::StackName}-FileShareARN1'
   ApplicationLoadBalancer:
     Description: Application Load Balancer Name
-    Value: !GetAtt 
+    Value: !GetAtt
       - RoutingStack
       - Outputs.ApplicationLoadBalancer
     Export:
       Name: !Sub '${AWS::StackName}-ApplicationLoadBalancer'
-  TargetGroupName:
-    Description: Target Group Name
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.TargetGroupName
-    Export:
-      Name: !Sub '${AWS::StackName}-TargetGroupName'
-  TargetGroupARN:
-    Description: Target Group ARN
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.TargetGroupARN
-    Export:
-      Name: !Sub '${AWS::StackName}-TargetGroupARN'
-  AWSCertificate:
-    Description: AWS Certificate Manager Certificate Resource
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.AWSCertificate
-    Export:
-      Name: !Sub '${AWS::StackName}-AWSCertificate'
-  HttpListener:
-    Description: HTTP Listener ARN
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.HttpListener
-    Export:
-      Name: !Sub '${AWS::StackName}-HttpListener'
-  HttpsListener:
-    Description: HTTPS Listener ARN
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.HttpsListener
-    Export:
-      Name: !Sub '${AWS::StackName}-HttpsListener'
-  RecordSet:
-    Description: Route53 A Record
-    Value: !GetAtt 
-      - RoutingStack
-      - Outputs.RecordSet
-    Export:
-      Name: !Sub '${AWS::StackName}-RecordSet'
-  HAMasterID:
-    Description: ID of HA Master VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HAMasterID
-    Export:
-      Name: !Sub '${AWS::StackName}-HAMasterID'
-  HAMasterPrivateIP:
-    Description: Private IP of HA Master VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HAMasterPrivateIP
-    Export:
-      Name: !Sub '${AWS::StackName}-HAMasterPrivateIP'
-  HASlave1ID:
-    Description: ID of HA Slave 1 VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HASlave1ID
-    Export:
-      Name: !Sub '${AWS::StackName}-HASlave1ID'
-  HASlave1PrivateIP:
-    Description: Private IP of HA Slave 1 VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HASlave1PrivateIP
-    Export:
-      Name: !Sub '${AWS::StackName}-HASlave1PrivateIP'
-  HASlave2ID:
-    Description: ID of HA Slave 2 VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HASlave2ID
-    Export:
-      Name: !Sub '${AWS::StackName}-HASlave2ID'
-  HASlave2PrivateIP:
-    Description: Private IP of HA Slave 2 VM in Private Subnet 1
-    Value: !GetAtt 
-      - HAStack
-      - Outputs.HASlave2PrivateIP
-    Export:
-      Name: !Sub '${AWS::StackName}-HASlave2PrivateIP'
-  DBSubnetGroup:
-    Description: RDS-MSSQL private subnet group
-    Value: !GetAtt 
-      - DatabaseStack
-      - Outputs.DBSubnetGroup
-    Export:
-      Name: !Sub '${AWS::StackName}-DBSubnetGroup'
-  RDSDBInstanceID:
-    Description: RDS-MSSQL Database Instance ID
-    Value: !GetAtt 
-      - DatabaseStack
-      - Outputs.RDSDBInstanceID
-    Export:
-      Name: !Sub '${AWS::StackName}-RDSDBInstanceID'
   RDSDBInstanceEndpointAddress:
     Description: RDS-MSSQL Database Instance Endpoint Address
-    Value: !GetAtt 
+    Value: !GetAtt
       - DatabaseStack
       - Outputs.RDSDBInstanceEndpointAddress
     Export:
       Name: !Sub '${AWS::StackName}-RDSDBInstanceEndpointAddress'
   RDSDBInstanceEndpointPort:
     Description: RDS-MSSQL Database Instance Endpoint Port
-    Value: !GetAtt 
+    Value: !GetAtt
       - DatabaseStack
       - Outputs.RDSDBInstanceEndpointPort
     Export:
       Name: !Sub '${AWS::StackName}-RDSDBInstanceEndpointPort'
-  LaunchTemplate:
-    Description: Launch configuration template
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.LaunchTemplate
-    Export:
-      Name: !Sub '${AWS::StackName}-LaunchTemplate'
-  AutoScalingGroup:
-    Description: Auto sclaing group
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.AutoScalingGroup
-    Export:
-      Name: !Sub '${AWS::StackName}-AutoScalingGroup'
-  ScaleUpAutoScalingPolicy:
-    Description: Auto scaling policy to scale up resources
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.ScaleUpAutoScalingPolicy
-    Export:
-      Name: !Sub '${AWS::StackName}-ScaleUpAutoScalingPolicy'
-  ScaleDownAutoScalingPolicy:
-    Description: Auto scaling policy to scale down resources
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.ScaleDownAutoScalingPolicy
-    Export:
-      Name: !Sub '${AWS::StackName}-ScaleDownAutoScalingPolicy'
-  HighMemoryAlarm:
-    Description: High memory usage alarm
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.HighMemoryAlarm
-    Export:
-      Name: !Sub '${AWS::StackName}-HighMemoryAlarm'
-  LowMemoryAlarm:
-    Description: Low memory usage alarm
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.LowMemoryAlarm
-    Export:
-      Name: !Sub '${AWS::StackName}-LowMemoryAlarm'
-  HighCPUAlarm:
-    Description: High cpu usage alarm
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.HighCPUAlarm
-    Export:
-      Name: !Sub '${AWS::StackName}-HighCPUAlarm'
-  LowCPUAlarm:
-    Description: Low cpu usage alarm
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.LowCPUAlarm
-    Export:
-      Name: !Sub '${AWS::StackName}-LowCPUAlarm'
-  BastionHostID:
-    Description: ID of BastionHost VM in Public Subnet 1
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.BastionHostID
-    Export:
-      Name: !Sub '${AWS::StackName}-BastionHostID'
-  BastionHostPrivateIP:
-    Description: Private IP of BastionHost in Public Subnet 1
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.BastionHostPrivateIP
-    Export:
-      Name: !Sub '${AWS::StackName}-BastionHostPrivateIP'
-  BastionHostPublicIP:
-    Description: Private IP of BastionHost in Public Subnet 1
-    Value: !GetAtt 
-      - ServerStack
-      - Outputs.BastionHostPublicIP
-    Export:
-      Name: !Sub '${AWS::StackName}-BastionHostPublicIP'
