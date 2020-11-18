@@ -40,41 +40,41 @@ tests:
       AvailabilityZones: "$[taskcat_getaz_2]"
       UiPathFQDN: test.shivansh.dev #testone.uipathmarketplace.net
 
-  three-az-orchestrator:
-    template: ./templates/orchestrator/master.template.yaml
-    regions:
-    - us-east-1
-    parameters:
-      AvailabilityZones: "$[taskcat_getaz_3]"
-      UiPathFQDN: testtwo.uipathmarketplace.net
+  # three-az-orchestrator:
+  #   template: ./templates/orchestrator/master.template.yaml
+  #   regions:
+  #   - us-east-1
+  #   parameters:
+  #     AvailabilityZones: "$[taskcat_getaz_3]"
+  #     UiPathFQDN: testtwo.uipathmarketplace.net
 
-  robotsimple:
-    template: ./templates/robot/master.template.yaml
-    regions:
-    - us-west-2
-    parameters:
-      AvailabilityZones: "$[taskcat_getaz_2]"
-      AdminPassword: "$[taskcat_genpass_8]"
-      RobotRole: localadmin
-      OrchestratorURL: ""
-      OrchestratorAPIUser: ""
-      OrchestratorAPIPassword: ""
-      OrchestratorTenant: ""
+  # robotsimple:
+  #   template: ./templates/robot/master.template.yaml
+  #   regions:
+  #   - us-west-2
+  #   parameters:
+  #     AvailabilityZones: "$[taskcat_getaz_2]"
+  #     AdminPassword: "$[taskcat_genpass_8]"
+  #     RobotRole: localadmin
+  #     OrchestratorURL: ""
+  #     OrchestratorAPIUser: ""
+  #     OrchestratorAPIPassword: ""
+  #     OrchestratorTenant: ""
 
-  add-license-orchestrator:
-    template: ./templates/orchestrator/master.template.yaml
-    regions:
-    - us-west-1
-    parameters:
-      AvailabilityZones: "$[taskcat_getaz_2]"
-      UiPathFQDN: testthree.uipathmarketplace.net
-      OrchestratorLicense: "orchlicense"
+  # add-license-orchestrator:
+  #   template: ./templates/orchestrator/master.template.yaml
+  #   regions:
+  #   - us-west-1
+  #   parameters:
+  #     AvailabilityZones: "$[taskcat_getaz_2]"
+  #     UiPathFQDN: testthree.uipathmarketplace.net
+  #     OrchestratorLicense: "orchlicense"
 
-  europe-orchestrator:
-    template: ./templates/orchestrator/master.template.yaml
-    regions:
-    - eu-west-1
-    parameters:
-      AvailabilityZones: "$[taskcat_getaz_2]"
-      UiPathFQDN: testfour.uipathmarketplace.net
-      OrchestratorInstanceCount: "3"
+  # europe-orchestrator:
+  #   template: ./templates/orchestrator/master.template.yaml
+  #   regions:
+  #   - eu-west-1
+  #   parameters:
+  #     AvailabilityZones: "$[taskcat_getaz_2]"
+  #     UiPathFQDN: testfour.uipathmarketplace.net
+  #     OrchestratorInstanceCount: "3"
