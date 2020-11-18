@@ -10,7 +10,9 @@ project:
     RDSPassword: "$[taskcat_genpass_8]"
     RDSDBName: "$[taskcat_random-string]"
     GatewayName: "$[taskcat_random-string]"
-    HAAUser: admin@uipathmarketplace.net
+    HAAUser: admin@shivansh.dev
+    HostedZoneID: Z03411186LX2V3ZE3N4K
+    KeyPairName: sshvans
   regions:
   - ap-northeast-1
   - ap-northeast-2
@@ -28,7 +30,7 @@ project:
   - us-west-1
   - us-west-2
   shorten_stack_name: true
-  package_lambda: false
+  s3_regional_buckets: true
 tests:
   default-orchestrator:
     template: ./templates/orchestrator/master.template.yaml
@@ -36,7 +38,7 @@ tests:
     - us-east-2
     parameters:
       AvailabilityZones: "$[taskcat_getaz_2]"
-      UiPathFQDN: testone.uipathmarketplace.net
+      UiPathFQDN: test.shivansh.dev #testone.uipathmarketplace.net
 
   three-az-orchestrator:
     template: ./templates/orchestrator/master.template.yaml
