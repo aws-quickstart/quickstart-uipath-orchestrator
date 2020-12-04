@@ -6,5 +6,5 @@ functions/
 .idea/
 *.pem
 .vscode/
-dev-docs/input-parameters.json
+docs/input-parameters.json
 

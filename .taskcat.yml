@@ -31,6 +31,7 @@ project:
   - us-west-2
   shorten_stack_name: true
   s3_regional_buckets: true
+  package_lambda: false
 tests:
   default-orchestrator:
     template: ./templates/orchestrator/master.template.yaml
