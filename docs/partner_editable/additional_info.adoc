@@ -1,5 +1,81 @@
+
+:xrefstyle: short
+[#cfn_outputs2]
+ifndef::partner-product-short-name[.{partner-product-name} outputs after successful deployment]
+ifdef::partner-product-short-name[.{partner-product-short-name} outputs after successful deployment]
+[link=images/cfn_outputs2.png]
+image::../images/cfn_outputs2.png[cfn_outputs,width=100%,height=100%]
+
 // Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
 //Should any sections not be applicable, remove them
+== Create a key pair
+
+Create a key pair in your preferred region. To do this, in the navigation pane of the Amazon EC2 console, choose Key Pairs, Create Key Pair, type a name, and then choose Create.
+Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, we use the key pair to obtain the administrator password via the Amazon EC2 console and then log in using Remote Desktop Protocol (RDP) as explained in the step-by-step instructions in the Amazon Elastic Compute Cloud User Guide. On Linux, we use the key pair to authenticate SSH login.
+
+:xrefstyle: short
+[#create_key_pair]
+.Create key pair
+image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
+
+== Create IAM User
+To launch the Cloudformation stack for this quickstart, you’ll need to use a user login that has programmatic access to following AWS services:
+
+["lowerroman"]
+. AWS CloudFormation
+. AWS IAM, Amazon EC2
+. Amazon S3
+. Amazon RDS
+. Amazon Route53
+. AWS Certificate Manager
+. AWS Elastic Load Balancer
+. AWS Lambda
+. AWS Storage Gateway.
+
+If you do already have an IAM user that has full access to the above services, or have Admin access, you can skip this step.
+
+. If you do not already have such an IAM user, create an IAM user from AWS console. In the example below, a user “cfnuser” is being created allowing programmatic access and console access.
++
+:xrefstyle: short
+[#iam_1]
+.Create IAM User
+image::../images/iam_1.png[IAM,width=100%,height=100%]
+
+[start=2]
+. In order to follow AWS best practices, allow access to the required services. In order to do so, you can choose to attach existing policies. Then type first few letters of each service name and select to choose the FullAccess roles from the filtered list. The example here shows the screen for adding AmazonEC2FullAccess.  
++
+:xrefstyle: short
+[#iam_2]
+.Create IAM User
+image::../images/iam_2.png[IAM,width=100%,height=100%]
++
+Repeat this step for all 10 services listed above.
+
+[start=3]
+. Click on Next: Tags, and optionally add a Name tag to identify the user.  
++
+:xrefstyle: short
+[#iam_3]
+.Create IAM User
+image::../images/iam_3.png[IAM,width=100%,height=100%]
+
+. Click on Next: Review and review to ensure that full access to all 10 listed services have been granted to the user.  
++
+:xrefstyle: short
+[#iam_4]
+.Create IAM User
+image::../images/iam_4.png[IAM,width=100%,height=100%]
+
+. Click on Create User to have the user created, and finally download the credential as CSV and store it in a secure location for future referral, if needed.
++
+:xrefstyle: short
+[#iam_5]
+.Create IAM User
+image::../images/iam_5.png[IAM,width=100%,height=100%]
+
+== Purchase UiPath License
+
+This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by https://www.uipath.com/company/contact-us[contacting UiPath directly].
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
