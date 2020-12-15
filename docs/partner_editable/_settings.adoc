@@ -1,6 +1,6 @@
 // Change the following attributes.
 :quickstart-project-name: quickstart-uipath-orchestrator
-:partner-product-name: UIPath Orchestrator on AWS
+:partner-product-name: UIPath Orchestrator
 // For the following attribute, if you have no short name, enter the same name as partner-product-name.
 :partner-product-short-name: UIPath Orchestrator
 // If there's no partner, comment partner-company-name and partner-contributors.
