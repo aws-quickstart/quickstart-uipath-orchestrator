@@ -1010,6 +1010,7 @@ Resources:
         OrchestratorPassword: !Ref OrchestratorPassword
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        QSS3BucketRegion: !Ref QSS3BucketRegion
 Outputs:
   FQDNLoadBalancer:
     Description: UiPath Orchestrator Login page
