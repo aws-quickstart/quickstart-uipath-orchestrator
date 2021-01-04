@@ -50,8 +50,6 @@ tests:
       UiPathFQDN: testtwo.shivansh.dev #testone.uipathmarketplace.net
       VPCCIDR: 10.0.0.0/16
       VPCID: <<vpc-id>>
-      PublicSubnetID: <<public-subnet-id>>
-      PrivateSubnetID: <<private-subnet-id>>
       PrivateSubnetIDs: <<subnet-id-1,subnet-id-2,subnet-id-3>>
       PublicSubnetIDs: <<subnet-id-1,subnet-id-2,subnet-id-3>>
 
