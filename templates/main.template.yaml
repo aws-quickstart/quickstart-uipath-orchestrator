@@ -150,7 +150,8 @@ Parameters:
       tags must be in format "Key=Value". keys can only contain
       [a-zA-Z0-9+\-._:/@], values can contain [a-zA-Z0-9+\-._:/@ *\\"'\[\]\{\}]
     Default: Network=Private1
-    Description: (Optional) Private subnet 1 tag, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+* *\* *-* *.* *_* *:* */* *@*. Value may contain *A-Z*, *a-z*, *0-9*, and *+* *\* *-* *.* *_* *:* */* *@* *** *\* .
+    Description: >- 
+      (Optional) Private subnet 1 tag, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
