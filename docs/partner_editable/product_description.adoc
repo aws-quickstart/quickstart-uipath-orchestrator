@@ -6,7 +6,7 @@
 
 Orchestrator lets you manage the creation, monitoring, and deployment of RPA resources in your environment, acting as an integration point with third-party solutions and applications.
 
-UiPath Orchestrator’s power comes from its capability of managing your entire Robot fleet. Attended, Unattended or Nonproduction, they can all be connected and executed from this centralized point.
+UiPath Orchestrator can manage your entire Robot fleet. Attended, Unattended or Nonproduction, they can all be connected and executed from this centralized point.
 
 *	*Attended* - This type of Robot is triggered by user events, and operates alongside a human user, sharing the same workstation. Attended Robots are used with Orchestrator for centralized process deployment and logging. They can also add data into a queue, to be processed by Unattended robots.
 *	*Unattended* - Robots run unattended in virtual environments and can automate any number of processes. On top of the Attended Robot capabilities, the Orchestrator is responsible for remote execution, monitoring, scheduling and providing support for work queues.
