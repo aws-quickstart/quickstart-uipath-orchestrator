@@ -30,7 +30,7 @@ Metadata:
           - KeyPairName
           - InstanceType
       - Label:
-          default: Storage gateway configuration
+          default: AWS Storage Gateway configuration
         Parameters:
           - GatewayName
           - GatewayTimezone
@@ -90,7 +90,7 @@ Metadata:
       InstanceType:
         default: Instance type
       GatewayName:
-        default: Storage gateway
+        default: Storage gateway name
       UiPathFQDN:
         default: Hosting FQDN
       HostedZoneID:
@@ -205,7 +205,7 @@ Parameters:
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
     Type: String
   KeyPairName:
-    Description: Existing key pair to log in to a virtual machine (VM) instance.
+    Description: Existing key pair to connect to virtual machine (VM) instances.
     Type: 'AWS::EC2::KeyPair::KeyName'
   InstanceType:
     AllowedValues:
@@ -817,7 +817,7 @@ Parameters:
       - Zulu
     Default: US/Eastern
   UiPathFQDN:
-    Description: The fully qualified domain name (FQDN) where UiPath Orchestrator is installed.
+    Description: Fully qualified domain name (FQDN) where UiPath Orchestrator is installed.
     Type: String
   HostedZoneID:
     Description: Route 53 hosted zone ID.
@@ -836,7 +836,7 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      High Availability add-on password must contain more than six characters and inclujde at least one uppercase letter.
+      High Availability add-on password must contain more than six characters and include at least one uppercase letter.
   HAPort:
     Description: Port for High Availability add-on for UiPath Orchestrator.
     Type: String
@@ -865,7 +865,7 @@ Parameters:
     Type: Number
     Default: '1000'
     MaxValue: '16384'
-    ConstraintDescription: RDS Max Allocated storage should be less or equal to RDS Allocated Storage
+    ConstraintDescription: RDS Max Allocated storage should be less than or equal to RDS Allocated Storage.
   RDSUsername:
     Description: RDS DB username.
     Type: String
@@ -887,7 +887,7 @@ Parameters:
       - 20.10.2
     ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
-    Description: Number of UiPath Orchestrator instances.
+    Description: Number of UiPath Orchestrator instances (1–20).
     Type: String
     Default: '2'
     AllowedPattern: '^(?:[1-9]|0[1-9]|1[0-9]|20)$'
@@ -968,7 +968,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       Description: >-
-        IAM Role to be assumed by Lambda functions which find AMI ids
+        IAM role assumed by Lambda functions to find Amazon Machine Images (AMI) IDs.
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -1001,7 +1001,7 @@ Resources:
   FindAMIFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
-      Description: Finds a matching AMI Id
+      Description: Finds a matching AMI ID.
       Handler: index.handler
       Role: !GetAtt FindAmiLambdaRole.Arn
       Code:
@@ -1259,15 +1259,15 @@ Resources:
 
 Outputs:
   FQDNLoadBalancer:
-    Description: UiPath Orchestrator Login page
+    Description: UiPath Orchestrator login page.
     Value: !Ref UiPathFQDN
   BastionHost:
-    Description: Bastion Host's Public IP address 
+    Description: Bastion host public IP address. 
     Value: !GetAtt
       - ServerStack
       - Outputs.BastionHostPublicIP
   HaaNodesIPs:
-    Description: High Availability Add-on's list of IP addresses 
+    Description: High Availability add-on IP addresses .
     Value: !Join
       - ','
       - - !GetAtt 
@@ -1280,7 +1280,7 @@ Outputs:
           - HAStack
           - Outputs.HASlave2PrivateIP
   NugetStorageS3Bucket:
-    Description: S3 bucket name that contains Orchestrator's Nuget packages
+    Description: Name of S3 bucket with UiPath Orchestrator NuGet packages.
     Value: !GetAtt
       - StorageStack
       - Outputs.NugetStorageBucketName
