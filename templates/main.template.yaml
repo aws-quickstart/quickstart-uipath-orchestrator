@@ -147,53 +147,53 @@ Parameters:
   PrivateSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private1
     Description: >- 
-      (Optional) Tag for private subnet 1, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for private subnet 1, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+       Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private2
     Description: >- 
-      (Optional) Tag for private subnet 2, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for private subnet 2, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+       Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private3
     Description: >- 
-      (Optional) Tag for private subnet 3, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for private subnet 3, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public1
     Description: >- 
-      (Optional) Tag for public subnet 1, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for public subnet 1, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public2
     Description: >- 
-      (Optional) Tag for public subnet 2, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for public subnet 2, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      Tags must be in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public3
     Description: >- 
-      (Optional) Tag for public subnet 3, in format Key=Value. Key may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value may contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+      (Optional) Tag for public subnet 3, in format Key=Value. Key can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value can contain *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   KeyPairName:
-    Description: Existing key pair used to log in to virtual machine (VM) instances.
+    Description: Existing key pair to log in to a virtual machine (VM) instance.
     Type: 'AWS::EC2::KeyPair::KeyName'
   InstanceType:
     AllowedValues:
@@ -213,9 +213,9 @@ Parameters:
       - r4.2xlarge
       - r4.4xlarge
       - r4.8xlarge
-    ConstraintDescription: Class of instance must be a valid EC2 instance type from the list.
+    ConstraintDescription: Only instance types provided in the list are valid.
     Default: m4.xlarge
-    Description: EC2 instance type
+    Description: EC2 instance type.
     Type: String
   GatewayName:
     Description: S3 file storage gateway name.
@@ -223,7 +223,7 @@ Parameters:
     Default: uipathgateway
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      Gateway name should contain alphabetic characters only and cannot be left blank.
+      Gateway name can only contain *a–z* and *A–Z* and cannot be left blank.
   GatewayTimezone:
     Description: File gateway timezone.
     Type: String
@@ -824,7 +824,7 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      Password must contain more than six characters and at least one uppercase letter.
+      High Availability add-on password must contain more than six characters and inclujde at least one uppercase letter.
   HAPort:
     Description: Port for High Availability add-on for UiPath Orchestrator.
     Type: String
@@ -836,19 +836,18 @@ Parameters:
     Default: ''
     Type: String
   RDSDBName:
-    Description: Name for UIPath Database to be created.
+    Description: UIPath database name.
     Type: String
     Default: uipathdb
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      Database name should contain alphabetic characters only, and cannot be
-      left blank.
+      UIPath database name can only contain *a–z* and *A–Z* and cannot be left blank.
   RDSAllocatedStorage:
-    Description: Storage amount to be allocated to RDS DB Instance.
+    Description: RDS DB instance storage amount.
     Type: String
     Default: '200'
     AllowedPattern: '^(?:[1-9]\d{0,3}|1[0-5]\d{3}|16[0-2]\d{2}|163[0-7]\d|1638[0-4])$'
-    ConstraintDescription: RDS Allocated storage should be less or equal to 16384 GB
+    ConstraintDescription: RDS DB instance storage amount should be less or equal to 16,384 GB.
   RDSMaxAllocatedStorage:
     Description: The upper limit to which Amazon RDS can automatically scale the storage of the DB instance.
     Type: Number
@@ -870,24 +869,24 @@ Parameters:
       Database Password must contain at least one letter, at least one number,
       and be longer than eight characters.
   OrchestratorVersion:
-    Description: UIPath Orchestrator Version to be installed.
+    Description: UIPath Orchestrator version.
     Type: String
     Default: 20.10.2
     AllowedValues:
       - 20.10.2
-    ConstraintDescription: 'Orchestrator version number can contain only digits and dot(.), and must .'
+    ConstraintDescription: UIPath Orchestrator version can contain only digits and periods (.).
   OrchestratorInstanceCount:
-    Description: Desired Capacity (instance count) for Orchestrator instances.
+    Description: Number of UiPath Orchestrator instances.
     Type: String
     Default: '2'
     AllowedPattern: '^(?:[1-9]|0[1-9]|1[0-9]|20)$'
-    ConstraintDescription: Orchestrator Instances can be between 1 to 20.
+    ConstraintDescription: Number of UiPath Orchestrator instances can be 1–20.
   OrchestratorLicense:
-    Description: 'License key, purchased from UiPath, or trial key. If not provided, Orchestrator will be unlicensed'
+    Description: UiPath Orchestrator license key or trial key.
     Default: ''
     Type: String
   OrchestratorPassword:
-    Description: Orchestrator Administrator password to login as.
+    Description: UiPath Orchestrator administrator password.
     Type: String
     NoEcho: 'true'
     MinLength: '6'
@@ -895,8 +894,7 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      Orchestrator Password must contain at least one uppercase letter and be
-      longer than six characters.
+      UiPath Orchestrator administrator password must contain more than six characters and inclujde at least one uppercase letter.
   QSS3BucketName:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: >-
