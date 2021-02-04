@@ -968,7 +968,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       Description: >-
-        IAM role assumed by Lambda functions to find Amazon Machine Images (AMI) IDs.
+        IAM role assumed by Lambda functions to find Amazon Machine Image (AMI) IDs.
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
