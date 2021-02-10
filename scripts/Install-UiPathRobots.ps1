@@ -74,25 +74,25 @@ function Main {
   }
 
   Install-RobotWithMSI -msiPath $msiPath -robotInstallType $robotType
-  if ($robotType -eq "Unattended" -and $cloudName -eq "AWS") {
-    Add-LocalAdministrator -userName $userName
-  }
-  else {
-    Write-Output "Robot type selected is Attended, skipping adding local administrator."
-  }
 
   if ($orchestratorUrl -and $orchAdmin -and $orchPassword -and $tenant) {  
     Write-Output "orchestratorUrl $orchestratorUrl"
     Write-Output "orchAdmin $orchAdmin"
-    Write-Output "orchPassword $orchPassword"
     Write-Output "tenant $tenant"
 
     $websession = Get-UiPathOrchestratorLoginSession
  
     Add-UiPathRobotFolder -session $websession -folderName $folderName
     if ($cloudName -eq "AWS") {
-      Add-UiPathRobotUser -session $websession -robotUsername "$env:computername\$userName" -userName $userName 
-      Write-Output "Added AWS Robot: $userName"
+      if ($robotType -eq "Unattended") {
+        Add-LocalAdministrator -userName $userName
+        Add-UiPathRobotUser -session $websession -robotUsername "$env:computername\$userName" -userName $userName 
+        Write-Output "Added AWS Robot: $userName"
+      }
+      elseif ($robotType -eq "Attended") {
+        Add-UiPathRobotUser -session $websession -robotUsername "$env:computername\Administrator" -userName $userName 
+        Write-Output "Added AWS Robot: $userName"
+      }
     }
     elseif ($cloudName -eq "Azure") {
       Add-UiPathRobotUser -session $websession -userName $userName -robotUsername $robotUserName 

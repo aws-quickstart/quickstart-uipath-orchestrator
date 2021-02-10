@@ -41,28 +41,14 @@ tests:
       AvailabilityZones: "$[taskcat_getaz_2]"
       UiPathFQDN: test.shivansh.dev #testone.uipathmarketplace.net
 
-  # three-az-orchestrator:
-  #   template: ./templates/main.template.yaml
-  #   regions:
-  #   - us-east-1
-  #   parameters:
-  #     AvailabilityZones: "$[taskcat_getaz_3]"
-  #     UiPathFQDN: testtwo.uipathmarketplace.net
-
-  # add-license-orchestrator:
-  #   template: ./templates/main.template.yaml
-  #   regions:
-  #   - us-west-1
-  #   parameters:
-  #     AvailabilityZones: "$[taskcat_getaz_2]"
-  #     UiPathFQDN: testthree.uipathmarketplace.net
-  #     OrchestratorLicense: "orchlicense"
-
-  # europe-orchestrator:
-  #   template: ./templates/main.template.yaml
-  #   regions:
-  #   - eu-west-1
-  #   parameters:
-  #     AvailabilityZones: "$[taskcat_getaz_2]"
-  #     UiPathFQDN: testfour.uipathmarketplace.net
-  #     OrchestratorInstanceCount: "3"
+  existing-vpc:
+    template: ./templates/uipath-orchestrator.template.yaml
+    regions:
+      - us-east-1
+    parameters:
+      AvailabilityZones: "$[taskcat_getaz_2]"
+      UiPathFQDN: testtwo.shivansh.dev #testone.uipathmarketplace.net
+      VPCCIDR: 10.0.0.0/16
+      VPCID: <<vpc-id>>
+      PrivateSubnetIDs: <<subnet-id-1,subnet-id-2,subnet-id-3>>
+      PublicSubnetIDs: <<subnet-id-1,subnet-id-2,subnet-id-3>>
