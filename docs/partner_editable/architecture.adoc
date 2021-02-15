@@ -13,7 +13,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * In the public subnets:
 ** Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.*
 ** A Windows bastion host to allow inbound RDP access to EC2 instances in private subnets.
-** S3 bucket for storage of the NuGet packages (the automations that are executed by the robots are delivered through Orchestrator)
+** S3 bucket for storage of NuGet packages, the automation routines executed by UiPath robots.
 * In the private subnets:
 ** Only multi-node option for high availability is available and it creates the following:
 *** Autoscaling group with up to 20 EC2 instances, based on Windows Server 2019, for Orchestrator Web app
