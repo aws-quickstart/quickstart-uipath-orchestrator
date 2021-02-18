@@ -4,7 +4,9 @@ This Quick Start is for users who wants to deploy UiPath Orchestrator on the AWS
 
 The [AWS CloudFormation template](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=uipath&templateURL=https://aws-quickstart.s3.amazonaws.com/quickstart-uipath-orchestrator/templates/main.template.yaml) included with the Quick Start automates deploying UiPath Orchestrator on AWS. You can also use the AWS CloudFormation template as a starting point for your own implementation.
 
-![Quick Start architecture for UiPath Orchestrator on AWS](./UIPath-Orchestrator-arch.png)
+For deploying into existing VPCs, this [AWS CloudFormation template](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=uipath&templateURL=https://aws-quickstart.s3.amazonaws.com/quickstart-uipath-orchestrator/templates/uipath-orchestrator.template.yaml) can be used as an entrypoint.
+
+![Quick Start architecture for UiPath Orchestrator on AWS](./architecture.png)
 
 As shown in the architecture diagram, the Quick Start sets up the following:
 
