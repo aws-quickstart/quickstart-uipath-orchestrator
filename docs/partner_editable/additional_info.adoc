@@ -85,28 +85,28 @@ This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it d
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-Check if the Orchestrator was deployed successfully accessing the ALB endpoint URL. The result should look lke <<test1>> below
+Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The *Login* screen shown in <<test1>> should display.
 
 :xrefstyle: short
 [#test1]
 .Test the deployment
 image::../images/test1.png[test1,width=50%,height=50%]
 
-Check if HAA nodes were deployed successfully accessing any endpoint IP via https://haa-ip:8443 from the Bastion host, then look at the tab nodes and check if all nodes are present.
+Verify that HAA nodes are deployed successfully. From the bastion host, navigate to any endpoint IP address via https://haa-ip:8443. 
 
 :xrefstyle: short
 [#test2]
-.Test the deployment
+.Logging into High Availability Add-on
 image::../images/test2.png[test2,width=50%,height=50%]
+
+Log in, and verify that all nodes are present on the *Nodes* tab.
 
 :xrefstyle: short
 [#test3]
-.Test the deployment
+.Verifying nodes
 image::../images/test3.png[test3,width=100%,height=100%]
 
-Check if UiPath Orchestrator can upload to the S3 bucket via the file gateway server.
-
-Login to Orchestrator accessing the ALB endpoint URL with the specified credentials at the deployment. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
+Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway server. To do this, navigate to the Application Load Balancer endpoint URL and log in. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
 
 :xrefstyle: short
 [#test4]
@@ -127,7 +127,7 @@ By launching your instances in separate Regions, you can design your application
 The architecture built by this Quick Start supports AWS best practices for high availability and security.
 
 === Automatic failover
-Deploying this Quick Start with the default parameters configures an Auto Scaling Group with UIPath Orchestrator instances with 3 HAA clustered nodes or EC2 Instances for Robot solution
+Deploying this Quick Start with the default parameters configures an Auto Scaling Group with UIPath Orchestrator instances and three HAA clustered nodes or EC2 instances.
 
 The Quick Start implementation supports the following:
 
@@ -135,17 +135,19 @@ The Quick Start implementation supports the following:
 * Automatic failover between the HAA cluster nodes.
 * Automatic failover between Availability Zones.
 
-However, the Quick Start default implementation doesn’t provide automatic failover in every case. For example, the loss of Availability Zone 1 and Zone 2, which contains the primary and secondary HAA node, would prevent automatic failover to Availability Zone 3. This is because the cluster would fail as it loses quorum. In this scenario, you could follow manual disaster recovery steps that include rebuild the cluster missing nodes (at least 2 must be available) by running :
+However, the Quick Start default implementation doesn’t provide automatic failover in every case. For example, the loss of Availability Zone 1 and Zone 2, which contains the primary and secondary HAA node, would prevent automatic failover to Availability Zone 3. This is because the cluster would fail as it loses quorum. In this scenario, you could follow manual disaster recovery steps that include rebuilding the cluster that is missing nodes. (At least two nodes must be available.)
+
+To restore the HAA module, run the following command:
 ----
 curl -fsSL  http://download.uipath.com/haa/get-haa.sh | bash -s -- -u username-available-node -p password-available-node -j ip-available-node
 ----
-to restore the HAA module. As a last resort, even if all nodes are lost, you can rebuild the entire HAA cluster and the in-memory database is regenerated from SQL DB.
+As a last resort, even if all nodes are lost, you can rebuild the entire HAA cluster. Then, the in-memory database is regenerated from the SQL database.
 
-The Quick Start also provides an option to deploy into minimum two Availability Zones. This deployment option can mitigate the loss of quorum in the case of a failure of a single node. However, you can choose this option only in AWS Regions that include two or more Availability Zones; for a current list, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure].
+The Quick Start also provides an option to deploy into a minimum of two Availability Zones. This deployment option can mitigate the loss of quorum in the case of a failure of a single node. However, you can choose this option only in AWS Regions that include two or more Availability Zones. For a current list of Availability Zones, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure].
 
-We recommend that you consult the https://docs.uipath.com/[UiPath docs] and customize some of the steps described in this guide or add ones to deploy a solution that best meets your business, IT, and security requirements.
+To customize UiPath software for your business, IT, and security requirements, consult the https://docs.uipath.com/[UiPath Documentation Portal].
 
-Due to Autoscaling Group, Autoscaling Group rules (CloudWatch rules) and Launch Config, if any instance of Orchestrator is down, another one is being created in the desired state as long as Nuget packages are stored in S3 or any shared storage and DB is RDS type.
+//Due to Autoscaling Group, Autoscaling Group rules (CloudWatch rules) and Launch Config, if any instance of Orchestrator is down, another one is being created in the desired state as long as NuGet packages are stored in S3 or any shared storage and DB is RDS type.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
@@ -179,7 +181,7 @@ For UiPath Orchestrator security best practices, refer to https://docs.uipath.co
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-AWS provides a set of building blocks (for example, Amazon EC2 and Amazon VPC) that you can use to provision infrastructure for your applications. In this model, some security capabilities, such as physical security, are the responsibility of AWS and are highlighted in the AWS security whitepaper. Other areas, such as controlling access to applications, fall under the purview of the application developer and the tools provided in the Microsoft or Red Hat Enterprise Linux ecosystem.
+AWS provides a set of building blocks (for example, Amazon EC2 and Amazon VPC) that you can use to provision infrastructure for your applications. However, some security capabilities, such as physical security, are the responsibility of AWS as highlighted in the AWS security whitepaper. Other areas, such as controlling access to applications, fall under the purview of the application developer and the tools provided in the Microsoft or Red Hat Enterprise Linux ecosystem.
 
 This Quick Start configures the following security groups for the UiPath stack (Robot or Orchestrator):
 
