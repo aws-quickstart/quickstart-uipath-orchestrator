@@ -10,97 +10,103 @@ image::../images/cfn_outputs2.png[cfn_outputs,width=100%,height=100%]
 //Should any sections not be applicable, remove them
 == Create a key pair
 
-Create a key pair in your preferred region. To do this, in the navigation pane of the Amazon EC2 console, choose Key Pairs, Create Key Pair, type a name, and then choose Create.
-Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, we use the key pair to obtain the administrator password via the Amazon EC2 console and then log in using Remote Desktop Protocol (RDP) as explained in the step-by-step instructions in the Amazon Elastic Compute Cloud User Guide. On Linux, we use the key pair to authenticate SSH login.
+Create a key pair in your preferred region. 
+[start=1]
+. In your AWS Management Console, choose an AWS Region.
+. Choose *Services > EC2 > Network & Security > Key Pairs*, and then choose *Create Key Pair*.
+. Enter a name and choose *Create*.
 
 :xrefstyle: short
 [#create_key_pair]
 .Create key pair
 image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
 
-== Create IAM User
-To launch the Cloudformation stack for this quickstart, you’ll need to use a user login that has programmatic access to following AWS services:
+Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, we use the key pair to obtain the administrator password via the Amazon EC2 console and then log in using Remote Desktop Protocol (RDP). On Linux, we use the key pair to authenticate SSH login. For more information, see https://docs.aws.amazon.com/ec2/index.html[Amazon Elastic Compute Cloud Documentation].
 
-["lowerroman"]
-. AWS CloudFormation
-. AWS IAM, Amazon EC2
-. Amazon S3
-. Amazon RDS
-. Amazon Route53
-. AWS Certificate Manager
-. AWS Elastic Load Balancer
-. AWS Lambda
-. AWS Storage Gateway.
+== Create IAM user
 
-If you do already have an IAM user that has full access to the above services, or have Admin access, you can skip this step.
+To launch the Cloudformation stack for this Quick Start, you’ll need a user login with programmatic access to following AWS services:
 
-. If you do not already have such an IAM user, create an IAM user from AWS console. In the example below, a user “cfnuser” is being created allowing programmatic access and console access.
-+
+* AWS CloudFormation
+* AWS IAM, Amazon EC2
+* Amazon S3
+* Amazon RDS
+* Amazon Route53
+* AWS Certificate Manager
+* AWS Elastic Load Balancer
+* AWS Lambda
+* AWS Storage Gateway.
+
+NOTE: If you do already have an IAM user with full access to these services, or have administrator access, you can skip this section.
+
+[start=1]
 :xrefstyle: short
-[#iam_1]
-.Create IAM User
-image::../images/iam_1.png[IAM,width=100%,height=100%]
+. If you do not already have such an IAM user, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console[create one] from AWS console. In <<cfnuser>>, a user “cfnuser” is created with programmatic and console access.
+
+[#cfnuser]
+.Adding an IAM user
+image::../images/cfnuser.png[IAM,width=100%,height=100%]
 
 [start=2]
-. In order to follow AWS best practices, allow access to the required services. In order to do so, you can choose to attach existing policies. Then type first few letters of each service name and select to choose the FullAccess roles from the filtered list. The example here shows the screen for adding AmazonEC2FullAccess.  
-+
+. To follow AWS best practices, allow access to required services. When setting permissions for the user, choose *Attach existing policies directly*. Then choose roles with full access for each of the services listed previously.
+
 :xrefstyle: short
 [#iam_2]
-.Create IAM User
+.Setting permissions
 image::../images/iam_2.png[IAM,width=100%,height=100%]
-+
-Repeat this step for all 10 services listed above.
+
+TIP: As shown in <<iam_2>>, you can filter the role list by entering a few letters of the role you are looking for in the search box.
 
 [start=3]
-. Click on Next: Tags, and optionally add a Name tag to identify the user.  
+. Choose *Next: Tags* and optionally add a Name tag to identify the user.  
 +
 :xrefstyle: short
 [#iam_3]
-.Create IAM User
+.Adding optional tags
 image::../images/iam_3.png[IAM,width=100%,height=100%]
 
-. Click on Next: Review and review to ensure that full access to all 10 listed services have been granted to the user.  
+. Choose *Next: Review* and make sure that full access to all ten services listed earlier are granted to the user.  
 +
 :xrefstyle: short
 [#iam_4]
-.Create IAM User
+.Reviewing user details
 image::../images/iam_4.png[IAM,width=100%,height=100%]
 
-. Click on Create User to have the user created, and finally download the credential as CSV and store it in a secure location for future referral, if needed.
-+
+. Choose *Create User*. Choose *Download .csv* to download and store the user's security credentials in CSV format for future reference.
+
 :xrefstyle: short
 [#iam_5]
-.Create IAM User
+.IAM user created
 image::../images/iam_5.png[IAM,width=100%,height=100%]
 
-== Purchase UiPath License
+== Purchase UiPath license
 
 This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by https://www.uipath.com/company/contact-us[contacting UiPath directly].
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-Check if the Orchestrator was deployed successfully accessing the ALB endpoint URL. The result should look lke <<test1>> below
+Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The *Login* screen shown in <<test1>> should display.
 
 :xrefstyle: short
 [#test1]
 .Test the deployment
 image::../images/test1.png[test1,width=50%,height=50%]
 
-Check if HAA nodes were deployed successfully accessing any endpoint IP via https://haa-ip:8443 from the Bastion host, then look at the tab nodes and check if all nodes are present.
+Verify that HAA nodes are deployed successfully. From the bastion host, navigate to any endpoint IP address via https://haa-ip:8443. 
 
 :xrefstyle: short
 [#test2]
-.Test the deployment
+.Logging into High Availability Add-on
 image::../images/test2.png[test2,width=50%,height=50%]
+
+Log in, and verify that all nodes are present on the *Nodes* tab.
 
 :xrefstyle: short
 [#test3]
-.Test the deployment
+.Verifying nodes
 image::../images/test3.png[test3,width=100%,height=100%]
 
-Check if Orchestrator can upload to S3 bucket via FileGateway server.
-
-Login to Orchestrator accessing the ALB endpoint URL with the specified credentials at the deployment, select Packages> Upload button > Select a NuGet package and press the Upload Button.
+Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway server. To do this, navigate to the Application Load Balancer endpoint URL and log in. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
 
 :xrefstyle: short
 [#test4]
@@ -113,72 +119,71 @@ image::../images/test4.png[test4,width=100%,height=100%]
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-=== High Availability and Disaster Recovery
+=== High availability and disaster recovery
 Amazon EC2 provides the ability to place instances in multiple locations composed of AWS Regions and Availability Zones. Regions are dispersed and located in separate geographic areas. Availability Zones are distinct locations within a Region that are engineered to be isolated from failures in other Availability Zones and that provide inexpensive, low-latency network connectivity to other Availability Zones in the same Region.
 
 By launching your instances in separate Regions, you can design your application to be closer to specific customers or to meet legal or other requirements. By launching your instances in separate Availability Zones, you can protect your applications from the failure of a single location. Exchange provides infrastructure features that complement the high availability and disaster recovery scenarios supported in the AWS Cloud.
 
 The architecture built by this Quick Start supports AWS best practices for high availability and security.
 
-=== Automatic Failover
-Deploying this Quick Start with the *default parameters* configures an Autoscaling Group with Orchestrator Instances with 3 HAA clustered nodes or EC2 Instances for Robot solution
+=== Automatic failover
+Deploying this Quick Start with the default parameters configures an Auto Scaling Group with UIPath Orchestrator instances and three HAA clustered nodes or EC2 instances.
 
-The Quick Start implementation supports the following scenarios:
+The Quick Start implementation supports the following:
 
-* Protection from the failure of a single instance
-* Automatic failover between the HAA cluster nodes
-* Automatic failover between Availability Zones
+* Protection from the failure of a single instance.
+* Automatic failover between the HAA cluster nodes.
+* Automatic failover between Availability Zones.
 
-However, the Quick Start default implementation doesn’t provide automatic failover in every case. For example, the loss of Availability Zone 1 and Zone 2, which contains the primary and secondary HAA node, would prevent automatic failover to Availability Zone 3. This is because the cluster would fail as it loses quorum. In this scenario, you could follow manual disaster recovery steps that include rebuild the cluster missing nodes (at least 2 must be available) by running :
+However, the Quick Start default implementation doesn’t provide automatic failover in every case. For example, the loss of Availability Zone 1 and Zone 2, which contains the primary and secondary HAA node, would prevent automatic failover to Availability Zone 3. This is because the cluster would fail as it loses quorum. In this scenario, you could follow manual disaster recovery steps that include rebuilding the cluster that is missing nodes. (At least two nodes must be available.)
+
+To restore the HAA module, run the following command:
 ----
 curl -fsSL  http://download.uipath.com/haa/get-haa.sh | bash -s -- -u username-available-node -p password-available-node -j ip-available-node
 ----
-to restore the HAA module. As a last resort, even if all nodes are lost, you can rebuild the entire HAA cluster and the in-memory database is regenerated from SQL DB.
+As a last resort, even if all nodes are lost, you can rebuild the entire HAA cluster. Then, the in-memory database is regenerated from the SQL database.
 
-The Quick Start also provides an option to deploy into minimum two Availability Zones. This deployment option can mitigate the loss of quorum in the case of a failure of a single node. However, you can select this option only in AWS Regions that include two or more Availability Zones; for a current list, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure].
+The Quick Start also provides an option to deploy into a minimum of two Availability Zones. This deployment option can mitigate the loss of quorum in the case of a failure of a single node. However, you can choose this option only in AWS Regions that include two or more Availability Zones. For a current list of Availability Zones, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure].
 
-We recommend that you consult the https://docs.uipath.com/[UiPath docs] and customize some of the steps described in this guide or add ones to deploy a solution that best meets your business, IT, and security requirements.
+To customize UiPath software for your business, IT, and security requirements, consult the https://docs.uipath.com/[UiPath Documentation Portal].
 
-Due to Autoscaling Group, Autoscaling Group rules (CloudWatch rules) and Launch Config, if any instance of Orchestrator is down, another one is being created in the desired state as long as Nuget packages are stored in S3 or any shared storage and DB is RDS type.
+//Due to Autoscaling Group, Autoscaling Group rules (CloudWatch rules) and Launch Config, if any instance of Orchestrator is down, another one is being created in the desired state as long as NuGet packages are stored in S3 or any shared storage and DB is RDS type.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-=== Security Groups and Firewalls
-When the EC2 instances are launched, they must be associated with a security group, which acts as a stateful firewall. You have complete control over the network traffic entering or leaving the security group, and you can build granular rules that are scoped by protocol, port number, and source or destination IP address or subnet. By default, all traffic egressing a security group is permitted. Ingress traffic, on the other hand, must be configured to allow the appropriate traffic to reach your instances.
+=== Security groups and firewalls
+When the EC2 instances are launched, they must be associated with a security group, which acts as a stateful firewall. You have complete control over the network traffic entering or leaving the security group. You can build granular rules that are scoped by protocol, port number, and source, destination IP address, or subnet. By default, all outbound traffic from security group is permitted. Inbound traffic, however, must be configured to allow the appropriate traffic to reach your instances.
 
-We recommend that you tightly control ingress traffic, so that you reduce the attack surface of your EC2 instances but allowing following ports open for application communication:
+We recommend that you tightly control inbound traffic. Doing this reduces the attack surface of your EC2 instances yet leaves the following ports open for application communication.
 
-*HAA*
+* *HAA ports*
 
 :xrefstyle: short
 [#security1]
-.Security
+.HAA ports
 image::../images/security1.png[security1,width=100%,height=100%]
 
-==== Orchestrator and Robot Ports
-80, 443 for instances behind ALB
+* *Orchestrator and robot ports*
+** 80, 443 for instances behind ALB
+** 443 for ALB and Robots
+** 3389 for Robots and Orchestrators
 
-443 for ALB and Robots
+* *Other ports and usage*
+** 22 for SSH into HAA nodes
+** 1433 for MSSQL 
 
-3389 for Robots and Orchestrators
-
-==== Other Ports and usage:
-22 for SSH into HAA nodes
-
-1433 for MSSQL 
-
-==== EC2 Storage Gateway Ports:
-2049, 111, 20048, 35790, 49000, 54524 – NFS service
+* *EC2 storage gateway ports*
+** 2049, 111, 20048, 35790, 49000, 54524 – NFS service
 
 For UiPath Orchestrator security best practices, refer to https://docs.uipath.com/orchestrator/docs/security-best-practices[UiPath docs]
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-AWS provides a set of building blocks (for example, Amazon EC2 and Amazon VPC) that you can use to provision infrastructure for your applications. In this model, some security capabilities, such as physical security, are the responsibility of AWS and are highlighted in the AWS security whitepaper. Other areas, such as controlling access to applications, fall on the application developer and the tools provided in the Microsoft or Linux (RHEL) ecosystem.
+AWS provides a set of building blocks (for example, Amazon EC2 and Amazon VPC) that you can use to provision infrastructure for your applications. However, some security capabilities, such as physical security, are the responsibility of AWS as highlighted in the AWS security whitepaper. Other areas, such as controlling access to applications, fall under the purview of the application developer and the tools provided in the Microsoft or Red Hat Enterprise Linux ecosystem.
 
-This Quick Start configures the following security groups for UiPath Stack (Robot or Orchestrator):
+This Quick Start configures the following security groups for the UiPath stack (Robot or Orchestrator):
 
 [cols="20s,20,20,40",grid=rows,frame=topbot, options="header"]
 |===
@@ -219,3 +224,16 @@ Outbound: any ports
 Outbound: 80, 443
 |===
 
+== Resources
+
+* https://aws.amazon.com/cloudformation/[AWS CloudFormation]
+* https://aws.amazon.com/vpc/[Amazon VPC]
+* https://aws.amazon.com/ec2/[Amazon EC2]
+* https://aws.amazon.com/iam/[AWS IAM]
+* https://aws.amazon.com/s3/[Amazon S3]
+* https://aws.amazon.com/storagegateway/[AWS Storage Gateway]
+* https://aws.amazon.com/lambda/[AWS Lambda]
+* https://aws.amazon.com/rds/[Amazon RDS]
+* https://aws.amazon.com/route53/[Amazon Route53]
+* https://aws.amazon.com/certificate-manager/[AWS Certificate Manager]
+* https://aws.amazon.com/autoscaling/[AWS Auto Scaling?]
