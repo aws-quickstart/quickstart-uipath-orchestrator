@@ -1,10 +1,10 @@
 
-:xrefstyle: short
-[#cfn_outputs2]
-ifndef::partner-product-short-name[.{partner-product-name} outputs after successful deployment]
-ifdef::partner-product-short-name[.{partner-product-short-name} outputs after successful deployment]
-[link=images/cfn_outputs2.png]
-image::../images/cfn_outputs2.png[cfn_outputs,width=100%,height=100%]
+//:xrefstyle: short
+//[#cfn_outputs2]
+//ifndef::partner-product-short-name[.{partner-product-name} outputs after successful deployment]
+//ifdef::partner-product-short-name[.{partner-product-short-name} outputs after successful deployment]
+//[link=images/cfn_outputs2.png]
+//image::../images/cfn_outputs2.png[cfn_outputs,width=100%,height=100%]
 
 // Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
 //Should any sections not be applicable, remove them
