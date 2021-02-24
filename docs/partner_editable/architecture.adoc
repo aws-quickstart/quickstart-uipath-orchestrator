@@ -12,17 +12,19 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * A VPC configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
 ** Managed NAT gateways to allow outbound internet access for resources in the private subnets.*
-** A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to EC2 instances in public and private subnets.*
-** S3 bucket for storage of the NuGet packages (the automations that are executed by the robots are delivered through Orchestrator)
-** S3 File Storage Gateway to enable easy access to S3 files via a mapped network drive
+** A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*
+** Amazon Simple Storage Service (Amazon S3) bucket for NuGet packages, the automations run by UiPath robots and delivered through UiPath Orchestrator.
+** AWS File Storage Gateway for access to files in the S3 bucket via a mapped network drive.
 * In the private subnets: 
 ** There are two deployment options. Under single-node option, it creates the following:
 *** An EC2 instance, based on Windows Server 2019, for Orchestrator Web app
-*** An RDS instance with SQL server for UiPath database
+*** An Amazon Relational Database Service (Amazon RDS) DB instance with Microsoft SQL Server for the UiPath database.
 ** Under multi-node option for high availability, it creates the following:
-*** Autoscaling group with up to 20 EC2 instances, based on Windows Server 2019, for Orchestrator Web app
-*** An RDS instance with SQL server for UiPath database
-*** An Application Load Balancer to balance the traffic in a Round Robin algorithm between the Orchestrator nodes
+*** Auto Scaling group with up to 20 Amazon EC2 instances, based on Windows Server 2019, for the Orchestrator web application.
+*** An RDS DB instance with SQL server for UiPath database
+*** An Application Load Balancer to balance the traffic in a round-robin algorithm between Orchestrator nodes.
 *** High Availability Add-on for Orchestrator – a 3 nodes cluster with Linux machines, for the in-memory database that is used as shared cache by all the Orchestrator instances
+
+
 
 *The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.
