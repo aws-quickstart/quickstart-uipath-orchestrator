@@ -4,5 +4,4 @@
 
 This Quick Start reference deployment guide provides step-by-step instructions for deploying UiPath Orchestrator on the AWS Cloud. 
 
-This Quick Start is for users who want to deploy UiPath Orchestrator in the AWS Cloud to manage attended and unattended UiPath robots in their enterprise environment.
-
+This Quick Start is for users who want the convenience of deploying UiPath Orchestrator web application on AWS Cloud. It deploys UiPath Orchestrator to manage robotic automation processes, allowing users to automate attended and unattended process task within their enterprise environment.

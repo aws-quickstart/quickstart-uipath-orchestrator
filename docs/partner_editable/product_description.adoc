@@ -13,7 +13,7 @@ UiPath Orchestrator can manage your entire robot fleet, including the following 
 
 UiPath robots can be connected and run from the central point UiPath Orchestrator provides. Also, you can run debugging in UiPath Studio with all types of robots.
 
-With this Quick Start, you can deploy Orchestrator, UiPath database, and NuGet automation packages in an architecture based on AWS best practices for security and high availability. AWS provides cost-efficient and resizable capacity, and scales the robots to meet your specific workload. This Quick Start also offers a single-node and a multi-node option, with which you can deploy up to 20 Amazon Elastic Compute Cloud (Amazon EC2) instances for the Orchestrator web application. For more information, see link:#_architecture[Architecture], later in this guide.
+With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. AWS provides cost-efficient and resizable capacity, and scales the robots to meet your specific workload. This Quick Start also offers a single-node and a multi-node option, with which you can deploy up to 20 Amazon Elastic Compute Cloud (Amazon EC2) instances for the Orchestrator web application. For more information, see link:#_architecture[Architecture], later in this guide.
 
 
 

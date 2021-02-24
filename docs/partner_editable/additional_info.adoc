@@ -177,7 +177,7 @@ image::../images/security1.png[security1,width=100%,height=100%]
 * *EC2 storage gateway ports*
 ** 2049, 111, 20048, 35790, 49000, 54524 – NFS service
 
-For UiPath Orchestrator security best practices, refer to https://docs.uipath.com/orchestrator/docs/security-best-practices[UiPath docs]
+For UiPath Orchestrator security best practices, see https://docs.uipath.com/orchestrator/docs/security-best-practices[Security Best Practices].
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
