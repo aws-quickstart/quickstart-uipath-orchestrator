@@ -9,8 +9,10 @@
 // Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
 //Should any sections not be applicable, remove them
 == Create a key pair
+Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, a key pair is used to obtain the administrator password via the Amazon EC2 console and then to log in using Remote Desktop Protocol (RDP). On Linux, a key pair is used to authenticate SSH login. For more information, see https://docs.aws.amazon.com/ec2/index.html[Amazon Elastic Compute Cloud Documentation].
 
-Create a key pair in your preferred region. 
+To create a key pair in your preferred Region, do the following:
+
 [start=1]
 . In your AWS Management Console, choose an AWS Region.
 . Choose *Services > EC2 > Network & Security > Key Pairs*, and then choose *Create Key Pair*.
@@ -21,7 +23,6 @@ Create a key pair in your preferred region.
 .Create key pair
 image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
 
-Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, we use the key pair to obtain the administrator password via the Amazon EC2 console and then log in using Remote Desktop Protocol (RDP). On Linux, we use the key pair to authenticate SSH login. For more information, see https://docs.aws.amazon.com/ec2/index.html[Amazon Elastic Compute Cloud Documentation].
 
 == Create IAM user
 
@@ -41,7 +42,7 @@ NOTE: If you do already have an IAM user with full access to these services, or 
 
 [start=1]
 :xrefstyle: short
-. If you do not already have such an IAM user, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console[create one] from AWS console. In <<cfnuser>>, a user “cfnuser” is created with programmatic and console access.
+. If you do not already have such an IAM user, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console[create one] from AWS console. In <<cfnuser>>, a user is created with programmatic and console access.
 
 [#cfnuser]
 .Adding an IAM user
