@@ -123,7 +123,7 @@ image::../images/test4.png[test4,width=100%,height=100%]
 === High availability and disaster recovery
 Amazon EC2 provides the ability to place instances in multiple locations composed of AWS Regions and Availability Zones. Regions are dispersed and located in separate geographic areas. Availability Zones are distinct locations within a Region that are engineered to be isolated from failures in other Availability Zones. They provide inexpensive, low-latency network connectivity to other Availability Zones in the same Region.
 
-By launching your instances in separate Regions, you can design your application to be closer to specific customers or to meet legal or other requirements. By launching your instances in separate Availability Zones, you can protect your applications from the failure of a single location. Exchange provides infrastructure features that complement the high availability and disaster recovery scenarios supported in the AWS Cloud.
+By launching your instances in separate Regions, you can design your application to be physically closer to specific customers or to meet legal or other requirements. By launching your instances in separate Availability Zones, you can protect your applications from the failure of a single location. Microsoft Exchange provides infrastructure features that complement the high availability and disaster recovery scenarios supported in the AWS Cloud.
 
 The architecture built by this Quick Start supports AWS best practices for high availability and security.
 
@@ -154,7 +154,7 @@ To customize UiPath software for your business, IT, and security requirements, c
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
 === Security groups and firewalls
-When the EC2 instances are launched, they must be associated with a security group, which acts as a stateful firewall. You have complete control over the network traffic entering or leaving the security group. You can build granular rules that are scoped by protocol, port number, and source, destination IP address, or subnet. By default, all outbound traffic from security group is permitted. Inbound traffic, however, must be configured to allow the appropriate traffic to reach your instances.
+When Amazon EC2 instances are launched, they must be associated with a security group, which acts as a stateful firewall. You have complete control over the network traffic entering or leaving the security group. You can build granular rules that are scoped by protocol, port number, and source, destination IP address, or subnet. By default, all outbound traffic from security group is permitted. Inbound traffic, however, must be configured to allow the appropriate traffic to reach your instances.
 
 We recommend that you tightly control inbound traffic. Doing this reduces the attack surface of your EC2 instances yet leaves the following ports open for application communication.
 
@@ -165,7 +165,7 @@ We recommend that you tightly control inbound traffic. Doing this reduces the at
 .HAA ports
 image::../images/security1.png[security1,width=100%,height=100%]
 
-* *Orchestrator and robot ports*
+* *UiPath Orchestrator and UiPath Robot ports*
 ** 80, 443 for instances behind ALB
 ** 443 for ALB and Robots
 ** 3389 for Robots and Orchestrators
@@ -177,7 +177,7 @@ image::../images/security1.png[security1,width=100%,height=100%]
 * *EC2 storage gateway ports*
 ** 2049, 111, 20048, 35790, 49000, 54524 – NFS service
 
-For UiPath Orchestrator security best practices, see https://docs.uipath.com/orchestrator/docs/security-best-practices[Security Best Practices].
+For more information, see https://docs.uipath.com/orchestrator/docs/security-best-practices[Security Best Practices].
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
