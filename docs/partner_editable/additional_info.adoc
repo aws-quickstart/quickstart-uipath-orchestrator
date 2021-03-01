@@ -8,81 +8,6 @@
 
 // Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
 //Should any sections not be applicable, remove them
-== Create a key pair
-Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. To be able to log into your instances, you must create a key pair. With Windows instances, a key pair is used to obtain the administrator password via the Amazon EC2 console and then to log in using Remote Desktop Protocol (RDP). On Linux, a key pair is used to authenticate SSH login. For more information, see https://docs.aws.amazon.com/ec2/index.html[Amazon Elastic Compute Cloud Documentation].
-
-To create a key pair in your preferred Region, do the following:
-
-[start=1]
-. In your AWS Management Console, choose an AWS Region.
-. Choose *Services > EC2 > Network & Security > Key Pairs*, and then choose *Create Key Pair*.
-. Enter a name and choose *Create*.
-
-:xrefstyle: short
-[#create_key_pair]
-.Create key pair
-image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
-
-
-== Create IAM user
-
-To launch the Cloudformation stack for this Quick Start, you’ll need a user login with programmatic access to following AWS services:
-
-* AWS CloudFormation
-* AWS IAM, Amazon EC2
-* Amazon S3
-* Amazon RDS
-* Amazon Route53
-* AWS Certificate Manager
-* AWS Elastic Load Balancer
-* AWS Lambda
-* AWS Storage Gateway.
-
-NOTE: If you do already have an IAM user with full access to these services, or have administrator access, you can skip this section.
-
-[start=1]
-:xrefstyle: short
-. If you do not already have such an IAM user, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console[create one] from AWS console. In <<cfnuser>>, a user is created with programmatic and console access.
-
-[#cfnuser]
-.Adding an IAM user
-image::../images/cfnuser.png[IAM,width=100%,height=100%]
-
-[start=2]
-. To follow AWS best practices, allow access to required services. When setting permissions for the user, choose *Attach existing policies directly*. Then choose roles with full access for each of the services listed previously.
-
-:xrefstyle: short
-[#iam_2]
-.Setting permissions
-image::../images/iam_2.png[IAM,width=100%,height=100%]
-
-TIP: As shown in <<iam_2>>, you can filter the role list by entering a few letters of the role you are looking for in the search box.
-
-[start=3]
-. Choose *Next: Tags* and optionally add a Name tag to identify the user.  
-+
-:xrefstyle: short
-[#iam_3]
-.Adding optional tags
-image::../images/iam_3.png[IAM,width=100%,height=100%]
-
-. Choose *Next: Review* and make sure that full access to all ten services listed earlier are granted to the user.  
-+
-:xrefstyle: short
-[#iam_4]
-.Reviewing user details
-image::../images/iam_4.png[IAM,width=100%,height=100%]
-
-. Choose *Create User*. Choose *Download .csv* to download and store the user's security credentials in CSV format for future reference.
-
-:xrefstyle: short
-[#iam_5]
-.IAM user created
-image::../images/iam_5.png[IAM,width=100%,height=100%]
-
-== Purchase UiPath license
-
-This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by https://www.uipath.com/company/contact-us[contacting UiPath directly].
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
@@ -114,6 +39,88 @@ Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway
 .Test the deployment
 image::../images/test4.png[test4,width=100%,height=100%]
 
+
+== Create a key pair
+Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. In Windows instances, the key pair obtains the administrator password via the Amazon EC2 console and then logs in using Remote Desktop Protocol (RDP). On Linux, the key pair authenticates the SSH (Secure Shell) login. For more information, see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[Amazon EC2 key pairs and Linux instances^].
+
+To create a key pair in your preferred Region, do the following:
+
+[start=1]
+. In your AWS Management Console, choose an AWS Region.
+. On the *Services* menu, choose *EC2*.
+. Under *Network and Security*, choose *Key Pairs*.
+. Choose *Create Key Pair*.
+. Enter a name and choose *Create*.
+
+:xrefstyle: short
+[#create_key_pair]
+.Create key pair
+image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
+
+
+== Create IAM user
+
+To launch the Cloudformation stack for this Quick Start, you’ll need a user login with programmatic access to following AWS services:
+
+* AWS CloudFormation
+* AWS IAM, Amazon EC2
+* Amazon S3
+* Amazon RDS
+* Amazon Route53
+* AWS Certificate Manager
+* AWS Elastic Load Balancer
+* AWS Lambda
+* AWS Storage Gateway.
+
+NOTE: If you do already have an IAM user with full access to these services, or have administrator access, you can skip this section.
+
+[start=1]
+:xrefstyle: short
+. If you do not already have such an IAM user, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console[create one^] from AWS console. In <<cfnuser>>, a user is created with programmatic and console access.
+
+[#cfnuser]
+.Adding an IAM user
+image::../images/cfnuser.png[IAM,width=100%,height=100%]
+
+[start=2]
+. To follow AWS best practices, allow access to required services. When setting permissions for the user, choose *Attach existing policies directly*. Then choose roles with full access for each of the services listed previously.
+
+:xrefstyle: short
+[#iam_2]
+.Setting permissions
+image::../images/iam_2.png[IAM,width=100%,height=100%]
+
+TIP: As shown in <<iam_2>>, you can filter the list using the search box.
+
+[start=3]
+. Choose *Next: Tags* and optionally add a Name tag to identify the user.  
++
+:xrefstyle: short
+[#iam_3]
+.Adding optional tags
+image::../images/iam_3.png[IAM,width=100%,height=100%]
+
+[start=4]
+. Choose *Next: Review* and verify that the user is configured with full access to the services listed previously.  
++
+:xrefstyle: short
+[#iam_4]
+.Reviewing user details
+image::../images/iam_4.png[IAM,width=100%,height=100%]
+
+[start=5]
+. Choose *Create User*.
+. Choose *Download .csv* to download and store the user's security credentials in CSV format for future reference.
+
+:xrefstyle: short
+[#iam_5]
+.IAM user created
+image::../images/iam_5.png[IAM,width=100%,height=100%]
+
+== Purchase UiPath license
+
+This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by https://www.uipath.com/company/contact-us[contacting UiPath directly^].
+
 // == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
 
@@ -144,9 +151,9 @@ curl -fsSL  http://download.uipath.com/haa/get-haa.sh | bash -s -- -u username-a
 ----
 As a last resort, even if all nodes are lost, you can rebuild the entire HAA cluster. Then, the in-memory database is regenerated from the SQL database.
 
-The Quick Start also provides the option to deploy into a minimum of two Availability Zones. This option mitigates the loss of quorum in the case of a failure of a single node. However, you can choose this option only in AWS Regions that include two or more Availability Zones. For a current list of Availability Zones, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure].
+The Quick Start also provides the option to deploy into a minimum of two Availability Zones. This option mitigates the loss of quorum in the case of a failure of a single node. However, you can choose this option only in AWS Regions that include two or more Availability Zones. For a current list of Availability Zones, see https://aws.amazon.com/about-aws/global-infrastructure/[AWS Global Infrastructure^].
 
-To customize UiPath software for your business, IT, and security requirements, consult the https://docs.uipath.com/[UiPath Documentation Portal].
+To customize UiPath software for your business, IT, and security requirements, consult the https://docs.uipath.com/[UiPath Documentation Portal^].
 
 //Due to Autoscaling Group, Autoscaling Group rules (CloudWatch rules) and Launch Config, if any instance of Orchestrator is down, another one is being created in the desired state as long as NuGet packages are stored in S3 or any shared storage and DB is RDS type.
 
@@ -176,13 +183,6 @@ image::../images/security1.png[security1,width=100%,height=100%]
 
 * *EC2 storage gateway ports*
 ** 2049, 111, 20048, 35790, 49000, 54524 – NFS service
-
-For more information, see https://docs.uipath.com/orchestrator/docs/security-best-practices[Security Best Practices].
-
-== Other useful information
-//Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
-
-AWS provides a set of building blocks (for example, Amazon EC2 and Amazon VPC) that you can use to provision infrastructure for your applications. However, some security capabilities, such as physical security, are the responsibility of AWS as highlighted in the AWS security whitepaper. Other areas, such as controlling access to applications, fall under the purview of the application developer and the tools provided in the Microsoft or Red Hat Enterprise Linux ecosystem.
 
 This Quick Start configures the following security groups for the UiPath stack (Robot or Orchestrator):
 
@@ -225,16 +225,21 @@ Outbound: any ports
 Outbound: 80, 443
 |===
 
+For more information, see https://docs.uipath.com/orchestrator/docs/security-best-practices[Security Best Practices^].
+
+=== Security of the AWS infrastructure
+AWS provides a set of building blocks, such as Amazon EC2 and Amazon VPC, that you can use to provision your application's infrastructure. AWS operates under a shared security responsibility model, where AWS is responsible for the security of the underlying cloud infrastructure and you are responsible for securing workloads you deploy in AWS. For more information, see https://docs.aws.amazon.com/whitepapers/latest/introduction-aws-security/introduction-aws-security.pdf[Introduction to AWS Security^]. 
+
 == Resources
 
-* https://aws.amazon.com/cloudformation/[AWS CloudFormation]
-* https://aws.amazon.com/vpc/[Amazon VPC]
-* https://aws.amazon.com/ec2/[Amazon EC2]
-* https://aws.amazon.com/iam/[AWS IAM]
-* https://aws.amazon.com/s3/[Amazon S3]
-* https://aws.amazon.com/storagegateway/[AWS Storage Gateway]
-* https://aws.amazon.com/lambda/[AWS Lambda]
-* https://aws.amazon.com/rds/[Amazon RDS]
-* https://aws.amazon.com/route53/[Amazon Route53]
-* https://aws.amazon.com/certificate-manager/[AWS Certificate Manager]
-* https://aws.amazon.com/autoscaling/[AWS Auto Scaling?]
+* https://aws.amazon.com/cloudformation/[AWS CloudFormation^]
+* https://aws.amazon.com/vpc/[Amazon VPC^]
+* https://aws.amazon.com/ec2/[Amazon EC2^]
+* https://aws.amazon.com/iam/[AWS IAM^]
+* https://aws.amazon.com/s3/[Amazon S3^]
+* https://aws.amazon.com/storagegateway/[AWS Storage Gateway^]
+* https://aws.amazon.com/lambda/[AWS Lambda^]
+* https://aws.amazon.com/rds/[Amazon RDS^]
+* https://aws.amazon.com/route53/[Amazon Route 53^]
+* https://aws.amazon.com/certificate-manager/[AWS Certificate Manager^]
+* https://aws.amazon.com/autoscaling/[AWS Auto Scaling?^]
