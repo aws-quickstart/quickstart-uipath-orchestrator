@@ -2,18 +2,14 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-With UiPath Orchestrator, you can securely schedule, manage, and control your entire enterprise-wide digital workforce of UiPath robots. Orchestrator is also the integration point with third-party applications, managing the creation, monitoring, and deployment of all robotic process automation (RPA) resources in your environment.
-
-UiPath Orchestrator can manage your entire robot fleet, including the following robot types: 
+With UiPath Orchestrator, you can securely schedule, manage, and control your entire enterprise-wide digital workforce of UiPath Robots. UiPath Orchestrator can manage your entire fleet, including the following UiPath Robot types: 
 
 * *Attended* - A robot triggered by user events, operating alongside a human user, and sharing the same workstation. Used with UiPath Orchestrator for centralized process deployment and logging. They can also add data into a queue that is processed by unattended robots.
 * *Unattended* - A robot that runs without human supervision in a virtual environment. They run, monitor, schedule, and support work queues remotely.
 * *Development* - An unattended robot used only for development purposes.
 * *Nonproduction* - An unattended robot used only for development and testing purposes.
 
-UiPath robots can be connected and run from the central point UiPath Orchestrator provides. Also, you can run debugging in UiPath Studio with all types of robots.
-
-With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. AWS provides cost-efficient and resizable capacity, and scales the robots to meet your specific workload. This Quick Start also offers a single-node and a multi-node option, with which you can deploy up to 20 Amazon Elastic Compute Cloud (Amazon EC2) instances for the Orchestrator web application. For more information, see link:#_architecture[Architecture], later in this guide.
+With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. There are two deployment options: single-node or multi-node with the High Availability add-on (HAA) for UiPath Orchestrator. The single-node option runs the UiPath Orchestrator web server on a single machine and is recommended for small to medium scale deployment of UiPath Robots. The multi-node option with HAA is designed for increased capacity and failure resistance. For more information, see link:#_architecture[Architecture], later in this guide.
 
 
 

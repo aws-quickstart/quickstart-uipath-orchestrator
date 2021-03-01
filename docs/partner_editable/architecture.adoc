@@ -23,6 +23,6 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 *** An Auto Scaling group with up to 20 Amazon EC2 instances, based on Windows Server 2019, for UiPath Orchestrator.
 *** An RDS DB instance with SQL server for the UiPath database.
 *** An Application Load Balancer to balance traffic in a round-robin algorithm between UiPath Orchestrator nodes.
-*** High Availability Add-on for Orchestrator in a three-node cluster of EC2 instances with Red Hat Enterprise Linux (RHEL). for the in-memory database that is used as shared cache by the Orchestrator instances.
+*** High Availability Add-on for UiPath Orchestrator in a three-node cluster of EC2 instances with Red Hat Enterprise Linux (RHEL). for the in-memory database that is used as shared cache by the UiPath Orchestrator instances.
 
 *The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.
