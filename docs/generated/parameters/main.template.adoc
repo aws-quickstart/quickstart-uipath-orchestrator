@@ -3,20 +3,20 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Availability Zones
-(`AvailabilityZones`)|`**__Requires input__**`|Select up to three Availability Zones to use for the VPC subnets. The logical order of your selections is preserved.|Number of Availability Zones
-(`NumberOfAZs`)|`2`|Select the number of Availability Zones to use in the VPC (1-3). This must match the number of AZs selected in the *Availability Zones* parameter.
+(`AvailabilityZones`)|`**__Requires input__**`|Choose up to three Availability Zones to use for the VPC subnets.|Number of Availability Zones
+(`NumberOfAZs`)|`2`|Choose the number of Availability Zones to use in the VPC (1-3). This must match the number of AZs selected in the *Availability Zones* parameter.
 |===
 .Network configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|VPC CIDR
 (`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC, in format x.x.0.0/16.|Public subnet 1 tag
-(`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*|Public subnet 2 tag
-(`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*|Public subnet 3 tag
-(`PublicSubnetTag3`)|`Network=Public3`|(Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*|Private subnet 1 tag
-(`PrivateSubnetTag1`)|`Network=Private1`|(Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*|Private subnet 2 tag
-(`PrivateSubnetTag2`)|`Network=Private2`|(Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*|Private subnet 3 tag
-(`PrivateSubnetTag3`)|`Network=Private3`|(Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+(`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 2 tag
+(`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 3 tag
+(`PublicSubnetTag3`)|`Network=Public3`|(Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 1 tag
+(`PrivateSubnetTag1`)|`Network=Private1`|(Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 2 tag
+(`PrivateSubnetTag2`)|`Network=Private2`|(Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 3 tag
+(`PrivateSubnetTag3`)|`Network=Private3`|(Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
 |===
 .Orchestrator instance configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -35,7 +35,7 @@
 .DNS or SSL configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Hosting FQDN
+|Parameter label (name) |Default value|Description|Hosting fully-qualified domain name (FQDN)
 (`UiPathFQDN`)|`**__Requires input__**`|Fully qualified domain name (FQDN) where UiPath Orchestrator is installed.|Route 53 hosted zone ID
 (`HostedZoneID`)|`**__Requires input__**`|Route 53 hosted zone ID.
 |===
@@ -70,7 +70,7 @@
 .Quick Start S3 bucket configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Template hosting S3 bucket
+|Parameter label (name) |Default value|Description|Template-hosting S3 bucket
 (`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Template folder
 (`QSS3KeyPrefix`)|`quickstart-uipath-orchestrator/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
 |===

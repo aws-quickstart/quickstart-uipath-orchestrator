@@ -1,7 +1,7 @@
 // Include details about the license and how they can sign up. If no license is required, clarify that. 
 
-This Quick Start requires separate licenses for UiPath. To use the Quick Start in your production environment, contact UiPath sales team and sign up for a license at https://www.uipath.com/company/contact-us. When you launch the Quick Start, provide the license keys for Orchestrator and HAA component as input parameters to the CloudFormation stack. If no license keys are provided, the deployment is not affected but you will need to manually license the components after the stack was created.
+A license for UiPath is required. To sign up, contact https://www.uipath.com/company/contact-us[UiPath sales]. A free 60-day non-production https://www.uipath.com/developers/studio-download[trial license] is available. 
 
-If you want to try the product before purchasing, you can request a trial license at https://www.uipath.com/developers/studio-download. The trial license gives you 60 days of free usage in a non-production environment. After this time, you can upgrade to a production license.
+During deployment, provide your UiPath Orchestrator and UiPath High-Availability add-on license keys on the  *Specify stack details* page. For more information, see link:#_launch_the_quick_start[Launch the Quick Start]. Or, manually enter the license keys after the stack is deployed. 
 
-The Quick Start uses only uses AWS provided RHEL and Windows images and does not require any subscription to the Amazon Machine Image (AMI).
+The Quick Start uses only uses Microsoft Windows images and the Red Hat Enterprise Linux (RHEL) distribution, provided by AWS. An Amazon Machine Image (AMI) subscription is not required.

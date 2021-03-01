@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   This template creates a Multi-AZ, multi-subnet VPC infrastructure with UIPath
-  Orchestrator deployed in private subnets, with an Application Load Balancer behind Route53 in
+  Orchestrator deployed in private subnets, with an Application Load Balancer behind Route 53 in
   public subnets. (qs-1r2g41245)
 Metadata:
   QuickStartDocumentation:
@@ -92,7 +92,7 @@ Metadata:
       GatewayName:
         default: Storage gateway name
       UiPathFQDN:
-        default: Hosting FQDN
+        default: Hosting fully-qualified domain name (FQDN)
       HostedZoneID:
         default: Route 53 hosted zone ID
       HAAUser:
@@ -122,13 +122,13 @@ Metadata:
       OrchestratorPassword:
         default: UiPath Orchestrator password
       QSS3BucketName:
-        default: Template hosting S3 bucket
+        default: Template-hosting S3 bucket
       QSS3KeyPrefix:
         default: Template folder
 Parameters:
   AvailabilityZones:
     Description: >-
-      Select up to three Availability Zones to use for the VPC subnets. The logical order of your selections is preserved.
+      Choose up to three Availability Zones to use for the VPC subnets.
     Type: 'List<AWS::EC2::AvailabilityZone::Name>'
   NumberOfAZs:
     AllowedValues:
@@ -136,11 +136,11 @@ Parameters:
       - '3'
     Default: '2'
     Description: >-
-      Select the number of Availability Zones to use in the VPC (1-3). This must match the number of AZs selected in the *Availability Zones* parameter.
+      Choose the number of Availability Zones to use in the VPC (1-3). This must match the number of AZs selected in the *Availability Zones* parameter.
     Type: String
   VPCCIDR:
     AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
-    ConstraintDescription: CIDR block must be in format x.x.0.0/16
+    ConstraintDescription: CIDR block must be in format x.x.0.0/16.
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC, in format x.x.0.0/16.
     Type: String
@@ -151,58 +151,58 @@ Parameters:
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
     Default: Network=Private1
     Description: >- 
-      (Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private2
     Description: >- 
-      (Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private3
     Description: >- 
-      (Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public1
     Description: >- 
-      (Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public2
     Description: >- 
-      (Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public3
     Description: >- 
-      (Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
-      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
+      (Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   KeyPairName:
     Description: Existing key pair to connect to virtual machine (VM) instances.
@@ -1284,3 +1284,6 @@ Outputs:
     Value: !GetAtt
       - StorageStack
       - Outputs.NugetStorageBucketName
+  Postdeployment:
+    Description: See the deployment guide for post-deployment steps.
+    Value: https://aws.amazon.com/quickstart/?quickstart-all.sort-by=item.additionalFields.sortDate&quickstart-all.sort-order=desc&awsm.page-quickstart-all=5

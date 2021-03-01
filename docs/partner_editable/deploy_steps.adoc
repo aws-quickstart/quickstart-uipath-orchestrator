@@ -29,8 +29,8 @@ Each deployment takes about {deployment_time} to complete.
 
 [cols=2*]
 |===
-^|http://qs_launch_permalink[Deploy {partner-product-short-name} into a new VPC on AWS^]
-^|http://qs_template_permalink[View template^]
+^|https://fwd.aws/yJgMp[Deploy {partner-product-short-name} into a new VPC on AWS^]
+^|https://fwd.aws/YAMYy[View template^]
 |===
 
 [start=2]
