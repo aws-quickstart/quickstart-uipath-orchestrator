@@ -10,7 +10,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|VPC CIDR
-(`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC, in format x.x.0.0/16.|Public subnet 1 tag
+(`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|Public subnet 1 tag
 (`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 2 tag
 (`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 3 tag
 (`PublicSubnetTag3`)|`Network=Public3`|(Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 1 tag
@@ -18,7 +18,7 @@
 (`PrivateSubnetTag2`)|`Network=Private2`|(Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 3 tag
 (`PrivateSubnetTag3`)|`Network=Private3`|(Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
 |===
-.Orchestrator instance configuration
+.UiPath Orchestrator instance configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Instance key pair
@@ -30,23 +30,23 @@
 |===
 |Parameter label (name) |Default value|Description|Storage gateway name
 (`GatewayName`)|`uipathgateway`|S3 file storage gateway name.|**NO_LABEL**
-(`GatewayTimezone`)|`US/Eastern`|File gateway timezone.
+(`GatewayTimezone`)|`US/Eastern`|File gateway time zone.
 |===
 .DNS or SSL configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Hosting fully-qualified domain name (FQDN)
-(`UiPathFQDN`)|`**__Requires input__**`|Fully qualified domain name (FQDN) where UiPath Orchestrator is installed.|Route 53 hosted zone ID
+|Parameter label (name) |Default value|Description|Hosting FQDN
+(`UiPathFQDN`)|`**__Requires input__**`|Fully-qualified domain name (FQDN) to which UiPath Orchestrator is installed.|Route 53 hosted zone ID
 (`HostedZoneID`)|`**__Requires input__**`|Route 53 hosted zone ID.
 |===
-.High availability configuration
+.High availability add-on configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|High Availability add-on user name
 (`HAAUser`)|`**__Requires input__**`|User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.|High Availability add-on password
-(`HAAPassword`)|`**__Requires input__**`|Password for High Availability add-on for UiPath Orchestrator.|High Availability add-on port
-(`HAPort`)|`10000`|Port for High Availability add-on for UiPath Orchestrator.|High Availability add-on license key
-(`HAALicense`)|`**__Blank string__**`|License key for High Availability add-on for UiPath Orchestrator.
+(`HAAPassword`)|`**__Requires input__**`|High Availability Add-on password.|High Availability add-on port
+(`HAPort`)|`10000`|High Availability add-on port.|High Availability add-on license key
+(`HAALicense`)|`**__Blank string__**`|High Availability add-on license key.
 |===
 .RDS database configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -54,15 +54,15 @@
 |Parameter label (name) |Default value|Description|RDS database name
 (`RDSDBName`)|`uipathdb`|UIPath database name.|RDS allocated storage
 (`RDSAllocatedStorage`)|`200`|RDS DB instance storage amount.|Maximum allocated storage
-(`RDSMaxAllocatedStorage`)|`1000`|Maximum storage threshold. The limit to which the DB instance can be autoscaled.|Database user name
-(`RDSUsername`)|`**__Requires input__**`|RDS DB username.|Database password
+(`RDSMaxAllocatedStorage`)|`1000`|Maximum storage threshold. The limit to which the DB instance can be autoscaled.|RDS DB user name
+(`RDSUsername`)|`**__Requires input__**`|RDS DB username.|RDS DB password
 (`RDSPassword`)|`**__Requires input__**`|RDS DB password.
 |===
-.Orchestrator server configuration
+.UiPath Orchestrator server configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|UiPath Orchestrator version number
-(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator version.|UiPath Orchestrator instance count
+|Parameter label (name) |Default value|Description|UiPath Orchestrator version
+(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
@@ -71,6 +71,6 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Template-hosting S3 bucket
-(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Template folder
-(`QSS3KeyPrefix`)|`quickstart-uipath-orchestrator/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
+(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Template folder
+(`QSS3KeyPrefix`)|`quickstart-uipath-robot/`|S3 key prefix that is used to simulate a directory for your copy of the  Quick Start assets. Keep the default prefix unless you are customizing  the template. Changing this prefix updates code references to point to  a new Quick Start location. This prefix can include numbers, lowercase  letters, uppercase letters, hyphens (-), and forward slashes (/).  See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html  and https://aws-quickstart.github.io/option1.html.
 |===

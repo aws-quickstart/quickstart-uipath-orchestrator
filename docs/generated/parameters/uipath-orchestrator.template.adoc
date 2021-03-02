@@ -1,66 +1,66 @@
 
-.Network Configuration
+.Network configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|VPC CIDR
-(`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC, must be in the form x.x.0.0/16.|VPC ID
+(`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|VPC ID
 (`VPCID`)|`**__Requires input__**`|VPC ID|VPC CIDR
-(`PublicSubnetIDs`)|`**__Requires input__**`|List of public subnet IDs|VPC CIDR
-(`PrivateSubnetIDs`)|`**__Requires input__**`|List of private subnet IDs
+(`PublicSubnetIDs`)|`**__Requires input__**`|List of public subnet IDs.|VPC CIDR
+(`PrivateSubnetIDs`)|`**__Requires input__**`|List of private subnet IDs.
 |===
-.Orchestrator Instance Configuration
+.UiPath Orchestrator instance configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Instance Key pair
-(`KeyPairName`)|`**__Requires input__**`|Existing Key Pair, which is to be used to Log in to VM instances.|Instance type
+|Parameter label (name) |Default value|Description|Instance key pair
+(`KeyPairName`)|`**__Requires input__**`|Existing key pair to connect to virtual machine (VM) instances.|Instance type
 (`InstanceType`)|`m4.xlarge`|EC2 instance type
 |===
-.Storage Gateway Configuration
+.AWS Storage Gateway configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Storage Gateway
+|Parameter label (name) |Default value|Description|Storage gateway name
 (`GatewayName`)|`uipathgateway`|Name of S3 File Storage Gateway.|**NO_LABEL**
-(`GatewayTimezone`)|`US/Eastern`|Timezone to choose for File Gateway
+(`GatewayTimezone`)|`US/Eastern`|File gateway time zone.
 |===
 .DNS or SSL Configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Hosting FQDN
-(`UiPathFQDN`)|`**__Requires input__**`|The fully qualified domain name where the UiPath Orchestrator should be installed|Route 53 Hosted Zone Id
-(`HostedZoneID`)|`**__Requires input__**`|The Route 53 hosted zone Id
+(`UiPathFQDN`)|`**__Requires input__**`|Fully qualified domain name (FQDN) to which UiPath Orchestrator is installed.|Route 53 hosted zone ID
+(`HostedZoneID`)|`**__Requires input__**`|The Route 53 hosted zone ID.
 |===
-.High Availability Configuration
+.High Availability add-on Configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|HA Addon Username
-(`HAAUser`)|`**__Requires input__**`|High Availability Add-on username. A valid email must be used as username|HA Addon Password
-(`HAAPassword`)|`**__Requires input__**`|High Availability Add-on password.|HA Addon Port
-(`HAPort`)|`10000`|Port on which High Availability Add-on listens to|HA Addon License Key
-(`HAALicense`)|`**__Blank string__**`|License key, purchased from UIPath, to be used with the High Availability Add-on.
+|Parameter label (name) |Default value|Description|High Availability add-on user name
+(`HAAUser`)|`**__Requires input__**`|User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.|High Availability add-on password
+(`HAAPassword`)|`**__Requires input__**`|High Availability Add-on password.|High Availability add-on port
+(`HAPort`)|`10000`|High Availability add-on port.|High Availability add-on license key
+(`HAALicense`)|`**__Blank string__**`|High Availability add-on license key.
 |===
 .RDS Database Configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|RDS Database Name
-(`RDSDBName`)|`uipathdb`|Name for UIPath Database to be created.|RDS Allocated Storage
-(`RDSAllocatedStorage`)|`200`|Storage amount to be allocated to RDS DB Instance.|Maximum allocated storage
-(`RDSMaxAllocatedStorage`)|`1000`|The upper limit to which Amazon RDS can automatically scale the storage of the DB instance.|DB Username
-(`RDSUsername`)|`**__Requires input__**`|Username to be used to log on to Database.|DB Password
-(`RDSPassword`)|`**__Requires input__**`|Password to be used to log on to Database.
+|Parameter label (name) |Default value|Description|RDS database name
+(`RDSDBName`)|`uipathdb`|UIPath database name.|RDS allocated storage
+(`RDSAllocatedStorage`)|`200`|RDS DB instance storage amount.|Maximum allocated storage
+(`RDSMaxAllocatedStorage`)|`1000`|Maximum storage threshold. The limit to which the DB instance can be autoscaled.|RDS DB user name
+(`RDSUsername`)|`**__Requires input__**`|RDS DB username.|RDS DB Password
+(`RDSPassword`)|`**__Requires input__**`|RDS DB password.
 |===
-.Orchestrator Server Configuration
+.UiPath Orchestrator server configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Orchestrator Version Number
-(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator Version to be installed.|Orchestrator Instance Count
-(`OrchestratorInstanceCount`)|`2`|Desired Capacity (instance count) for Orchestrator instances.|Orchestrator License Key
-(`OrchestratorLicense`)|`**__Blank string__**`|License key, purchased from UiPath, or trial key. If not provided, Orchestrator will be unlicensed|Orchestrator Password
-(`OrchestratorPassword`)|`**__Requires input__**`|Orchestrator Administrator password to login as.
+|Parameter label (name) |Default value|Description|UiPath Orchestrator version
+(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
+(`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
+(`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
 |===
-.Quickstart Bucket configuration
+.Quick Start S3 bucket configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Template hosting Bucket
-(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name hosting the Quickstart templates.|Template folder
-(`QSS3KeyPrefix`)|`quickstart-uipath-orchestrator/`|S3 key prefix under which Quick Start templates are hosted.
+|Parameter label (name) |Default value|Description|Template-hosting S3 bucket
+(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Template folder
+(`QSS3KeyPrefix`)|`quickstart-uipath-robot/`|S3 key prefix that is used to simulate a directory for your copy of the  Quick Start assets. Keep the default prefix unless you are customizing  the template. Changing this prefix updates code references to point to  a new Quick Start location. This prefix can include numbers, lowercase  letters, uppercase letters, hyphens (-), and forward slashes (/).  See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html  and https://aws-quickstart.github.io/option1.html.
 |===

@@ -11,4 +11,4 @@ This Quick Start assumes you have established ownership of the parent domain und
 
 ==== Prepare your {partner-company-name} account
 
-This Quick Start uses AWS owned Amazon Machine Images (AMI). However, during the initiation of EC2 virtual machines (VMs), it downloads, installs and configures UiPath Orchestrator and High Availability Add-on (HAA) software. Before deployment, you'll need to first purchase license keys for UiPath Orchestrator and HAA by contacting UiPath directly.
+This Quick Start uses AWS owned Amazon Machine Images (AMI). However, during the initiation of EC2 virtual machines (VMs), it downloads, installs and configures UiPath Orchestrator and HAA software. Before deployment, you'll need to first purchase license keys for UiPath Orchestrator and HAA by https://www.uipath.com/company/contact-us?utm_source=GoogleSearch&utm_medium=cpc&utm_term=%7bkeyword%7d-%7bmatchtype%7d&utm_content=%7bcreative%7d&utm_campaign=Contact_Sales_Form_Inbound_Leads&gclid=EAIaIQobChMIj9L_toWS7wIVT-DICh2QzAPjEAAYASAAEgLmY_D_BwE&gclsrc=aw.ds[contacting UiPath] directly.

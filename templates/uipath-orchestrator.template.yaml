@@ -74,7 +74,7 @@ Metadata:
       GatewayName:
         default: Storage gateway name
       UiPathFQDN:
-        default: Hosting fully-qualified domain name (FQDN)
+        default: Hosting FQDN
       HostedZoneID:
         default: Route 53 hosted zone ID
       HAAUser:
@@ -736,7 +736,7 @@ Parameters:
       - Zulu
     Default: US/Eastern
   UiPathFQDN:
-    Description: FQDN to which UiPath Orchestrator is installed.
+    Description: Fully qualified domain name (FQDN) to which UiPath Orchestrator is installed.
     Type: String
   HostedZoneID:
     Description: The Route 53 hosted zone ID.
@@ -1138,15 +1138,15 @@ Resources:
 
 Outputs:
   FQDNLoadBalancer:
-    Description: UiPath Orchestrator Login page
+    Description: UiPath Orchestrator login page.
     Value: !Ref UiPathFQDN
   BastionHost:
-    Description: Bastion Host's Public IP address
+    Description: Bastion host Public IP address.
     Value: !GetAtt
       - ServerStack
       - Outputs.BastionHostPublicIP
   HaaNodesIPs:
-    Description: High Availability Add-on's list of IP addresses
+    Description: High Availability Add-on IP addresses.
     Value: !Join
       - ','
       - - !GetAtt
@@ -1159,7 +1159,7 @@ Outputs:
           - HAStack
           - Outputs.HASlave2PrivateIP
   NugetStorageS3Bucket:
-    Description: S3 bucket name that contains Orchestrator's Nuget packages
+    Description: S3 bucket with UiPath Orchestrator NuGet packages.
     Value: !GetAtt
       - StorageStack
       - Outputs.NugetStorageBucketName
