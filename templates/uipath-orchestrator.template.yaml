@@ -110,21 +110,21 @@ Metadata:
 Parameters:
   VPCCIDR:
     AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
-    ConstraintDescription: CIDR block parameter must be in the form x.x.0.0/16
+    ConstraintDescription: Must be in format x.x.0.0/16.
     Default: 10.0.0.0/16
-    Description: 'CIDR block for the VPC, must be in the form x.x.0.0/16.'
+    Description: VPC CIDR block, in format x.x.0.0/16.
     Type: String
   VPCID:
     Type: 'AWS::EC2::VPC::Id'
-    Description: 'VPC ID'
+    Description: VPC ID
   PublicSubnetIDs:
-    Description: 'List of public subnet IDs'
+    Description: List of public subnet IDs.
     Type: 'List<AWS::EC2::Subnet::Id>'
   PrivateSubnetIDs:
-    Description: 'List of private subnet IDs'
+    Description: List of private subnet IDs.
     Type: 'List<AWS::EC2::Subnet::Id>'
   KeyPairName:
-    Description: 'Existing Key Pair, which is to be used to Log in to VM instances.'
+    Description: Existing key pair to connect to virtual machine (VM) instances.
     Type: 'AWS::EC2::KeyPair::KeyName'
   InstanceType:
     AllowedValues:
@@ -144,7 +144,7 @@ Parameters:
       - r4.2xlarge
       - r4.4xlarge
       - r4.8xlarge
-    ConstraintDescription: 'Class of instance, must be a valid EC2 instance type from the list.'
+    ConstraintDescription: Must be a valid Amazon EC2 instance type from the list.
     Default: m4.xlarge
     Description: EC2 instance type
     Type: String
@@ -154,10 +154,9 @@ Parameters:
     Default: uipathgateway
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      Gateway name should contain alphabetic characters only, and cannot be left
-      blank.
+      Gateway name can only contain *a–z* and *A–Z*. It cannot be left blank.
   GatewayTimezone:
-    Description: Timezone to choose for File Gateway
+    Description: File gateway time zone.
     Type: String
     AllowedValues:
       - Africa/Abidjan
@@ -737,16 +736,16 @@ Parameters:
       - Zulu
     Default: US/Eastern
   UiPathFQDN:
-    Description: The fully qualified domain name where the UiPath Orchestrator should be installed
+    Description: FQDN to which UiPath Orchestrator is installed.
     Type: String
   HostedZoneID:
-    Description: The Route 53 hosted zone Id
+    Description: The Route 53 hosted zone ID.
     Type: AWS::Route53::HostedZone::Id
   HAAUser:
-    Description: High Availability Add-on username. A valid email must be used as username
+    Description: User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
-    ConstraintDescription: A valid email must be used as HA username
+    ConstraintDescription: Must be a valid email address.
   HAAPassword:
     Description: High Availability Add-on password.
     Type: String
@@ -756,61 +755,56 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      HA Password must contain at least one uppercase letter and be longer than
-      six charaters.
+      High Availability add-on password must contain more than six characters and include at least one uppercase letter.
   HAPort:
-    Description: Port on which High Availability Add-on listens to
+    Description: High Availability add-on port.
     Type: String
     Default: 10000
     AllowedValues:
       - 10000
   HAALicense:
-    Description: >-
-      License key, purchased from UIPath, to be used with the High
-      Availability Add-on.
+    Description: High Availability add-on license key.
     Default: ''
     Type: String
   RDSDBName:
-    Description: Name for UIPath Database to be created.
+    Description: UIPath database name.
     Type: String
     Default: uipathdb
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      Database name should contain alphabetic characters only, and cannot be
-      left blank.
+      UIPath database name can only contain characters *a–z* and *A–Z*. It cannot be left blank.
   RDSAllocatedStorage:
-    Description: Storage amount to be allocated to RDS DB Instance.
+    Description: RDS DB instance storage amount.
     Type: String
     Default: '200'
     AllowedPattern: '^(?:[1-9]\d{0,3}|1[0-5]\d{3}|16[0-2]\d{2}|163[0-7]\d|1638[0-4])$'
-    ConstraintDescription: RDS Allocated storage should be less or equal to 16384 GB
+    ConstraintDescription: RDS DB instance storage amount should be less or equal to 16,384 GB.
   RDSMaxAllocatedStorage:
-    Description: The upper limit to which Amazon RDS can automatically scale the storage of the DB instance.
+    Description: Maximum storage threshold. The limit to which the DB instance can be autoscaled.
     Type: Number
     Default: '1000'
     MaxValue: '16384'
-    ConstraintDescription: RDS Max Allocated storage should be less or equal to RDS Allocated Storage
+    ConstraintDescription: Should be less than or equal to RDS allocated storage.
   RDSUsername:
-    Description: Username to be used to log on to Database.
+    Description: RDS DB username.
     Type: String
     AllowedPattern: '^[0-9a-zA-Z]*$'
-    ConstraintDescription: Database username cannot be left blank.
+    ConstraintDescription: RDS DB username cannot be left blank.
   RDSPassword:
-    Description: Password to be used to log on to Database.
+    Description: RDS DB password.
     Type: String
     NoEcho: 'true'
     MinLength: '8'
     AllowedPattern: '^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{8,}$'
     ConstraintDescription: >-
-      Database Password must contain at least one letter, at least one number,
-      and be longer than eight characters.
+      RDS DB password must contain a minimum of eight characters and include at least one letter and one number.
   OrchestratorVersion:
-    Description: UIPath Orchestrator Version to be installed.
+    Description: UIPath Orchestrator version.
     Type: String
     Default: 20.10.2
     AllowedValues:
       - 20.10.2
-    ConstraintDescription: 'Orchestrator version number can contain only digits and dot(.), and must .'
+    ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
     Description: Desired Capacity (instance count) for Orchestrator instances.
     Type: String

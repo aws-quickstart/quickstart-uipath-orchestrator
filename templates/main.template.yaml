@@ -140,9 +140,9 @@ Parameters:
     Type: String
   VPCCIDR:
     AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
-    ConstraintDescription: CIDR block must be in format x.x.0.0/16.
+    ConstraintDescription: Must be in format x.x.0.0/16.
     Default: 10.0.0.0/16
-    Description: CIDR block for the VPC, in format x.x.0.0/16.
+    Description: VPC CIDR block, in format x.x.0.0/16.
     Type: String
   PrivateSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
@@ -225,7 +225,7 @@ Parameters:
       - r4.2xlarge
       - r4.4xlarge
       - r4.8xlarge
-    ConstraintDescription: Only instance types provided in the dropdown list are valid entries.
+    ConstraintDescription: Must be a valid Amazon EC2 instance type from the list.
     Default: m4.xlarge
     Description: EC2 instance type.
     Type: String
@@ -235,9 +235,9 @@ Parameters:
     Default: uipathgateway
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      Gateway name can only contain *a–z* and *A–Z* and cannot be left blank.
+      Gateway name can only contain *a–z* and *A–Z*. It cannot be left blank.
   GatewayTimezone:
-    Description: File gateway timezone.
+    Description: File gateway time zone.
     Type: String
     AllowedValues:
       - Africa/Abidjan
@@ -817,7 +817,7 @@ Parameters:
       - Zulu
     Default: US/Eastern
   UiPathFQDN:
-    Description: Fully qualified domain name (FQDN) where UiPath Orchestrator is installed.
+    Description: FQDN to which UiPath Orchestrator is installed.
     Type: String
   HostedZoneID:
     Description: Route 53 hosted zone ID.
@@ -826,9 +826,9 @@ Parameters:
     Description: User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
-    ConstraintDescription: User name must be a valid email address.
+    ConstraintDescription: Must be a valid email address.
   HAAPassword:
-    Description: Password for High Availability add-on for UiPath Orchestrator.
+    Description: High Availability Add-on password.
     Type: String
     NoEcho: 'true'
     MinLength: '6'
@@ -838,13 +838,13 @@ Parameters:
     ConstraintDescription: >-
       High Availability add-on password must contain more than six characters and include at least one uppercase letter.
   HAPort:
-    Description: Port for High Availability add-on for UiPath Orchestrator.
+    Description: High Availability add-on port.
     Type: String
     Default: 10000
     AllowedValues:
       - 10000
   HAALicense:
-    Description: License key for High Availability add-on for UiPath Orchestrator.
+    Description: High Availability add-on license key.
     Default: ''
     Type: String
   RDSDBName:
@@ -853,7 +853,7 @@ Parameters:
     Default: uipathdb
     AllowedPattern: '^[a-zA-Z]*$'
     ConstraintDescription: >-
-      UIPath database name can only contain characters *a–z* and *A–Z* and cannot be left blank.
+      UIPath database name can only contain characters *a–z* and *A–Z*. It cannot be left blank.
   RDSAllocatedStorage:
     Description: RDS DB instance storage amount.
     Type: String
@@ -865,7 +865,7 @@ Parameters:
     Type: Number
     Default: '1000'
     MaxValue: '16384'
-    ConstraintDescription: RDS Max Allocated storage should be less than or equal to RDS Allocated Storage.
+    ConstraintDescription: Should be less than or equal to RDS allocated storage.
   RDSUsername:
     Description: RDS DB username.
     Type: String
