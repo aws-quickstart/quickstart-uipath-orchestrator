@@ -14,7 +14,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 ** Managed NAT gateways to allow outbound internet access for resources in the private subnets.*
 ** A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*
 ** An Amazon Simple Storage Service (Amazon S3) bucket for NuGet packages, the automation projects run by UiPath software robots.
-** AWS File Storage Gateway for access to files in the S3 bucket via a mapped network drive.
+** AWS Storage Gateway for access to files in the S3 bucket via a mapped network drive.
 * In the private subnets: 
 ** With the single-node deployment option:
 *** An EC2 instance, based on Windows Server 2019, for UiPath Orchestrator.

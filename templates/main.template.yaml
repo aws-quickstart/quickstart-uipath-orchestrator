@@ -40,7 +40,7 @@ Metadata:
           - UiPathFQDN
           - HostedZoneID
       - Label:
-          default: High availability add-on configuration
+          default: High-availability add-on configuration
         Parameters:
           - HAAUser
           - HAAPassword
@@ -94,15 +94,15 @@ Metadata:
       UiPathFQDN:
         default: Hosting FQDN
       HostedZoneID:
-        default: Route 53 hosted zone ID
+        default: ID of Route 53 hosted zone
       HAAUser:
-        default: High Availability add-on user name
+        default: High-availability add-on user name
       HAAPassword:
-        default: High Availability add-on password
+        default: High-availability add-on password
       HAPort:
-        default: High Availability add-on port
+        default: High-availability add-on port
       HAALicense:
-        default: High Availability add-on license key
+        default: High-availability add-on license key
       RDSDBName:
         default: RDS database name
       RDSAllocatedStorage:
@@ -817,13 +817,13 @@ Parameters:
       - Zulu
     Default: US/Eastern
   UiPathFQDN:
-    Description: Fully-qualified domain name (FQDN) to which UiPath Orchestrator is installed.
+    Description: Fully qualified domain name (FQDN) to which UiPath Orchestrator is installed.
     Type: String
   HostedZoneID:
-    Description: Route 53 hosted zone ID.
+    Description: ID of Route 53 hosted zone.
     Type: AWS::Route53::HostedZone::Id
   HAAUser:
-    Description: User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.
+    Description: User name for high-availability add-on for UiPath Orchestrator. Must be a valid email address.
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
     ConstraintDescription: Must be a valid email address.
@@ -836,15 +836,15 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      High Availability add-on password must contain more than six characters and include at least one uppercase letter.
+      Password must contain more than six characters and include at least one uppercase letter.
   HAPort:
-    Description: High Availability add-on port.
+    Description: High-availability add-on port.
     Type: String
     Default: 10000
     AllowedValues:
       - 10000
   HAALicense:
-    Description: High Availability add-on license key.
+    Description: High-availability add-on license key.
     Default: ''
     Type: String
   RDSDBName:
