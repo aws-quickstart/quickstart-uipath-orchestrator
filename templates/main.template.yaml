@@ -25,7 +25,7 @@ Metadata:
           - PrivateSubnetTag2
           - PrivateSubnetTag3
       - Label:
-          default: Orchestrator instance configuration
+          default: UiPath Orchestrator instance configuration
         Parameters:
           - KeyPairName
           - InstanceType
@@ -40,7 +40,7 @@ Metadata:
           - UiPathFQDN
           - HostedZoneID
       - Label:
-          default: High availability configuration
+          default: High availability add-on configuration
         Parameters:
           - HAAUser
           - HAAPassword
@@ -55,7 +55,7 @@ Metadata:
           - RDSUsername
           - RDSPassword
       - Label:
-          default: Orchestrator server configuration
+          default: UiPath Orchestrator server configuration
         Parameters:
           - OrchestratorVersion
           - OrchestratorInstanceCount
@@ -110,13 +110,13 @@ Metadata:
       RDSMaxAllocatedStorage:
         default: Maximum allocated storage
       RDSUsername:
-        default: Database user name
+        default: RDS DB user name
       RDSPassword:
-        default: Database password
+        default: RDS DB password
       OrchestratorVersion:
-        default: UiPath Orchestrator version number
+        default: UiPath Orchestrator version
       OrchestratorInstanceCount:
-        default: UiPath Orchestrator instance count
+        default: Number of UiPath Orchestrator instances
       OrchestratorLicense:
         default: UiPath Orchestrator license key
       OrchestratorPassword:
