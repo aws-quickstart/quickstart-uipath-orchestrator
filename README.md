@@ -1,5 +1,4 @@
-# quickstart-uipath-orchestrator
-## UIPath Orchestrator on AWS Cloud
+# UIPath Orchestrator on AWS Cloud
 
 For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/gnRVW).
 
