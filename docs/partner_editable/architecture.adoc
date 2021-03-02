@@ -13,7 +13,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * In the public subnets:
 ** Managed NAT gateways to allow outbound internet access for resources in the private subnets.*
 ** A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*
-** Amazon Simple Storage Service (Amazon S3) bucket for NuGet packages, the automation projects run by robots that are created in UiPath Studio and published to UiPath Orchestrator.
+** An Amazon Simple Storage Service (Amazon S3) bucket for NuGet packages, the automation projects run by UiPath Robots.
 ** AWS File Storage Gateway for access to files in the S3 bucket via a mapped network drive.
 * In the private subnets: 
 ** With the single-node deployment option:
@@ -23,6 +23,6 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 *** An Auto Scaling group with up to 20 Amazon EC2 instances, based on Windows Server 2019, for UiPath Orchestrator.
 *** An RDS DB instance with SQL server for the UiPath database.
 *** An Application Load Balancer to balance traffic in a round-robin algorithm between UiPath Orchestrator nodes.
-*** High Availability Add-on for UiPath Orchestrator in a three-node cluster of EC2 instances with Red Hat Enterprise Linux (RHEL). for the in-memory database that is used as shared cache by the UiPath Orchestrator instances.
+*** High Availability Add-on for UiPath Orchestrator in a three-node cluster of EC2 instances with Red Hat Enterprise Linux (RHEL). These instances are for the in-memory database that is used as shared cache by the UiPath Orchestrator instances.
 
 *The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.

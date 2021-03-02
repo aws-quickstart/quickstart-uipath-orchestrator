@@ -11,34 +11,37 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The *Login* screen shown in <<test1>> will display.
+[start=1]
+. Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The *Login* screen shown in <<test1>> will display.
 
 :xrefstyle: short
 [#test1]
 .Test the deployment
 image::../images/test1.png[test1,width=50%,height=50%]
 
-Verify that HAA nodes are deployed successfully. From the bastion host, navigate to any endpoint IP address via https://haa-ip:8443. 
+[start=2]
+. Verify that HAA nodes are deployed successfully. From the bastion host, navigate to any endpoint IP address via https://haa-ip:8443. 
 
 :xrefstyle: short
 [#test2]
 .Logging into High Availability Add-on
 image::../images/test2.png[test2,width=50%,height=50%]
 
-Log in, and verify that all nodes are present on the *Nodes* tab.
+[start=3]
+. Log in, and verify that all nodes are present on the *Nodes* tab.
 
 :xrefstyle: short
 [#test3]
 .Verifying nodes
 image::../images/test3.png[test3,width=100%,height=100%]
 
-Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway server. To do this, navigate to the Application Load Balancer endpoint URL and log in. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
+[start=4]
+. Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway server. To do this, navigate to the Application Load Balancer endpoint URL and log in. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
 
 :xrefstyle: short
 [#test4]
 .Test the deployment
 image::../images/test4.png[test4,width=100%,height=100%]
-
 
 == Create a key pair
 Amazon EC2 uses public-key cryptography to encrypt and decrypt login information. In Windows instances, the key pair obtains the administrator password from the Amazon EC2 console and then logs in using Remote Desktop Protocol (RDP). On Linux, the key pair authenticates the SSH (Secure Shell) login. For more information, see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[Amazon EC2 key pairs and Linux instances^].
@@ -60,7 +63,7 @@ image::../images/create_key_pair.png[Key pair,width=100%,height=100%]
 
 == Create IAM user
 
-To launch the Cloudformation stack for this Quick Start, you’ll need a user login with programmatic access to following AWS services:
+A user login with programmatic access to following AWS services is required to launch the Quick Start CloudFormation stack.
 
 * AWS CloudFormation
 * AWS IAM, Amazon EC2
@@ -119,7 +122,7 @@ image::../images/iam_5.png[IAM,width=100%,height=100%]
 
 == Purchase UiPath license
 
-This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by https://www.uipath.com/company/contact-us[contacting UiPath directly^].
+This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs, and configures UiPath Orchestrator and HAA add-on software. Before deployment, purchase UiPath Orchestrator and HAA add-on licenses by https://www.uipath.com/company/contact-us[contacting UiPath directly^].
 
 // == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
@@ -137,9 +140,7 @@ The Quick Start also provides the option to deploy into a minimum of two Availab
 To customize UiPath software for your business, IT, and security requirements, consult the https://docs.uipath.com/[UiPath Documentation Portal^].
 
 === Automatic failover
-Deploying this Quick Start with the default parameters configures an Auto Scaling group with UiPath Orchestrator instances and three HAA clustered nodes.
-
-The Quick Start implementation supports the following:
+Deploying this Quick Start with the default parameters configures an Auto Scaling group with UiPath Orchestrator instances and three HAA clustered nodes. The Quick Start implementation supports the following:
 
 * Protection from the failure of a single instance.
 * Automatic failover between the HAA cluster nodes.
@@ -164,7 +165,6 @@ To customize UiPath software for your business, IT, and security requirements, c
 
 === Security groups and firewalls
 When Amazon EC2 instances are launched, they must be associated with a security group, which acts as a stateful firewall. You have complete control over the security group’s inbound and outbound network traffic. You can build granular rules that are scoped by protocol, port number, and source/destination IP address, or other security groups. By default, all outbound traffic from security group is permitted. Inbound traffic, however, must be configured to allow the appropriate traffic to reach your instances. We recommend that you tightly control inbound traffic. Doing this reduces the attack surface of your EC2 instances yet leaves the following ports open for application communication.
-
 
 * *HAA ports*
 
