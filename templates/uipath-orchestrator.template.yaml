@@ -806,17 +806,17 @@ Parameters:
       - 20.10.2
     ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
-    Description: Desired Capacity (instance count) for Orchestrator instances.
+    Description: Number of UiPath Orchestrator instances (1–20).
     Type: String
     Default: '2'
     AllowedPattern: '^(?:[1-9]|0[1-9]|1[0-9]|20)$'
-    ConstraintDescription: Orchestrator Instances can be between 1 to 20.
+    ConstraintDescription: Number of UiPath Orchestrator instances can be 1–20.
   OrchestratorLicense:
-    Description: 'License key, purchased from UiPath, or trial key. If not provided, Orchestrator will be unlicensed'
+    Description: UiPath Orchestrator license key or trial key.
     Default: ''
     Type: String
   OrchestratorPassword:
-    Description: Orchestrator Administrator password to login as.
+    Description: UiPath Orchestrator administrator password.
     Type: String
     NoEcho: 'true'
     MinLength: '6'
@@ -824,31 +824,41 @@ Parameters:
     AllowedPattern: >-
       (?=^.{6,124}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*
     ConstraintDescription: >-
-      Orchestrator Password must contain at least one uppercase letter and be
-      longer than six characters.
+      UiPath Orchestrator administrator password must contain more than six characters and include at least one uppercase letter.
   QSS3BucketName:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: >-
       Quick Start bucket name can include numbers, lowercase letters, uppercase
       letters, and hyphens (-). It cannot start or end with a hyphen (-).
-    Description: S3 bucket name hosting the Quickstart templates.
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
     Type: String
     Default: aws-quickstart
   QSS3BucketRegion:
     Default: us-east-1
     Description: >-
-      The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted.
-      When using your own bucket, you must specify this value.
+       AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See https://aws-quickstart.github.io/option1.html.
     Type: String
     AllowedPattern: (us(-gov)?|ap|ca|cn|eu|sa)-(central|(north|south)?(east|west)?)-\d
-    ConstraintDescription: Quick Start bucket region must be a valid AWS Region code.
+    ConstraintDescription: Must be a valid AWS Region code.
   QSS3KeyPrefix:
     AllowedPattern: '^[0-9a-zA-Z-/]*/$'
     ConstraintDescription: >-
-      Quick Start key prefix can include numbers, lowercase letters, uppercase
-      letters, and hyphens (-), and ending with a slash(/).
-    Default: quickstart-uipath-orchestrator/
-    Description: S3 key prefix under which Quick Start templates are hosted.
+      The Quick Start S3 key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slashes (/).
+    Default: quickstart-uipath-robot/
+    Description: >-
+      S3 key prefix that is used to simulate a directory for your copy of the 
+      Quick Start assets. Keep the default prefix unless you are customizing 
+      the template. Changing this prefix updates code references to point to 
+      a new Quick Start location. This prefix can include numbers, lowercase 
+      letters, uppercase letters, hyphens (-), and forward slashes (/). 
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      and https://aws-quickstart.github.io/option1.html.
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals
@@ -1153,3 +1163,6 @@ Outputs:
     Value: !GetAtt
       - StorageStack
       - Outputs.NugetStorageBucketName
+  Postdeployment:
+    Description: See the deployment guide for post-deployment steps.
+    Value: https://aws.amazon.com/quickstart/?quickstart-all.sort-by=item.additionalFields.sortDate&quickstart-all.sort-order=desc&awsm.page-quickstart-all=5
