@@ -175,8 +175,8 @@ image::../images/security1.png[security1,width=100%,height=100%]
 
 * *UiPath Orchestrator and UiPath Robot ports*
 ** 80, 443 for instances behind ALB
-** 443 for ALB and Robots
-** 3389 for Robots and Orchestrators
+** 443 for ALB and Robot
+** 3389 for Robot and Orchestrator
 
 * *Other ports and usage*
 ** 22 for SSH into HAA nodes
