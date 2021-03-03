@@ -4,4 +4,4 @@ A license for UiPath is required. To sign up, contact https://www.uipath.com/com
 
 During deployment, provide your UiPath Orchestrator and UiPath High-Availability add-on license keys on the  *Specify stack details* page. For more information, see link:#_launch_the_quick_start[Launch the Quick Start]. Or, manually enter the license keys after the stack is deployed. 
 
-The Quick Start uses only uses Microsoft Windows images and the Red Hat Enterprise Linux (RHEL) distribution, provided by AWS. An Amazon Machine Image (AMI) subscription is not required.
+The Quick Start uses only uses Microsoft Windows images and the Red Hat Enterprise Linux distribution, provided by AWS. An Amazon Machine Image (AMI) subscription is not required.
