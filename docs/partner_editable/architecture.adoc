@@ -16,10 +16,6 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 ** An Amazon Simple Storage Service (Amazon S3) bucket for NuGet packages, the automation projects run by UiPath software robots.
 ** AWS Storage Gateway for access to files in the S3 bucket via a mapped network drive.
 * In the private subnets: 
-** With the single-node deployment option:
-*** An EC2 instance, based on Windows Server 2019, for UiPath Orchestrator.
-*** An Amazon Relational Database Service (Amazon RDS) DB instance with Microsoft SQL Server for the UiPath database.
-** With the multi-node deployment option for high availability:
 *** An Auto Scaling group with up to 20 Amazon EC2 instances, based on Windows Server 2019, for UiPath Orchestrator.
 *** An RDS DB instance with SQL server for the UiPath database.
 *** An Application Load Balancer to balance traffic in a round-robin algorithm between UiPath Orchestrator nodes.

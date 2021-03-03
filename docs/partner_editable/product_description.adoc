@@ -11,7 +11,7 @@ UiPath Orchestrator can manage your entire fleet, including the following UiPath
 * *Development* - An unattended robot used only for development purposes.
 * *Nonproduction* - An unattended robot used only for development and testing purposes.
 
-With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. There are two deployment options: single-node or multi-node with the High Availability add-on (HAA) for UiPath Orchestrator. The single-node option runs the UiPath Orchestrator web server on a single machine and is recommended for small to medium scale deployment of UiPath Robot. The multi-node option with HAA is designed for increased capacity and failure resistance. For more information, see link:#_architecture[Architecture], later in this guide.
+// With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. There are two deployment options: single-node or multi-node with the High Availability add-on (HAA) for UiPath Orchestrator. The single-node option runs the UiPath Orchestrator web server on a single machine and is recommended for small to medium scale deployment of UiPath Robot. The multi-node option with HAA is designed for increased capacity and failure resistance. For more information, see link:#_architecture[Architecture], later in this guide.
 
 
 

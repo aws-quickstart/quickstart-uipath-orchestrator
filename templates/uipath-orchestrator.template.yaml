@@ -78,13 +78,13 @@ Metadata:
       HostedZoneID:
         default: Route 53 hosted zone ID
       HAAUser:
-        default: High Availability add-on user name
+        default: High-availability add-on user name
       HAAPassword:
-        default: High Availability add-on password
+        default: High-availability add-on password
       HAPort:
-        default: High Availability add-on port
+        default: High-availability add-on port
       HAALicense:
-        default: High Availability add-on license key
+        default: High-availability add-on license key
       RDSDBName:
         default: RDS database name
       RDSAllocatedStorage:
@@ -742,12 +742,12 @@ Parameters:
     Description: The Route 53 hosted zone ID.
     Type: AWS::Route53::HostedZone::Id
   HAAUser:
-    Description: User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.
+    Description: High-aailability add-on user name. Must be a valid email address.
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
     ConstraintDescription: Must be a valid email address.
   HAAPassword:
-    Description: High Availability Add-on password.
+    Description: High-availability add-on password.
     Type: String
     NoEcho: 'true'
     MinLength: '6'
@@ -757,13 +757,13 @@ Parameters:
     ConstraintDescription: >-
       High Availability add-on password must contain more than six characters and include at least one uppercase letter.
   HAPort:
-    Description: High Availability add-on port.
+    Description: High-availability add-on port.
     Type: String
     Default: 10000
     AllowedValues:
       - 10000
   HAALicense:
-    Description: High Availability add-on license key.
+    Description: High-availability add-on license key.
     Default: ''
     Type: String
   RDSDBName:

@@ -823,12 +823,12 @@ Parameters:
     Description: ID of Route 53 hosted zone.
     Type: AWS::Route53::HostedZone::Id
   HAAUser:
-    Description: User name for high-availability add-on for UiPath Orchestrator. Must be a valid email address.
+    Description: High-availability add-on user name. Must be a valid email address.
     Type: String
     AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
     ConstraintDescription: Must be a valid email address.
   HAAPassword:
-    Description: High Availability Add-on password.
+    Description: High-availability add-on password.
     Type: String
     NoEcho: 'true'
     MinLength: '6'
