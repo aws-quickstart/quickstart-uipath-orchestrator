@@ -31,7 +31,10 @@ Each deployment takes about {deployment_time} to complete.
 |===
 ^|https://fwd.aws/yJgMp[Deploy {partner-product-short-name} into a new VPC on AWS^]
 ^|https://fwd.aws/YAMYy[View template^]
+^|https://fwd.aws/3rp53[Deploy {partner-product-short-name} into an existing VPC on AWS^]
+^|https://fwd.aws/vbmx5[View template^]
 |===
+
 
 [start=2]
 . Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This Region is where the network infrastructure for {partner-product-short-name} is built. The template is launched in the {default_deployment_region} Region by default.

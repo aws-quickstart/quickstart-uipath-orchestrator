@@ -1,10 +1,10 @@
 // Change the following attributes.
 :quickstart-project-name: quickstart-uipath-orchestrator
-:partner-product-name: UIPath Orchestrator
+:partner-product-name: UiPath Orchestrator
 // For the following attribute, if you have no short name, enter the same name as partner-product-name.
-:partner-product-short-name: UIPath Orchestrator
+:partner-product-short-name: UiPath Orchestrator
 // If there's no partner, comment partner-company-name and partner-contributors.
-:partner-company-name: UIPath
+:partner-company-name: UiPath
 :doc-month: February
 :doc-year: 2021
 // For the following two "contributor" attributes, if the partner agrees to include names in the byline, 
