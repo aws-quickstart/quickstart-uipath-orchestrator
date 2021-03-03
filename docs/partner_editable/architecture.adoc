@@ -8,22 +8,23 @@ image::../images/architecture_diagram.png[Architecture,width=100%,height=100%]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
-* A highly available architecture that spans two or more  Availability Zones.*
-* A virtual private cloud (VPC) configured with public  and private subnets, according to AWS best practices, to provide you with  your own virtual network on AWS.*
+* A highly available architecture that spans two or more Availability Zones.*
+* A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
-    ** A Windows bastion host in each Availability Zone with a single security  group as a virtual firewall.
-    ** AWS Storage Gateway providing a file gateway VM image.
-    ** An Amazon EC2 instance hosting the file gateway.
-    ** A security group to control traffic into the file  gateway.
+** A Windows bastion host to control inbound RDP access to Amazon Elastic Compute Cloud (Amazon EC2) instances in the private subnets.
+** AWS Storage Gateway providing the file gateway virtual machine image.
+** An Amazon EC2 instance hosting the file gateway.
+** Security groups controlling inbound and outbound traffic to the file gateway and bastion host instances.
 * In the private subnets:
-    ** An Auto Scaling group with up to 20 UiPath  Orchestrator nodes on Amazon EC2 instances running Windows Server 2019.
-    ** An RDS DB instance in a database subnet group running  SQL Server for the UiPath database.
-    ** An Application Load Balancer to balance traffic between  UiPath Orchestrator nodes.
-    ** A  three-node cluster of EC2 instances running Red Hat Enterprise Linux for the High-availability add-on for UiPath Orchestrator.
-* AWS Certificate Manager for  domain registration with a Secure Sockets Layer certificate.
-* Amazon Route 53 as Domain Name System provider to route  traffic to an Application Load Balancer.
-* Amazon CloudWatch for log collection, storage, and  analysis, and to enable complete visibility of robots and automation  tasks.
-* Amazon S3 bucket to store NuGet packages, the  automation projects run by UiPath software robots.
-* AWS Identity and Access Management (IAM) role granting  access to the S3 bucket to AWS Storage Gateway.
+** An Auto Scaling group with up to 20 UiPath Orchestrator nodes. Nodes are hosted on Amazon EC2 instances running Microsoft Windows Server 2019.
+** A database subnet group for Amazon Relational Database Service (Amazon RDS) DB instances running SQL Server.
+** An Application Load Balancer to balance traffic between UiPath Orchestrator nodes.
+** High-availability add-on for UiPath Orchestrator in a three-node cluster of Amazon EC2 instances with Red Hat Enterprise Linux.
+** Security groups controlling inbound and outbound traffic to the UiPath Orchestrator and high-availability add-on instances.
+* AWS Certificate Manager for domain registration with a Secure Sockets Layer certificate.
+* Amazon Route 53 as Domain Name System provider to route traffic to the Application Load Balancer.
+* Amazon CloudWatch for log collection, storage, and analysis, and to enable complete visibility of robots and automation tasks.
+* Amazon S3 bucket for NuGet packages, the automation projects run by UiPath software robots.
+* AWS Identity and Access Management (IAM) role granting access to the S3 bucket to AWS Storage Gateway.
 
 *The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.

@@ -185,7 +185,7 @@ image::../images/security1.png[security1,width=100%,height=100%]
 * *EC2 storage gateway ports*
 ** 2049, 111, 20048, 35790, 49000, 54524 – NFS service
 
-This Quick Start configures the following security groups for the UiPath stack (Robot or Orchestrator):
+This Quick Start configures the following security groups:
 
 [cols="20s,20,20,40",grid=rows,frame=topbot, options="header"]
 |===
@@ -194,33 +194,33 @@ This Quick Start configures the following security groups for the UiPath stack (
 |Inbound source
 |Ports
 |autoscaling-group-security-group
-|ASG
+|Auto Scaling group
 |Private subnets CIDR
 |Inbound: 80, 443, 3389 +
 Outbound : any ports
 |db-security-group
-|MSSQL or RDS
+|MSSQL or RDS databases
 |Private subnets CIDR
 |Inbound: 1433 +
 Outbound: any ports
 |bastion-security-group
-|Bastion Host
+|Bastion host
 |0.0.0.0/0
 |Inbound: 3389 +
 Outbound: any ports
 |filegateway-security-group
-|FileGateway
-|VPC CIDR, Security CIDR block
+|File gateway
+|VPC CIDR, security CIDR block
 |Inbound: 2049, 111, 20048, 80, 35790, 49000, 54524, 55481 +
 Outbound: any ports
 |haa-security-group
-|HAA cluster
+|High-availability add-on cluster
 |Private subnets CIDR +
 VPC CIDR, Security CIDR block
 |Inbound: 22,8443, 80, 443,9443,1968,3333-3339, 36379-36380, 8001, 9443,8444, 9080, 9081, 8070-8071, 10000-19999, 20000-29999, 53, 5353 +
 Outbound: any ports
 |alb-security-group
-|Load balancer
+|Application Load Balancer
 |0.0.0.0/0
 |Inbound: 443 +
 Outbound: 80, 443
