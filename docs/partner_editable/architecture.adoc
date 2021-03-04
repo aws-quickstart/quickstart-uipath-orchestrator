@@ -11,7 +11,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * A highly available architecture that spans two or more Availability Zones.*
 * A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
-** A Windows bastion host to control inbound Remote Desktop Protocol (RDP) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in the private subnets.
+** A Windows bastion host to control inbound Remote Desktop Protocol (RDP) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in the private subnets.*
 ** AWS Storage Gateway providing the file gateway virtual machine image.
 ** An Amazon EC2 instance hosting the file gateway.
 ** Security groups controlling inbound and outbound traffic to the file gateway and bastion host instances.
