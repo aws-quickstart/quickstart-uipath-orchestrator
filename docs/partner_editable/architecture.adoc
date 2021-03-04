@@ -16,7 +16,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 ** An Amazon EC2 instance hosting the file gateway.
 ** Security groups controlling inbound and outbound traffic to the file gateway and bastion host instances.
 * In the private subnets:
-** An Auto Scaling group with up to 20 UiPath Orchestrator nodes. Nodes are hosted on Amazon EC2 instances running Microsoft Windows Server 2019.
+** An Amazon EC Auto Scaling group with up to 20 UiPath Orchestrator nodes. Nodes are hosted on Amazon EC2 instances running Microsoft Windows Server 2019.
 ** A database subnet group for Amazon Relational Database Service (Amazon RDS) DB instances running SQL Server.
 ** An Application Load Balancer to balance traffic between UiPath Orchestrator nodes.
 ** High-availability add-on for UiPath Orchestrator in a three-node cluster of Amazon EC2 instances with Red Hat Enterprise Linux.
