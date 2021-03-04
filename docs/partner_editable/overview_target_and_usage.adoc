@@ -2,6 +2,6 @@
 // Identify your target audience and explain how/why they would use this Quick Start.
 //Avoid borrowing text from third-party websites (copying text from AWS service documentation is fine). Also, avoid marketing-speak, focusing instead on the technical aspect.
 
-This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
+This Quick Start reference deployment guide provides step-by-step instructions for deploying UiPath Orchestrator on the AWS Cloud. UiPath Orchestrator is the centralized robot management tool where you can deploy, secure, and manage your UiPath software robots at scale.
 
-This Quick Start is for users who want the convenience of deploying UiPath Orchestrator web application on AWS cloud. It deploys UiPath Orchestrator which manages robotic automation processes, allowing users to automate attended and unattended process task within their enterprise environment. 
+TIP: This Quick Start deploys UiPath Orchestrator. A Quick Start reference deployment for https://fwd.aws/3drR9[UIPath Robot on AWS] is also available. UiPath Robot is the implementation agent of UiPath that runs automation processes you design in UiPath Studio.

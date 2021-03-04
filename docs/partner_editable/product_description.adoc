@@ -2,16 +2,16 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-short-name} is a web application that enables you to securely schedule, manage and control your enterprise-wide digital workforce of UiPath Robots.
+With UiPath Orchestrator, you can securely schedule, manage, and control your entire enterprise-wide digital workforce of UiPath software robots. Orchestrator manages the creation, monitoring, and deployment of RPA resources in your environment, acting as an integration point with third-party solutions and applications.
 
-Orchestrator lets you manage the creation, monitoring, and deployment of RPA resources in your environment, acting as an integration point with third-party solutions and applications.
+UiPath Orchestrator can manage your entire fleet, including the following UiPath Robot types: 
 
-UiPath Orchestrator’s power comes from its capability of managing your entire Robot fleet. Attended, Unattended or Nonproduction, they can all be connected and executed from this centralized point.
+* *Attended* - A robot triggered by user events, operating alongside a human user, and sharing the same workstation. Used with UiPath Orchestrator for centralized process deployment and logging. They can also add data into a queue that is processed by unattended UiPath Robots.
+* *Unattended* - A robot that runs without human supervision in a virtual environment. They run, monitor, schedule, and support work queues remotely.
+* *Development* - An unattended robot used only for development purposes.
+* *Nonproduction* - An unattended robot used only for development and testing purposes.
 
-*	*Attended* - This type of Robot is triggered by user events, and operates alongside a human user, sharing the same workstation. Attended Robots are used with Orchestrator for centralized process deployment and logging. They can also add data into a queue, to be processed by Unattended robots.
-*	*Unattended* - Robots run unattended in virtual environments and can automate any number of processes. On top of the Attended Robot capabilities, the Orchestrator is responsible for remote execution, monitoring, scheduling and providing support for work queues.
-*	*Development* - has the capabilities of an Unattended Robot but intended only for development purposes.
-*	*Nonproduction* - similar to Unattended Robots but intended only for development and testing purposes.
+// With this Quick Start, you can deploy UiPath Orchestrator in an architecture based on AWS best practices for security and high availability. There are two deployment options: single-node or multi-node with the High Availability add-on (HAA) for UiPath Orchestrator. The single-node option runs the UiPath Orchestrator web server on a single machine and is recommended for small to medium scale deployment of UiPath Robot. The multi-node option with HAA is designed for increased capacity and failure resistance. For more information, see link:#_architecture[Architecture], later in this guide.
 
-You are able to run debugging in UiPath Studio with all types of Robots.
+
 
