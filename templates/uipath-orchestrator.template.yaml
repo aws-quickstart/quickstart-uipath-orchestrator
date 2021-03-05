@@ -64,9 +64,9 @@ Metadata:
       VPCID:
         default: VPC ID
       PublicSubnetIDs:
-        default: VPC CIDR
+        default: Public subnet IDs
       PrivateSubnetIDs:
-        default: VPC CIDR
+        default: Private subnet IDs
       KeyPairName:
         default: Instance key pair
       InstanceType:
