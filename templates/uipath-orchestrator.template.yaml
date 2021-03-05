@@ -971,81 +971,6 @@ Resources:
       Timeout: 30
       TracingConfig:
         Mode: Active
-  GetTagsFunction:
-    Type: 'AWS::Lambda::Function'
-    Properties:
-      Description: Compute tag values based on stack and account inputs
-      Handler: index.handler
-      Role: !GetAtt FindAmiLambdaRole.Arn
-      Code:
-        ZipFile: |
-          import boto3
-          import json
-          import cfnresponse
-          import hashlib
-
-          def create(properties, physical_id):
-              accountId = properties['AccountId']
-              stackId = properties['StackId']
-              stackName = properties['StackName']
-              print(f'AccountId {accountId} StackId {stackId} stackName {stackName}')
-              returnAttribute = {}
-              returnAttribute['IdTag'] = hashlib.sha256(properties['AccountId'].encode('ascii')).hexdigest()
-              returnAttribute['StackTag'] = hashlib.sha256(properties['StackId'].encode('ascii')).hexdigest()
-              returnAttribute['StackNameTag'] = hashlib.sha256(properties['StackName'].encode('ascii')).hexdigest()
-              returnAttribute['Action'] = 'CREATE'
-              return cfnresponse.SUCCESS, '', returnAttribute
-
-
-          def update(properties, physical_id):
-              print(json.dumps(properties))
-              returnAttribute = {}
-              returnAttribute['IdTag'] = hashlib.sha256(properties['AccountId'].encode('ascii')).hexdigest()
-              returnAttribute['StackTag'] = hashlib.sha256(properties['StackId'].encode('ascii')).hexdigest()
-              returnAttribute['StackNameTag'] = hashlib.sha256(properties['StackName'].encode('ascii')).hexdigest()
-              returnAttribute['Action'] = 'UPDATE'
-              return cfnresponse.SUCCESS, physical_id, returnAttribute
-
-
-          def delete(properties, physical_id):
-              print(json.dumps(properties))
-              returnAttribute = {}
-              returnAttribute['IdTag'] = physical_id
-              returnAttribute['StackTag'] = physical_id
-              returnAttribute['Action'] = 'DELETE'
-              return cfnresponse.SUCCESS, physical_id, returnAttribute
-
-
-          def handler(event, context):
-              print('Received event: ' + json.dumps(event))
-              status = cfnresponse.FAILED
-              new_physical_id = None
-              returnAttribute = {}
-              try:
-                  properties = event.get('ResourceProperties')
-                  physical_id = event.get('PhysicalResourceId')
-                  status, new_physical_id, returnAttribute = {
-                      'Create': create,
-                      'Update': update,
-                      'Delete': delete
-                  }.get(event['RequestType'], lambda x, y: (cfnresponse.FAILED, None))(properties, physical_id)
-              except Exception as e:
-                  print('Exception: ' + str(e))
-                  status = cfnresponse.FAILED
-              finally:
-                  cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.8
-      Timeout: 30
-      TracingConfig:
-        Mode: Active
-  GetTags:
-    Type: 'Custom::GetTagsFunction'
-    Properties:
-      ServiceToken: !GetAtt GetTagsFunction.Arn
-      AccountId: !Ref 'AWS::AccountId'
-      StackId: !Ref 'AWS::StackId'
-      StackName: !Ref 'AWS::StackName'
-
   StorageStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1067,17 +992,6 @@ Resources:
         GatewayTimezone: !Ref GatewayTimezone
         VPCID: !Ref VPCID
         VPCCIDR: !Ref VPCCIDR
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
   RoutingStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1099,17 +1013,6 @@ Resources:
         Fqdn: !Ref UiPathFQDN
         HostedZoneID: !Ref HostedZoneID
         SSLCertificateArn: !GetAtt ConfigureSSLStack.Outputs.ACMCertificate
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
   HAStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1135,17 +1038,6 @@ Resources:
         FindAMIFunctionArn: !GetAtt
           - FindAMIFunction
           - Arn
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
   DatabaseStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1169,17 +1061,6 @@ Resources:
         RDSMaxAllocatedStorage: !Ref RDSMaxAllocatedStorage
         RDSUsername: !Ref RDSUsername
         RDSPassword: !Ref RDSPassword
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
   ServerStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1241,17 +1122,6 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         Fqdn: !Ref UiPathFQDN
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
   ConfigureSSLStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -1265,28 +1135,18 @@ Resources:
         QSS3KeyPrefix: !Sub "${QSS3KeyPrefix}submodules/quickstart-aws-acm-certificate/"
         DomainName: !Ref UiPathFQDN
         HostedZoneID: !Ref HostedZoneID
-      Tags:
-        - Key: 'uipath:deployment:source'
-          Value: 'quickstart'
-        - Key: 'uipath:deployment:product'
-          Value: 'orchestrator'
-        - Key: 'uipath:deployment:id'
-          Value: !GetAtt GetTags.IdTag
-        - Key: 'uipath:deployment:stack'
-          Value: !GetAtt GetTags.StackTag
-        - Key: 'uipath:deployment:stack-name'
-          Value: !GetAtt GetTags.StackNameTag
+
 Outputs:
   FQDNLoadBalancer:
-    Description: UiPath Orchestrator Login page
+    Description: UiPath Orchestrator login page.
     Value: !Ref UiPathFQDN
   BastionHost:
-    Description: Bastion Host's Public IP address
+    Description: Bastion host Public IP address.
     Value: !GetAtt
       - ServerStack
       - Outputs.BastionHostPublicIP
   HaaNodesIPs:
-    Description: High Availability Add-on's list of IP addresses
+    Description: High Availability Add-on IP addresses.
     Value: !Join
       - ','
       - - !GetAtt
@@ -1299,7 +1159,10 @@ Outputs:
           - HAStack
           - Outputs.HASlave2PrivateIP
   NugetStorageS3Bucket:
-    Description: S3 bucket name that contains Orchestrator's Nuget packages
+    Description: S3 bucket with UiPath Orchestrator NuGet packages.
     Value: !GetAtt
       - StorageStack
       - Outputs.NugetStorageBucketName
+  Postdeployment:
+    Description: See the deployment guide for post-deployment steps.
+    Value: https://aws.amazon.com/quickstart/?quickstart-all.sort-by=item.additionalFields.sortDate&quickstart-all.sort-order=desc&awsm.page-quickstart-all=5

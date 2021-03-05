@@ -1026,20 +1026,23 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
 Outputs:
   FQDNLoadBalancer:
-    Description: UiPath Orchestrator Login page
+    Description: UiPath Orchestrator login page.
     Value: !Ref UiPathFQDN
   BastionHost:
-    Description: Bastion Host's Public IP address
+    Description: Bastion host public IP address.
     Value: !GetAtt
       - OrchestratorStack
       - Outputs.BastionHost
   HaaNodesIPs:
-    Description: High Availability Add-on's list of IP addresses
+    Description: High Availability Add-on IP addresses.
     Value: !GetAtt
       - OrchestratorStack
       - Outputs.HaaNodesIPs
   NugetStorageS3Bucket:
-    Description: S3 bucket name that contains Orchestrator's Nuget packages
+    Description: S3 bucket with UiPath Orchestrator NuGet packages.
     Value: !GetAtt
       - OrchestratorStack
       - Outputs.NugetStorageS3Bucket
+  Postdeployment:
+    Description: See the deployment guide for post-deployment steps.
+    Value: https://aws.amazon.com/quickstart/?quickstart-all.sort-by=item.additionalFields.sortDate&quickstart-all.sort-order=desc&awsm.page-quickstart-all=5
