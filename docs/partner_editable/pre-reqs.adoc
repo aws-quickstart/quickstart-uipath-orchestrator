@@ -1,15 +1,14 @@
 ==== Prepare your AWS account 
 
-===== Key Pair 
-Make sure that at least one Amazon EC2 key pair exists in your AWS account in the Region where you plan to deploy the Quick Start. Make note of the key pair name. You need it during deployment. To create a key pair, follow the instructions in the https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[AWS documentation]. +
-For testing or proof-of-concept purposes, we recommend creating a new key pair instead of using one that’s already being used by a production instance.
+===== Key pair 
+Make sure that at least one Amazon EC2 key pair exists in your AWS account in the Region where the Quick Start is deployed. Save the key pair name, as you need it during deployment. To create a key pair, follow the instructions in https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[Amazon EC2 key pairs and Linux instances^]. For testing or proof-of-concept purposes, we recommend creating a new key pair instead of using one that’s already being used by a production instance.
 
-===== SSL Certificate
-This QuickStart request a certificate from AWS Certificate Manager, and uses DNS validation to automatically validate the certificate using the DNS for hosted zone that you have set up. If you do already have a public cert that you want to bring on, you can do so by providing the ARN of your certificate.
+===== SSL certificate
+This Quick Start requests a certificate from AWS Certificate Manager. It uses DNS certificate validation, using the DNS for the hosted zone that you have set up. If you already have a public certificate that you want to use, you can do so by providing the certificate's Amazon Resource Number (ARN).
 
-===== Valid Domain Name 
-This Quickstart assumes you have established ownership of the parent domain you want to use under which the web-application will be served. In order to do so, you should have a Hosted Zone setup within your AWS account, with required NS, SOA, CNAME, and TXT records. For further details on how to create a public hosted zone, refer to https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html[Route53 documentation].
+===== Valid domain name 
+This Quick Start assumes you have established ownership of the parent domain under which the web application will be served. You should have a hosted zone set up in your AWS account, with the required name server, start of authority, CNAME, and text records. For further details on how to create a public hosted zone, see https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html[Working with public hosted zones^].
 
 ==== Prepare your {partner-company-name} account
 
-This Quick Start uses AWS owned AMI. However, during initiation of EC2 VMs, it downloads, installs and configures UiPath Orchestrator and HA Addon software. In order to do so, you need to first purchase the license keys by contacting UiPath directly.
+This Quick Start uses AWS owned Amazon Machine Images (AMI). However, during the initiation of EC2 virtual machines (VMs), it downloads, installs, and configures UiPath Orchestrator and HAA. Before deployment, purchase UiPath Orchestrator and HAA add-on licenses by https://www.uipath.com/company/contact-us[contacting UiPath directly^].

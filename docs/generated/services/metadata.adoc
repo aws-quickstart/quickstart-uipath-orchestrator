@@ -31,6 +31,7 @@
 :template_custom_hostinstanceami:
 :template_custom_storagegateway:
 :template_custom_storagegatewayami:
+:template_deterministic_ec2_instances:
 :template_diskcache:
 :template_dynamodb:
 :template_ec2:
