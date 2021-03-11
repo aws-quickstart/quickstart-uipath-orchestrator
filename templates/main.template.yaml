@@ -147,61 +147,61 @@ Parameters:
   PrivateSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @* 
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*
     Default: Network=Private1
-    Description: >- 
-      (Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
        Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private2
-    Description: >- 
-      (Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PrivateSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+       Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
        Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Private3
-    Description: >- 
-      (Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public1
-    Description: >- 
-      (Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag2:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public2
-    Description: >- 
-      (Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   PublicSubnetTag3:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
     ConstraintDescription: >-
-      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+      Tags must be in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Default: Network=Public3
-    Description: >- 
-      (Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. 
+    Description: >-
+      (Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.
       Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
     Type: String
   KeyPairName:
@@ -882,9 +882,9 @@ Parameters:
   OrchestratorVersion:
     Description: UIPath Orchestrator version.
     Type: String
-    Default: 20.10.2
+    Default: 20.10.7
     AllowedValues:
-      - 20.10.2
+      - 20.10.7
     ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
     Description: Number of UiPath Orchestrator instances (1–20).
@@ -911,11 +911,11 @@ Parameters:
     ConstraintDescription: >-
       Quick Start bucket name can include numbers, lowercase letters, uppercase
       letters, and hyphens (-). It cannot start or end with a hyphen (-).
-    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
-      Keep the default name unless you are customizing the template. 
-      Changing the name updates code references to point to a new Quick 
-      Start location. This name can include numbers, lowercase letters, 
-      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
       See https://aws-quickstart.github.io/option1.html.
     Type: String
     Default: aws-quickstart
@@ -933,12 +933,12 @@ Parameters:
       uppercase letters, hyphens (-), and forward slashes (/).
     Default: quickstart-uipath-robot/
     Description: >-
-      S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). 
-      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      S3 key prefix that is used to simulate a directory for your copy of the
+      Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to
+      a new Quick Start location. This prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slashes (/).
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
 Conditions:
