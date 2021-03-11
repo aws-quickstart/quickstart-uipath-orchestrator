@@ -52,7 +52,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|UiPath Orchestrator version
-(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorVersion`)|`20.10.7`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
@@ -62,5 +62,5 @@
 |===
 |Parameter label (name) |Default value|Description|Template-hosting S3 bucket
 (`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Template folder
-(`QSS3KeyPrefix`)|`quickstart-uipath-robot/`|S3 key prefix that is used to simulate a directory for your copy of the  Quick Start assets. Keep the default prefix unless you are customizing  the template. Changing this prefix updates code references to point to  a new Quick Start location. This prefix can include numbers, lowercase  letters, uppercase letters, hyphens (-), and forward slashes (/).  See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html  and https://aws-quickstart.github.io/option1.html.
+(`QSS3KeyPrefix`)|`quickstart-uipath-robot/`|S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html and https://aws-quickstart.github.io/option1.html.
 |===
