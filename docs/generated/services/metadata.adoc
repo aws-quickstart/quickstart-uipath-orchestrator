@@ -12,6 +12,8 @@
 :template_aws_elasticloadbalancingv2_listener:
 :template_aws_elasticloadbalancingv2_loadbalancer:
 :template_aws_elasticloadbalancingv2_targetgroup:
+:template_aws_events_eventbus:
+:template_aws_events_rule:
 :template_aws_iam_instanceprofile:
 :template_aws_iam_policy:
 :template_aws_iam_role:
@@ -31,11 +33,13 @@
 :template_custom_hostinstanceami:
 :template_custom_storagegateway:
 :template_custom_storagegatewayami:
+:template_custom_telemetrylambdafunction:
 :template_deterministic_ec2_instances:
 :template_diskcache:
 :template_dynamodb:
 :template_ec2:
 :template_elasticloadbalancingv2:
+:template_events:
 :template_fileshare:
 :template_hainstanceami:
 :template_hostinstanceami:
@@ -46,3 +50,4 @@
 :template_s3:
 :template_storagegateway:
 :template_storagegatewayami:
+:template_telemetrylambdafunction:

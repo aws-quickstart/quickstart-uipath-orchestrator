@@ -4,8 +4,8 @@
 |===
 |Parameter label (name) |Default value|Description|VPC CIDR
 (`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|VPC ID
-(`VPCID`)|`**__Requires input__**`|VPC ID|Public subnet IDs
-(`PublicSubnetIDs`)|`**__Requires input__**`|List of public subnet IDs.|Private subnet IDs
+(`VPCID`)|`**__Requires input__**`|VPC ID|VPC CIDR
+(`PublicSubnetIDs`)|`**__Requires input__**`|List of public subnet IDs.|VPC CIDR
 (`PrivateSubnetIDs`)|`**__Requires input__**`|List of private subnet IDs.
 |===
 .UiPath Orchestrator instance configuration
@@ -52,7 +52,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|UiPath Orchestrator version
-(`OrchestratorVersion`)|`20.10.7`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorVersion`)|`21.4.0`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.

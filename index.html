@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.12">
+<meta name="generator" content="Asciidoctor 2.0.15">
 <title>UiPath Orchestrator on the AWS Cloud</title>
 <style>
 
@@ -182,7 +182,7 @@ p a>code:hover{color:rgba(0,0,0,.9)}
   padding-top:0;
   overflow:hidden;
   background:#283e5b;
-  border-bottom: 4px solid #435c7c;
+  /* border-bottom: 4px solid #435c7c; */
   width:320px;
   height:154px;
   top:0;
@@ -411,7 +411,7 @@ span.icon>.fa{cursor:default}
 a span.icon>.fa{cursor:inherit}
 .admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
 .admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
-.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";color: rgb(3, 87, 21);}
 .admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
 .admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
 .admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
@@ -747,8 +747,43 @@ p {
   font-weight  : 300 !important;
 }
 
-#toc.toc2 #toctitle{
-  background-image: url('images/AWS-Logo.svg');
+/* image layout */
+#toc.toc2 #toctitle {
+  background-image: url("images/AWS-Logo.svg");
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: center;
+  width: auto;
+  height: 15%;
+}
+
+/* Left Navbar size */
+#toc.toc2 {
+  width: 17%;
+  min-width: 15em;
+}
+
+/* auto width for main page */
+body.toc2 {
+  padding-left: 22%;
+  padding-right: 2%;
+}
+
+/* hide left nav bar if page size is smaller than 767px */
+@media screen and (max-width: 767px) {
+  #toc {
+      display: none !important;
+  }
+  body.toc2 {
+    padding-left: 1%;
+    padding-right: 1%;
+    position: relative;
+  }
+
+  #content {
+    padding-left: 2%;
+    padding-right: 2%;
+  }
 }
 
 /* QS Tables */
@@ -850,7 +885,7 @@ p.footer-text a{color:#d7d8d8}
 </div>
 <div class="paragraph text-center">
 <p><strong>March 2021</strong><br>
-<em>Adrian Tudoran, Andrei Barbu, and Binoy Das, UiPath</em><br>
+<em>Andrei Barbu and Adrian Tudoran, UiPath</em><br>
 <em>Shivansh Singh and Tony Bulding, AWS Quick Start team</em></p>
 </div>
 <div class="admonitionblock tip text-left">
@@ -950,7 +985,7 @@ see the pricing pages for each AWS service you use. Prices are subject to change
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">create AWS Cost and Usage Reports</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. These reports provide cost estimates based on usage throughout each month and aggregate the data at the end of the month. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html" target="_blank" rel="noopener">What are AWS Cost and Usage Reports?</a>
+After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">AWS Cost and Usage Reports</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. These reports provide cost estimates based on usage throughout each month and aggregate the data at the end of the month. For more information, see <a href="https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html" target="_blank" rel="noopener">What are AWS Cost and Usage Reports?</a>
 </td>
 </tr>
 </table>
@@ -1089,7 +1124,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <div class="sect3">
 <h4 id="_resource_quotas">Resource quotas</h4>
 <div class="paragraph">
-<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might request quota increases to avoid exceeding the default limits for any resources that are shared across multiple deployments. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">What is Service Quotas?</a> and <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html" target="_blank" rel="noopener">AWS service quotas</a>.</p>
+<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might need to request increases if your existing deployment currently uses these resources and if this Quick Start deployment could result in exceeding the default quotas. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">What is Service Quotas?</a> and <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html" target="_blank" rel="noopener">AWS service quotas</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1372,10 +1407,6 @@ You are responsible for the cost of the AWS services used while running this Qui
 <li>
 <p>On the <strong>Specify stack details</strong> page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings and customize them as necessary. For details on each parameter, see the <a href="#_parameter_reference">Parameter reference</a> section of this guide. After reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
 </li>
-</ol>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
 <li>
 <p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.</p>
 </li>
@@ -1389,15 +1420,9 @@ You are responsible for the cost of the AWS services used while running this Qui
 <p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the UiPath Orchestrator deployment is ready.</p>
 </li>
 <li>
-<p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in <a href="#cfn_outputs">Figure 2</a>, to view the created resources.</p>
+<p>To view the created resources, see the values displayed in the <strong>Outputs</strong> tab for the stack.</p>
 </li>
 </ol>
-</div>
-<div id="cfn_outputs" class="imageblock">
-<div class="content">
-<a class="image" href="images/cfn_outputs.png"><img src="images/cfn_outputs.png" alt="cfn_outputs" width="100%" height="100%"></a>
-</div>
-<div class="title">Figure 2. UiPath Orchestrator outputs after successful deployment</div>
 </div>
 </div>
 </div>
@@ -1408,7 +1433,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="olist arabic">
 <ol class="arabic" start="1">
 <li>
-<p>Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The <strong>Login</strong> screen shown in <a href="#test1">Figure 3</a> will display.</p>
+<p>Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The <strong>Login</strong> screen shown in <a href="#test1">Figure 2</a> will display.</p>
 </li>
 </ol>
 </div>
@@ -1416,7 +1441,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="content">
 <img src="images/test1.png" alt="test1" width="50%" height="50%">
 </div>
-<div class="title">Figure 3. Test the deployment</div>
+<div class="title">Figure 2. Test the deployment</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
@@ -1429,7 +1454,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="content">
 <img src="images/test2.png" alt="test2" width="50%" height="50%">
 </div>
-<div class="title">Figure 4. Logging into High Availability Add-on</div>
+<div class="title">Figure 3. Logging into High Availability Add-on</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="3">
@@ -1442,7 +1467,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="content">
 <img src="images/test3.png" alt="test3" width="100%" height="100%">
 </div>
-<div class="title">Figure 5. Verifying nodes</div>
+<div class="title">Figure 4. Verifying nodes</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="4">
@@ -1455,7 +1480,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="content">
 <img src="images/test4.png" alt="test4" width="100%" height="100%">
 </div>
-<div class="title">Figure 6. Test the deployment</div>
+<div class="title">Figure 5. Test the deployment</div>
 </div>
 </div>
 </div>
@@ -1491,7 +1516,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <div class="content">
 <img src="images/create_key_pair.png" alt="Key pair" width="100%" height="100%">
 </div>
-<div class="title">Figure 7. Create key pair</div>
+<div class="title">Figure 6. Create key pair</div>
 </div>
 </div>
 </div>
@@ -1547,7 +1572,7 @@ If you do already have an IAM user with full access to these services, or have a
 <div class="olist arabic">
 <ol class="arabic" start="1">
 <li>
-<p>If you do not already have such an IAM user, <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console" target="_blank" rel="noopener">create one</a> from AWS console. In <a href="#cfnuser">Figure 8</a>, a user is created with programmatic and console access.</p>
+<p>If you do not already have such an IAM user, <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console" target="_blank" rel="noopener">create one</a> from AWS console. In <a href="#cfnuser">Figure 7</a>, a user is created with programmatic and console access.</p>
 </li>
 </ol>
 </div>
@@ -1555,7 +1580,7 @@ If you do already have an IAM user with full access to these services, or have a
 <div class="content">
 <img src="images/cfnuser.png" alt="IAM" width="100%" height="100%">
 </div>
-<div class="title">Figure 8. Adding an IAM user</div>
+<div class="title">Figure 7. Adding an IAM user</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
@@ -1568,7 +1593,7 @@ If you do already have an IAM user with full access to these services, or have a
 <div class="content">
 <img src="images/iam_2.png" alt="IAM" width="100%" height="100%">
 </div>
-<div class="title">Figure 9. Setting permissions</div>
+<div class="title">Figure 8. Setting permissions</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1577,7 +1602,7 @@ If you do already have an IAM user with full access to these services, or have a
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-As shown in <a href="#iam_2">Figure 9</a>, you can filter the list using the search box.
+As shown in <a href="#iam_2">Figure 8</a>, you can filter the list using the search box.
 </td>
 </tr>
 </table>
@@ -1590,7 +1615,7 @@ As shown in <a href="#iam_2">Figure 9</a>, you can filter the list using the sea
 <div class="content">
 <img src="images/iam_3.png" alt="IAM" width="100%" height="100%">
 </div>
-<div class="title">Figure 10. Adding optional tags</div>
+<div class="title">Figure 9. Adding optional tags</div>
 </div>
 </li>
 </ol>
@@ -1603,7 +1628,7 @@ As shown in <a href="#iam_2">Figure 9</a>, you can filter the list using the sea
 <div class="content">
 <img src="images/iam_4.png" alt="IAM" width="100%" height="100%">
 </div>
-<div class="title">Figure 11. Reviewing user details</div>
+<div class="title">Figure 10. Reviewing user details</div>
 </div>
 </li>
 </ol>
@@ -1622,7 +1647,7 @@ As shown in <a href="#iam_2">Figure 9</a>, you can filter the list using the sea
 <div class="content">
 <img src="images/iam_5.png" alt="IAM" width="100%" height="100%">
 </div>
-<div class="title">Figure 12. IAM user created</div>
+<div class="title">Figure 11. IAM user created</div>
 </div>
 </div>
 </div>
@@ -1712,7 +1737,7 @@ As shown in <a href="#iam_2">Figure 9</a>, you can filter the list using the sea
 <div class="content">
 <img src="images/security1.png" alt="security1" width="100%" height="100%">
 </div>
-<div class="title">Figure 13. HAA ports</div>
+<div class="title">Figure 12. HAA ports</div>
 </div>
 <div class="ulist">
 <ul>
@@ -1917,8 +1942,7 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
-Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
+Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the parameters labeled <strong>Quick Start S3 bucket name</strong>, <strong>Quick Start S3 bucket Region</strong>, and <strong>Quick Start S3 key prefix</strong>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
 </td>
 </tr>
 </table>
@@ -2206,7 +2230,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UiPath Orchestrator version
 (<code>OrchestratorVersion</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.10.7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>21.4.0</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UIPath Orchestrator version.</p></td>
 </tr>
 <tr>
@@ -2253,7 +2277,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Template folder
 (<code>QSS3KeyPrefix</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-uipath-robot/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-uipath-orchestrator/</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
@@ -2289,13 +2313,13 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet IDs
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR
 (<code>PublicSubnetIDs</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List of public subnet IDs.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet IDs
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR
 (<code>PrivateSubnetIDs</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List of private subnet IDs.</p></td>
@@ -2495,7 +2519,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UiPath Orchestrator version
 (<code>OrchestratorVersion</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.10.7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>21.4.0</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UIPath Orchestrator version.</p></td>
 </tr>
 <tr>
@@ -2591,8 +2615,17 @@ and to share your customizations with others.</p>
 </div>
 <p class="footer-text">
 <!-- We can use document attributes: -->
-<!-- Generated with Asciidoctor v2.0.12. -->
+<!-- Generated with Asciidoctor v2.0.15. -->
 <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and UiPath. All rights reserved.
 </p>
 </body>
 </html>
+<!--
+repo commit:
+4c80f8e90d44c32c0a7d929c7ee6ec621d83964f
+
+submodule config:
++a9d6c5903745c1091793d3cd1f960948919c2c9f docs/boilerplate (heads/main)
+ 25d1eb874ba356d7c85fda18be239a6b404dd551 submodules/quickstart-aws-acm-certificate (heads/main)
+ ffc7af4e59a09dbf52199a3ecf70f3805abeff48 submodules/quickstart-aws-vpc (v1.0-58-gffc7af4)
+-->
