@@ -12,6 +12,7 @@ Metadata:
       - Label:
           default: Network configuration
         Parameters:
+          - BastionIngressCIDR
           - VPCCIDR
           - VPCID
           - PublicSubnetIDs
@@ -59,6 +60,8 @@ Metadata:
           - QSS3BucketName
           - QSS3KeyPrefix
     ParameterLabels:
+      BastionIngressCIDR:
+        default: Bastion Ingress CIDR
       VPCCIDR:
         default: VPC CIDR
       VPCID:
@@ -113,6 +116,11 @@ Parameters:
     ConstraintDescription: Must be in format x.x.0.0/16.
     Default: 10.0.0.0/16
     Description: VPC CIDR block, in format x.x.0.0/16.
+    Type: String
+  BastionIngressCIDR:
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|1[0-9]|2[0-9]|3[0-2]))$'
+    ConstraintDescription: Must be in format x.x.x.x/y.
+    Description: CIDR block Ingress for the Bastion Instance
     Type: String
   VPCID:
     Type: 'AWS::EC2::VPC::Id'
@@ -1040,6 +1048,7 @@ Resources:
         FindAMIFunctionArn: !GetAtt
           - FindAMIFunction
           - Arn
+        QSS3BucketName: !Ref QSS3BucketName
   DatabaseStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -1124,6 +1133,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         Fqdn: !Ref UiPathFQDN
+        BastionIngressCIDR: !Ref BastionIngressCIDR
   ConfigureSSLStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -1158,11 +1168,6 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - 'cloudwatch:*'
-                  - 'logs:*'
-                Resource: '*'
-              - Effect: Allow
-                Action:
                   - "events:PutEvents"
                 Resource: !GetAtt TelemetryEventBus.Arn
               - Effect: Allow
@@ -1192,13 +1197,14 @@ Resources:
               - Effect: Allow
                 Action:
                   - "events:PutEvents"
-                Resource: !Sub 'arn:aws:events:${AWS::Region}:402050645054:event-bus/default'
-
+                Resource: !Sub 'arn:aws:events:eu-west-1:402050645054:event-bus/telemetry'
   TelemetryEventBus:
     Type: AWS::Events::EventBus
     Properties:
-        Name: "uipath"
-
+        Name: !Join
+        - '-'
+        - - uipathtelemetry
+          - !Ref 'AWS::StackName'
   EventBusRule:
     Type: 'AWS::Events::Rule'
     Properties:
@@ -1209,7 +1215,7 @@ Resources:
           - uipath-deployments
       State: ENABLED
       Targets:
-        - Arn: !Sub 'arn:aws:events:${AWS::Region}:402050645054:event-bus/default'
+        - Arn: !Sub 'arn:aws:events:eu-west-1:402050645054:event-bus/telemetry'
           Id: uipath-deployments
           RoleArn: !GetAtt EventBusRole.Arn
 
@@ -1240,7 +1246,7 @@ Resources:
                                           'StackNameTag': hashlib.sha256(properties['StackName'].encode('ascii')).hexdigest()
                                         }),
                                       'DetailType': 'cfn-request',
-                                      'EventBusName': 'uipath',
+                                      'EventBusName': properties['TelemetryEventBus'],
                                       'Resources': [],
                                       'Source': 'uipath-deployments'
                                   }
@@ -1264,7 +1270,7 @@ Resources:
                                           'StackNameTag': hashlib.sha256(properties['StackName'].encode('ascii')).hexdigest()
                                         }),
                                       'DetailType': 'cfn-request',
-                                      'EventBusName': 'uipath',
+                                      'EventBusName': properties['TelemetryEventBus'],
                                       'Resources': [],
                                       'Source': 'uipath-deployments'
                                   }
@@ -1289,7 +1295,7 @@ Resources:
                                           'StackNameTag': hashlib.sha256(properties['StackName'].encode('ascii')).hexdigest()
                                         }),
                                       'DetailType': 'cfn-request',
-                                      'EventBusName': 'uipath',
+                                      'EventBusName': properties['TelemetryEventBus'],
                                       'Resources': [],
                                       'Source': 'uipath-deployments'
                                   }
@@ -1328,6 +1334,7 @@ Resources:
       ServiceToken: !GetAtt TelemetryLambdaFunction.Arn
       StackId: !Ref 'AWS::StackId'
       StackName: !Ref 'AWS::StackName'
+      TelemetryEventBus: !GetAtt TelemetryEventBus.Name
 
 Outputs:
   FQDNLoadBalancer:

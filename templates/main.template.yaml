@@ -17,6 +17,7 @@ Metadata:
       - Label:
           default: Network configuration
         Parameters:
+          - BastionIngressCIDR
           - VPCCIDR
           - PublicSubnetTag1
           - PublicSubnetTag2
@@ -73,6 +74,8 @@ Metadata:
         default: Number of Availability Zones
       VPCCIDR:
         default: VPC CIDR
+      BastionIngressCIDR:
+        default: Bastion Ingress CIDR
       PrivateSubnetTag1:
         default: Private subnet 1 tag
       PrivateSubnetTag2:
@@ -143,6 +146,11 @@ Parameters:
     ConstraintDescription: Must be in format x.x.0.0/16.
     Default: 10.0.0.0/16
     Description: VPC CIDR block, in format x.x.0.0/16.
+    Type: String
+  BastionIngressCIDR:
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|1[0-9]|2[0-9]|3[0-2]))$'
+    ConstraintDescription: Must be in format x.x.x.x/y.
+    Description: CIDR block Ingress for the Bastion Instance
     Type: String
   PrivateSubnetTag1:
     AllowedPattern: '^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"''\[\]\{\}]*)?$'
@@ -818,6 +826,7 @@ Parameters:
     Default: US/Eastern
   UiPathFQDN:
     Description: Fully qualified domain name (FQDN) to which UiPath Orchestrator is installed.
+    AllowedPattern: '^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$'
     Type: String
   HostedZoneID:
     Description: ID of Route 53 hosted zone.
@@ -825,7 +834,7 @@ Parameters:
   HAAUser:
     Description: High-availability add-on user name. Must be a valid email address.
     Type: String
-    AllowedPattern: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
+    AllowedPattern: '[a-z0-9!#$%&''*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?'
     ConstraintDescription: Must be a valid email address.
   HAAPassword:
     Description: High-availability add-on password.
@@ -1025,6 +1034,7 @@ Resources:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         QSS3BucketRegion: !Ref QSS3BucketRegion
+        BastionIngressCIDR: !Ref BastionIngressCIDR
 Outputs:
   FQDNLoadBalancer:
     Description: UiPath Orchestrator login page.

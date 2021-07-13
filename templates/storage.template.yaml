@@ -164,7 +164,12 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - 'storagegateway:*'
+                  - 'storagegateway:ActivateGateway'
+                  - 'storagegateway:AddCache'
+                  - 'storagegateway:ListLocalDisks'
+                  - 'storagegateway:CreateNFSFileShare'
+                  - 'storagegateway:DeleteGateway'
+                  - 'storagegateway:DeleteFileShare'
                 Resource: '*'
               - Effect: Allow
                 Action:
