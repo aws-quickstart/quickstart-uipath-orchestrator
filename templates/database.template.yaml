@@ -46,6 +46,11 @@ Resources:
           FromPort: 1433
           ToPort: 1433
           CidrIp: !Ref VPCCIDR
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
   DBSubnetGroup:
     Type: 'AWS::RDS::DBSubnetGroup'
     Properties:

@@ -29,10 +29,55 @@ Parameters:
   FindAMIFunctionArn:
     Description: ARN for Lambda function used to find AMI by name
     Type: String
+  QSS3BucketName:
+    Type: String
+    Description: Name of bucket storing the quickstart files
 Conditions:
   TrialHAA: !Equals
     - !Ref HAALicense
     - ''
+  IsMarketplaceDeployment: !Equals
+    - !Ref QSS3BucketName
+    - !Join
+      - "-"
+      - - "uipath-marketplace"
+        - "us-east-1"
+Mappings: 
+  RegionMap: 
+    ap-northeast-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    ap-northeast-2:
+      x8664: "ami-xxxxxxxxxxxx"
+    ap-northeast-3: 
+      x8664: "ami-xxxxxxxxxxxx"
+    ap-south-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    ap-southeast-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    ap-southeast-2:
+      x8664: "ami-xxxxxxxxxxxx"
+    ca-central-1: 
+      x8664: "ami-xxxxxxxxxxxx"
+    eu-central-1: 
+      x8664: "ami-xxxxxxxxxxxx"
+    eu-north-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    eu-west-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    eu-west-2: 
+      x8664: "ami-xxxxxxxxxxxx"
+    eu-west-3:
+      x8664: "ami-xxxxxxxxxxxx"
+    sa-east-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    us-east-1:
+      x8664: "ami-YYYYYYYYYYYYYYYYYY"
+    us-east-2:
+      x8664: "ami-xxxxxxxxxxxx"
+    us-west-1:
+      x8664: "ami-xxxxxxxxxxxx"
+    us-west-2: 
+      x8664: "ami-xxxxxxxxxxxx"
 Resources:
   HaaSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -126,6 +171,11 @@ Resources:
           FromPort: 5353
           ToPort: 5353
           CidrIp: !Ref VPCCIDR
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
   HAInstanceAMI:
     Type: 'Custom::HAInstanceAMI'
     Properties:
@@ -138,35 +188,64 @@ Resources:
   HAMaster:
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !Ref HAInstanceAMI
+      ImageId: !If 
+        - IsMarketplaceDeployment
+        - !FindInMap
+          - RegionMap
+          - !Ref 'AWS::Region'
+          - x8664
+        - !Ref HAInstanceAMI
       InstanceType: m4.xlarge
       KeyName: !Ref KeyPairName
       SecurityGroupIds:
         - !Ref HaaSecurityGroup
       SubnetId: !Select [ '0', !Ref SubnetIDs ]
-      UserData: !Base64
-        'Fn::Join':
-          - |+
+      UserData: !If
+        - IsMarketplaceDeployment
+        - !Base64
+            'Fn::Join':
+              - |+
 
-          - - '#!/bin/bash'
-            - yum update -y
-            - yum install -y wget
-            - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
-            - chmod +x get-haa.sh
-            - !Join
-              - ' '
-              - - sh get-haa.sh
-                - '-u'
-                - !Ref HAAUser
-                - '-p'
-                - !Ref HAAPassword
-                - !If
-                  - TrialHAA
-                  - ''
-                  - !Join
-                    - ''
-                    - - '-l '
-                      - !Ref HAALicense
+              - - '#!/bin/bash'
+                - cd /home/ec2-user/temp
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - !If
+                      - TrialHAA
+                      - ''
+                      - !Join
+                        - ''
+                        - - '-l '
+                          - !Ref HAALicense
+        - !Base64
+            'Fn::Join':
+              - |+
+
+              - - '#!/bin/bash'
+                - yum update -y
+                - yum install -y wget
+                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - !If
+                      - TrialHAA
+                      - ''
+                      - !Join
+                        - ''
+                        - - '-l '
+                          - !Ref HAALicense
       Tags:
         - Key: Name
           Value: !Join
@@ -176,32 +255,58 @@ Resources:
   HASlave1:
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !Ref HAInstanceAMI
+      ImageId: !If 
+        - IsMarketplaceDeployment
+        - !FindInMap
+          - RegionMap
+          - !Ref 'AWS::Region'
+          - x8664
+        - !Ref HAInstanceAMI
       InstanceType: m4.xlarge
       KeyName: !Ref KeyPairName
       SecurityGroupIds:
         - !Ref HaaSecurityGroup
       SubnetId: !Select [ '1', !Ref SubnetIDs ]
-      UserData: !Base64
-        'Fn::Join':
-          - |+
+      UserData: !If
+        - IsMarketplaceDeployment
+        - !Base64
+            'Fn::Join':
+              - |+
 
-          - - '#!/bin/bash'
-            - yum update -y
-            - yum install -y wget
-            - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
-            - chmod +x get-haa.sh
-            - !Join
-              - ' '
-              - - sh get-haa.sh
-                - '-u'
-                - !Ref HAAUser
-                - '-p'
-                - !Ref HAAPassword
-                - '-j '
-                - !GetAtt
-                  - HAMaster
-                  - PrivateIp
+              - - '#!/bin/bash'
+                - cd /home/ec2-user/temp
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - '-j '
+                    - !GetAtt
+                      - HAMaster
+                      - PrivateIp
+        - !Base64
+            'Fn::Join':
+              - |+
+
+              - - '#!/bin/bash'
+                - yum update -y
+                - yum install -y wget
+                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - '-j '
+                    - !GetAtt
+                      - HAMaster
+                      - PrivateIp
       Tags:
         - Key: Name
           Value: !Join
@@ -211,32 +316,58 @@ Resources:
   HASlave2:
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: !Ref HAInstanceAMI
+      ImageId: !If 
+        - IsMarketplaceDeployment
+        - !FindInMap
+          - RegionMap
+          - !Ref 'AWS::Region'
+          - x8664
+        - !Ref HAInstanceAMI
       InstanceType: m4.xlarge
       KeyName: !Ref KeyPairName
       SecurityGroupIds:
         - !Ref HaaSecurityGroup
       SubnetId: !Select [ '1',  !Ref SubnetIDs ]
-      UserData: !Base64
-        'Fn::Join':
-          - |+
+      UserData: !If
+        - IsMarketplaceDeployment
+        - !Base64
+            'Fn::Join':
+              - |+
 
-          - - '#!/bin/bash'
-            - yum update -y
-            - yum install -y wget
-            - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
-            - chmod +x get-haa.sh
-            - !Join
-              - ' '
-              - - sh get-haa.sh
-                - '-u'
-                - !Ref HAAUser
-                - '-p'
-                - !Ref HAAPassword
-                - '-j '
-                - !GetAtt
-                  - HAMaster
-                  - PrivateIp
+              - - '#!/bin/bash'
+                - cd /home/ec2-user/temp
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - '-j '
+                    - !GetAtt
+                      - HAMaster
+                      - PrivateIp
+        - !Base64
+            'Fn::Join':
+              - |+
+
+              - - '#!/bin/bash'
+                - yum update -y
+                - yum install -y wget
+                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - chmod +x get-haa.sh
+                - !Join
+                  - ' '
+                  - - sh get-haa.sh
+                    - '-u'
+                    - !Ref HAAUser
+                    - '-p'
+                    - !Ref HAAPassword
+                    - '-j '
+                    - !GetAtt
+                      - HAMaster
+                      - PrivateIp
       Tags:
         - Key: Name
           Value: !Join
