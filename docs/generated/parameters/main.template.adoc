@@ -11,12 +11,12 @@
 |===
 |Parameter label (name) |Default value|Description|VPC CIDR
 (`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|Public subnet 1 tag
-(`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 2 tag
-(`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 3 tag
-(`PublicSubnetTag3`)|`Network=Public3`|(Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 1 tag
-(`PrivateSubnetTag1`)|`Network=Private1`|(Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 2 tag
-(`PrivateSubnetTag2`)|`Network=Private2`|(Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 3 tag
-(`PrivateSubnetTag3`)|`Network=Private3`|(Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*.  Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
+(`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 2 tag
+(`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 3 tag
+(`PublicSubnetTag3`)|`Network=Public3`|(Optional) Tag for public subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 1 tag
+(`PrivateSubnetTag1`)|`Network=Private1`|(Optional) Tag for private subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 2 tag
+(`PrivateSubnetTag2`)|`Network=Private2`|(Optional) Tag for private subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Private subnet 3 tag
+(`PrivateSubnetTag3`)|`Network=Private3`|(Optional) Tag for private subnet 3, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.
 |===
 .UiPath Orchestrator instance configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -36,17 +36,17 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Hosting FQDN
-(`UiPathFQDN`)|`**__Requires input__**`|Fully-qualified domain name (FQDN) to which UiPath Orchestrator is installed.|Route 53 hosted zone ID
-(`HostedZoneID`)|`**__Requires input__**`|Route 53 hosted zone ID.
+(`UiPathFQDN`)|`**__Requires input__**`|Fully qualified domain name (FQDN) to which UiPath Orchestrator is installed.|ID of Route 53 hosted zone
+(`HostedZoneID`)|`**__Requires input__**`|ID of Route 53 hosted zone.
 |===
-.High availability add-on configuration
+.High-availability add-on configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|High Availability add-on user name
-(`HAAUser`)|`**__Requires input__**`|User name for High Availability add-on for UiPath Orchestrator. Must be a valid email address.|High Availability add-on password
-(`HAAPassword`)|`**__Requires input__**`|High Availability Add-on password.|High Availability add-on port
-(`HAPort`)|`10000`|High Availability add-on port.|High Availability add-on license key
-(`HAALicense`)|`**__Blank string__**`|High Availability add-on license key.
+|Parameter label (name) |Default value|Description|High-availability add-on user name
+(`HAAUser`)|`**__Requires input__**`|High-availability add-on user name. Must be a valid email address.|High-availability add-on password
+(`HAAPassword`)|`**__Requires input__**`|High-availability add-on password.|High-availability add-on port
+(`HAPort`)|`10000`|High-availability add-on port.|High-availability add-on license key
+(`HAALicense`)|`**__Blank string__**`|High-availability add-on license key.
 |===
 .RDS database configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -62,7 +62,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|UiPath Orchestrator version
-(`OrchestratorVersion`)|`20.10.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorVersion`)|`21.4.0`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
@@ -72,5 +72,5 @@
 |===
 |Parameter label (name) |Default value|Description|Template-hosting S3 bucket
 (`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Template folder
-(`QSS3KeyPrefix`)|`quickstart-uipath-robot/`|S3 key prefix that is used to simulate a directory for your copy of the  Quick Start assets. Keep the default prefix unless you are customizing  the template. Changing this prefix updates code references to point to  a new Quick Start location. This prefix can include numbers, lowercase  letters, uppercase letters, hyphens (-), and forward slashes (/).  See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html  and https://aws-quickstart.github.io/option1.html.
+(`QSS3KeyPrefix`)|`quickstart-uipath-orchestrator/`|S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html and https://aws-quickstart.github.io/option1.html.
 |===
