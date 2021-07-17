@@ -7,3 +7,4 @@ functions/
 *.pem
 .vscode/
 docs/input-parameters.json
+docs/generated
