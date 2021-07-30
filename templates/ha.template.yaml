@@ -185,7 +185,7 @@ Resources:
       Architecture: x86_64
       VirtualizationType: hvm
       Owners: '309956199498'
-  HAMaster:
+  HAMain:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: !If 
@@ -251,8 +251,8 @@ Resources:
           Value: !Join
             - '-'
             - - !Ref 'AWS::StackName'
-              - HA-Master
-  HASlave1:
+              - HA-Main
+  HASecondary1:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: !If 
@@ -285,7 +285,7 @@ Resources:
                     - !Ref HAAPassword
                     - '-j '
                     - !GetAtt
-                      - HAMaster
+                      - HAMain
                       - PrivateIp
         - !Base64
             'Fn::Join':
@@ -305,15 +305,15 @@ Resources:
                     - !Ref HAAPassword
                     - '-j '
                     - !GetAtt
-                      - HAMaster
+                      - HAMain
                       - PrivateIp
       Tags:
         - Key: Name
           Value: !Join
             - '-'
             - - !Ref 'AWS::StackName'
-              - HA-Slave-1
-  HASlave2:
+              - HA-Secondary-1
+  HASecondary2:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: !If 
@@ -346,7 +346,7 @@ Resources:
                     - !Ref HAAPassword
                     - '-j '
                     - !GetAtt
-                      - HAMaster
+                      - HAMain
                       - PrivateIp
         - !Base64
             'Fn::Join':
@@ -366,36 +366,36 @@ Resources:
                     - !Ref HAAPassword
                     - '-j '
                     - !GetAtt
-                      - HAMaster
+                      - HAMain
                       - PrivateIp
       Tags:
         - Key: Name
           Value: !Join
             - '-'
             - - !Ref 'AWS::StackName'
-              - HA-Slave-2
+              - HA-Secondary-2
 Outputs:
-  HAMasterID:
-    Value: !Ref HAMaster
-    Description: ID of HA Master VM in Private Subnet 1
-  HAMasterPrivateIP:
+  HAMainID:
+    Value: !Ref HAMain
+    Description: ID of HA Main VM in Private Subnet 1
+  HAMainPrivateIP:
     Value: !GetAtt
-      - HAMaster
+      - HAMain
       - PrivateIp
-    Description: Private IP of HA Master VM in Private Subnet 1
-  HASlave1ID:
-    Value: !Ref HASlave1
-    Description: ID of HA Slave 1 VM in Private Subnet 1
-  HASlave1PrivateIP:
+    Description: Private IP of HA Main VM in Private Subnet 1
+  HASecondary1ID:
+    Value: !Ref HASecondary1
+    Description: ID of HA Secondary 1 VM in Private Subnet 1
+  HASecondary1PrivateIP:
     Value: !GetAtt
-      - HASlave1
+      - HASecondary1
       - PrivateIp
-    Description: Private IP of HA Slave 1 VM in Private Subnet 1
-  HASlave2ID:
-    Value: !Ref HASlave2
-    Description: ID of HA Slave 2 VM in Private Subnet 1
-  HASlave2PrivateIP:
+    Description: Private IP of HA Secondary 1 VM in Private Subnet 1
+  HASecondary2ID:
+    Value: !Ref HASecondary2
+    Description: ID of HA Secondary 2 VM in Private Subnet 1
+  HASecondary2PrivateIP:
     Value: !GetAtt
-      - HASlave2
+      - HASecondary2
       - PrivateIp
-    Description: Private IP of HA Slave 2 VM in Private Subnet 1
+    Description: Private IP of HA Secondary 2 VM in Private Subnet 1

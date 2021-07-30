@@ -70,14 +70,14 @@ Parameters:
   GatewayPrivateIP:
     Description: Private IP Address of Storage Gateway VM
     Type: String
-  HAMasterPrivateIP:
-    Description: Private IP Address of HA Master Instance
+  HAMainPrivateIP:
+    Description: Private IP Address of HA Main Instance
     Type: String
-  HASlave1PrivateIP:
-    Description: Private IP Address of HA Slave1 Instance
+  HASecondary1PrivateIP:
+    Description: Private IP Address of HA Secondary1 Instance
     Type: String
-  HASlave2PrivateIP:
-    Description: Private IP Address of HA Slave2 Instance
+  HASecondary2PrivateIP:
+    Description: Private IP Address of HA Secondary2 Instance
     Type: String
   HAPort:
     Description: Port on which HA listens to
@@ -249,11 +249,11 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: '*'
+                Resource: !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'xray:PutTraceSegments'
-                Resource: '*'
+                Resource: !Sub arn:${AWS::Partition}:xray:*:*:*
   ConfigBucketCleanupFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -371,7 +371,10 @@ Resources:
               - logs:DescribeLogGroups
               - logs:CreateLogStream
               - logs:CreateLogGroup
-            Resource: "*"
+            Resource: !Sub |
+              - arn:${AWS::Partition}:logs:*:*:*
+              - arn:${AWS::Partition}:cloudwatch:*:*:*
+              - arn:${AWS::Partition}:ec2:*:*:*
             Effect: Allow
       PolicyName: CloudwatchLogsAccess
       Roles:
@@ -409,7 +412,13 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 'dynamodb:*'
+              - dynamodb:ConditionCheckItem
+              - dynamodb:PutItem
+              - dynamodb:DescribeTable
+              - dynamodb:DeleteItem
+              - dynamodb:GetItem
+              - dynamodb:Scan
+              - dynamodb:Query
             Resource: !GetAtt ConfigTable.Arn
       Roles:
         - !Ref OrchestratorIamRole
@@ -622,9 +631,9 @@ Resources:
                   - '-redisServerHost'
                   - !Join
                     - ','
-                    - - !Ref HAMasterPrivateIP
-                      - !Ref HASlave1PrivateIP
-                      - !Ref HASlave2PrivateIP
+                    - - !Ref HAMainPrivateIP
+                      - !Ref HASecondary1PrivateIP
+                      - !Ref HASecondary2PrivateIP
                   - '-redisServerPort'
                   - !Ref HAPort
                   - '-redisServerPassword'

@@ -903,7 +903,7 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: 'arn:aws:logs:*:*:*'
+                Resource: !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'xray:PutTraceSegments'
@@ -1118,15 +1118,15 @@ Resources:
         GatewayPrivateIP: !GetAtt
           - StorageStack
           - Outputs.GatewayVMPrivateIP1
-        HAMasterPrivateIP: !GetAtt
+        HAMainPrivateIP: !GetAtt
           - HAStack
-          - Outputs.HAMasterPrivateIP
-        HASlave1PrivateIP: !GetAtt
+          - Outputs.HAMainPrivateIP
+        HASecondary1PrivateIP: !GetAtt
           - HAStack
-          - Outputs.HASlave1PrivateIP
-        HASlave2PrivateIP: !GetAtt
+          - Outputs.HASecondary1PrivateIP
+        HASecondary2PrivateIP: !GetAtt
           - HAStack
-          - Outputs.HASlave2PrivateIP
+          - Outputs.HASecondary2PrivateIP
         HAPort: !Ref HAPort
         HAAPassword: !Ref HAAPassword
         QSS3BucketName: !Ref QSS3BucketName
@@ -1197,7 +1197,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - "events:PutEvents"
-                Resource: !Sub 'arn:aws:events:eu-west-1:402050645054:event-bus/telemetry'
+                Resource: !Sub 'arn:${AWS::Partition}:events:eu-west-1:402050645054:event-bus/telemetry'
   TelemetryEventBus:
     Type: AWS::Events::EventBus
     Properties:
@@ -1215,7 +1215,7 @@ Resources:
           - uipath-deployments
       State: ENABLED
       Targets:
-        - Arn: !Sub 'arn:aws:events:eu-west-1:402050645054:event-bus/telemetry'
+        - Arn: !Sub 'arn:${AWS::Partition}:events:eu-west-1:402050645054:event-bus/telemetry'
           Id: uipath-deployments
           RoleArn: !GetAtt EventBusRole.Arn
 
@@ -1351,13 +1351,13 @@ Outputs:
       - ','
       - - !GetAtt
           - HAStack
-          - Outputs.HAMasterPrivateIP
+          - Outputs.HAMainPrivateIP
         - !GetAtt
           - HAStack
-          - Outputs.HASlave1PrivateIP
+          - Outputs.HASecondary1PrivateIP
         - !GetAtt
           - HAStack
-          - Outputs.HASlave2PrivateIP
+          - Outputs.HASecondary2PrivateIP
   NugetStorageS3Bucket:
     Description: S3 bucket with UiPath Orchestrator NuGet packages.
     Value: !GetAtt

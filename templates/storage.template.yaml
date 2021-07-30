@@ -170,22 +170,28 @@ Resources:
                   - 'storagegateway:CreateNFSFileShare'
                   - 'storagegateway:DeleteGateway'
                   - 'storagegateway:DeleteFileShare'
-                Resource: '*'
+                  - 'storagegateway:AddTagsToResource'
+                Resource: !Sub 'arn:${AWS::Partition}:storagegateway:*:*:*'
               - Effect: Allow
                 Action:
                   - 'ec2:DescribeInstanceStatus'
-                  - "ec2:CreateNetworkInterface"
-                  - "ec2:DescribeNetworkInterfaces"
-                  - "ec2:DeleteNetworkInterface"
-                  - "ec2:AssignPrivateIpAddresses"
-                  - "ec2:UnassignPrivateIpAddresses"
+                  - 'ec2:CreateNetworkInterface'
+                  - 'ec2:DescribeNetworkInterfaces'
+                  - 'ec2:DeleteNetworkInterface'
+                  - 'ec2:AssignPrivateIpAddresses'
+                  - 'ec2:UnassignPrivateIpAddresses'
+                Resource: !Sub 'arn:${AWS::Partition}:ec2:*:*:*'
+              - Effect: Allow
+                Action:
+                  - 'ec2:DescribeInstanceStatus'
+                  - 'ec2:DescribeNetworkInterfaces'
                 Resource: '*'
               - Effect: Allow
                 Action:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: '*'
+                Resource: !Sub 'arn:${AWS::Partition}:logs:*:*:*'
               - Effect: Allow
                 Action:
                   - 'ssm:DescribeParameters'
@@ -194,7 +200,7 @@ Resources:
                   - 'ssm:GetParameter'
                   - 'ssm:SendCommand'
                   - 'ssm:GetCommandInvocation'
-                Resource: '*'
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:*:*:*'
               - Sid: 'PassExecutionRole'
                 Effect: Allow
                 Action:
@@ -203,7 +209,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - 'xray:PutTraceSegments'
-                Resource: '*'
+                Resource: !Sub 'arn:${AWS::Partition}:xray:*:*:*'
   FindStorageGatewayAMIFunction:
     Type: 'AWS::Lambda::Function'
     Properties:

@@ -70,7 +70,7 @@ Resources:
       DBInstanceIdentifier: !Ref RDSDBName
       DBSubnetGroupName: !Ref DBSubnetGroup
       Engine: sqlserver-se
-      EngineVersion: 14.00.3049.1.v1
+      EngineVersion: 14.00.3381.3.v1
       LicenseModel: license-included
       MasterUsername: !Ref RDSUsername
       MasterUserPassword: !Ref RDSPassword
