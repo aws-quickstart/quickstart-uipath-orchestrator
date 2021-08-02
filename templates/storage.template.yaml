@@ -200,7 +200,7 @@ Resources:
                   - 'ssm:GetParameter'
                   - 'ssm:SendCommand'
                   - 'ssm:GetCommandInvocation'
-                Resource: !Sub 'arn:${AWS::Partition}:ssm:*:*:*'
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:*:*:parameter/aws/service/storagegateway/ami/FILE_S3/latest'
               - Sid: 'PassExecutionRole'
                 Effect: Allow
                 Action:
