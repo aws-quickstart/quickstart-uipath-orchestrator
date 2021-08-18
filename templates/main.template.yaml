@@ -891,10 +891,10 @@ Parameters:
   OrchestratorVersion:
     Description: UIPath Orchestrator version.
     Type: String
-    Default: 21.4.0
+    Default: 21.4.2
     AllowedValues:
-      - 21.4.0
-      - 20.10.8
+      - 21.4.2
+      - 20.10.10
     ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
     Description: Number of UiPath Orchestrator instances (1–20).
