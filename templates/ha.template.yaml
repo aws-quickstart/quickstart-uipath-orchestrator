@@ -31,7 +31,12 @@ Parameters:
     Type: String
   QSS3BucketName:
     Type: String
-    Description: Name of bucket storing the quickstart files
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
+      See https://aws-quickstart.github.io/option1.html.
 Conditions:
   TrialHAA: !Equals
     - !Ref HAALicense
