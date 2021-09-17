@@ -70,14 +70,14 @@ Parameters:
   GatewayPrivateIP:
     Description: Private IP Address of Storage Gateway VM
     Type: String
-  HAMasterPrivateIP:
-    Description: Private IP Address of HA Master Instance
+  HAMainPrivateIP:
+    Description: Private IP Address of HA Main Instance
     Type: String
-  HASlave1PrivateIP:
-    Description: Private IP Address of HA Slave1 Instance
+  HASecondary1PrivateIP:
+    Description: Private IP Address of HA Secondary1 Instance
     Type: String
-  HASlave2PrivateIP:
-    Description: Private IP Address of HA Slave2 Instance
+  HASecondary2PrivateIP:
+    Description: Private IP Address of HA Secondary2 Instance
     Type: String
   HAPort:
     Description: Port on which HA listens to
@@ -89,6 +89,9 @@ Parameters:
   Fqdn:
     Description: The fully qualified domain name where the load balancer listens
     Type: String
+  BastionIngressCIDR:
+    Description: CIDR block Ingress for the Bastion Instance
+    Type: String
 Conditions:
   UsingDefaultBucket: !Equals
     - !Ref QSS3BucketName
@@ -96,45 +99,45 @@ Conditions:
   IsMarketplaceDeployment: !Equals
     - !Ref QSS3BucketName
     - !Join
-      - ""
+      - "-"
       - - "uipath-marketplace"
-        - !Ref "AWS::Region"
+        - "us-east-1"
 Mappings: 
   RegionMap: 
     ap-northeast-1:
-      x8664: "ami-0cd7548f41e94c7c3"
+      x8664: "ami-xxxxxxxxxxxx"
     ap-northeast-2:
-      x8664: "ami-09daec357c044db89"
+      x8664: "ami-xxxxxxxxxxxx"
     ap-northeast-3: 
-      x8664: "ami-065db20ffac337944"
+      x8664: "ami-xxxxxxxxxxxx"
     ap-south-1:
-      x8664: "ami-0703f52ebe65d78d1"
+      x8664: "ami-xxxxxxxxxxxx"
     ap-southeast-1:
-      x8664: "ami-00dfabbb673c6aafd"
+      x8664: "ami-xxxxxxxxxxxx"
     ap-southeast-2:
-      x8664: "ami-0d4eeffc41d875eb6"
+      x8664: "ami-xxxxxxxxxxxx"
     ca-central-1: 
-      x8664: "ami-01f4139e9e2776bf3"
+      x8664: "ami-xxxxxxxxxxxx"
     eu-central-1: 
-      x8664: "ami-0396ccac19ad21e30"
+      x8664: "ami-xxxxxxxxxxxx"
     eu-north-1:
-      x8664: "ami-06caa0e4ba75ad035"
+      x8664: "ami-xxxxxxxxxxxx"
     eu-west-1:
-      x8664: "ami-0f0bcea5c4dadf8dd"
+      x8664: "ami-xxxxxxxxxxxx"
     eu-west-2: 
-      x8664: "ami-0130b30b871519e80"
+      x8664: "ami-xxxxxxxxxxxx"
     eu-west-3:
-      x8664: "ami-00910c0c13bd24d06"
+      x8664: "ami-xxxxxxxxxxxx"
     sa-east-1:
-      x8664: "ami-005363a6adac20686"
+      x8664: "ami-xxxxxxxxxxxx"
     us-east-1:
-      x8664: "ami-063aef39a9148edf6"
+      x8664: "ami-YYYYYYYYYYYYYYYYYY"
     us-east-2:
-      x8664: "ami-0a0237616454b3b5c"
+      x8664: "ami-xxxxxxxxxxxx"
     us-west-1:
-      x8664: "ami-01d436d3f5dd65455"
+      x8664: "ami-xxxxxxxxxxxx"
     us-west-2: 
-      x8664: "ami-0c61cea817720d195"
+      x8664: "ami-xxxxxxxxxxxx"     
 Resources:
   OrchestratorSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -154,6 +157,11 @@ Resources:
           FromPort: 3389
           ToPort: 3389
           CidrIp: !Ref VPCCIDR
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
   HostInstanceAMI:
     Type: 'Custom::HostInstanceAMI'
     Properties:
@@ -241,11 +249,11 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: '*'
+                Resource: !Sub arn:${AWS::Partition}:logs:*:*:*
               - Effect: Allow
                 Action:
                   - 'xray:PutTraceSegments'
-                Resource: '*'
+                Resource: !Sub arn:${AWS::Partition}:xray:*:*:*
   ConfigBucketCleanupFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -363,7 +371,10 @@ Resources:
               - logs:DescribeLogGroups
               - logs:CreateLogStream
               - logs:CreateLogGroup
-            Resource: "*"
+            Resource: !Sub |
+              - arn:${AWS::Partition}:logs:*:*:*
+              - arn:${AWS::Partition}:cloudwatch:*:*:*
+              - arn:${AWS::Partition}:ec2:*:*:*
             Effect: Allow
       PolicyName: CloudwatchLogsAccess
       Roles:
@@ -401,7 +412,13 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 'dynamodb:*'
+              - dynamodb:ConditionCheckItem
+              - dynamodb:PutItem
+              - dynamodb:DescribeTable
+              - dynamodb:DeleteItem
+              - dynamodb:GetItem
+              - dynamodb:Scan
+              - dynamodb:Query
             Resource: !GetAtt ConfigTable.Arn
       Roles:
         - !Ref OrchestratorIamRole
@@ -427,7 +444,6 @@ Resources:
             - cloudwatch_install
             - cloudwatch_setup
             - cloudwatch_agent_restart
-            - setup
             - install
         cloudwatch_install:
           files:
@@ -576,7 +592,7 @@ Resources:
             c:\cfn\sources\UiPathOrchestrator.msi:
               source: !Sub 'https://download.uipath.com/versions/${OrchestratorVersion}/UiPathOrchestrator.msi'
             c:\cfn\sources\NDP472-KB4054530-x86-x64-AllOS-ENU.exe:
-              source: https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe
+              source: https://download.visualstudio.microsoft.com/download/pr/1f5af042-d0e4-4002-9c59-9ba66bcf15f6/089f837de42708daacaae7c04b7494db/NDP472-KB4054530-x86-x64-AllOS-ENU.exe
             c:\cfn\sources\rewrite_amd64_en-US.msi:
               source: https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi
             c:\cfn\sources\dotnet-hosting-3.1.8-win.exe:
@@ -615,9 +631,9 @@ Resources:
                   - '-redisServerHost'
                   - !Join
                     - ','
-                    - - !Ref HAMasterPrivateIP
-                      - !Ref HASlave1PrivateIP
-                      - !Ref HASlave2PrivateIP
+                    - - !Ref HAMainPrivateIP
+                      - !Ref HASecondary1PrivateIP
+                      - !Ref HASecondary2PrivateIP
                   - '-redisServerPort'
                   - !Ref HAPort
                   - '-redisServerPassword'
@@ -657,10 +673,6 @@ Resources:
       IamInstanceProfile: !GetAtt OrchestratorInstanceProfile.Arn
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPairName
-      LaunchConfigurationName: !Join
-        - '-'
-        - - !Ref 'AWS::StackName'
-          - Orchestrator-LaunchConfiguration
       PlacementTenancy: default
       SecurityGroups:
         - !Ref OrchestratorSecurityGroup
@@ -803,6 +815,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: 3389
           ToPort: 3389
+          CidrIp: !Ref BastionIngressCIDR 
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
           CidrIp: 0.0.0.0/0
   BastionHost:
     Type: 'AWS::EC2::Instance'

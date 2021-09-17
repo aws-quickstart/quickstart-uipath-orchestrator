@@ -9,7 +9,8 @@
 .Network configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|VPC CIDR
+|Parameter label (name) |Default value|Description|Bastion Ingress CIDR
+(`BastionIngressCIDR`)|`**__Requires input__**`|CIDR block Ingress for the Bastion Instance|VPC CIDR
 (`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|Public subnet 1 tag
 (`PublicSubnetTag1`)|`Network=Public1`|(Optional) Tag for public subnet 1, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 2 tag
 (`PublicSubnetTag2`)|`Network=Public2`|(Optional) Tag for public subnet 2, in format Key=Value. Key valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @*. Value valid characters: *A-Z*, *a-z*, *0-9*, and *+ \ - . _ : / @ * \*.|Public subnet 3 tag
@@ -62,7 +63,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|UiPath Orchestrator version
-(`OrchestratorVersion`)|`21.4.0`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorVersion`)|`21.4.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
