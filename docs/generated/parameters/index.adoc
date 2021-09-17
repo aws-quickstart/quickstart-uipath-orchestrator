@@ -1,6 +1,0 @@
-
-=== Launch into an existing VPC
-include::uipath-orchestrator.template.adoc[]
-
-=== Launch into a new VPC
-include::main.template.adoc[]
