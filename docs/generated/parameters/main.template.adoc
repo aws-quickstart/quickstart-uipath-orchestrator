@@ -63,7 +63,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|UiPath Orchestrator version
-(`OrchestratorVersion`)|`21.4.2`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
+(`OrchestratorVersion`)|`21.10.0`|UIPath Orchestrator version.|Number of UiPath Orchestrator instances
 (`OrchestratorInstanceCount`)|`2`|Number of UiPath Orchestrator instances (1–20).|UiPath Orchestrator license key
 (`OrchestratorLicense`)|`**__Blank string__**`|UiPath Orchestrator license key or trial key.|UiPath Orchestrator password
 (`OrchestratorPassword`)|`**__Requires input__**`|UiPath Orchestrator administrator password.
