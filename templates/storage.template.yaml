@@ -174,6 +174,10 @@ Resources:
                 Resource: !Sub 'arn:${AWS::Partition}:storagegateway:*:*:*'
               - Effect: Allow
                 Action:
+                  - 'kms:DescribeKey'
+                Resource: !Sub 'arn:${AWS::Partition}:kms:*:*:*'
+              - Effect: Allow
+                Action:
                   - 'ec2:DescribeInstanceStatus'
                   - 'ec2:CreateNetworkInterface'
                   - 'ec2:DescribeNetworkInterfaces'
@@ -185,6 +189,7 @@ Resources:
                 Action:
                   - 'ec2:DescribeInstanceStatus'
                   - 'ec2:DescribeNetworkInterfaces'
+                  - 'ec2:DescribeImages'
                 Resource: '*'
               - Effect: Allow
                 Action:
@@ -224,25 +229,43 @@ Resources:
             import boto3
             import cfnresponse
             import threading
+            def getRootDevice(imageId, regionName):
+                rootDeviceName = ''
+                ec2 = boto3.client('ec2', regionName)
+                images = ec2.describe_images(
+                    ExecutableUsers=['all'],
+                    Filters=[
+                        { 'Name': 'image-id', 'Values': [imageId] }
+                    ]
+                )['Images']
+                if len(images) > 0:
+                    rootDeviceName = images[0]['RootDeviceName']
+                print(regionName, imageId, rootDeviceName)
+                return rootDeviceName
             def create(properties, physical_id):
                 regionName = properties['RegionName']
                 ssm = boto3.client('ssm', region_name=regionName)
+                ec2 = boto3.client('ec2', region_name=regionName)
                 imageId = ''
+                rootDeviceName = ''
                 try:
                     imageId = ssm.get_parameter(
                         Name='/aws/service/storagegateway/ami/FILE_S3/latest'
                     )['Parameter']['Value']
+                    rootDeviceName = getRootDevice(imageId, regionName)
                 except:
                     return cfnresponse.FAILED, '', {}
                 print(regionName, imageId)
                 returnAttribute = {}
                 returnAttribute['ImageId'] = imageId
+                returnAttribute['RootDeviceName'] = rootDeviceName
                 returnAttribute['Action'] = 'CREATE'
                 return cfnresponse.SUCCESS, imageId, returnAttribute
             def update(properties, physical_id):
                 imageId = physical_id
                 returnAttribute = {}
                 returnAttribute['ImageId'] = imageId
+                returnAttribute['RootDeviceName'] = getRootDevice(imageId, properties['RegionName'])
                 returnAttribute['Action'] = 'UPDATE'
                 return cfnresponse.SUCCESS, imageId, returnAttribute
             def delete(properties, physical_id):
@@ -293,9 +316,12 @@ Resources:
         - DeviceName: /dev/sdb
           Ebs:
             DeleteOnTermination: true
-            Encrypted: false
+            Encrypted: true
             VolumeSize: 150
             VolumeType: gp2
+        - DeviceName: !GetAtt StorageGatewayAMI.RootDeviceName
+          Ebs:
+            Encrypted: true
       EbsOptimized: true
       ImageId: !Ref StorageGatewayAMI
       InstanceType: m4.xlarge
@@ -630,6 +656,7 @@ Resources:
             import cfnresponse
             import threading
             gatewayClient = boto3.client('storagegateway')
+            kmsKeyARN = boto3.client('kms').describe_key(KeyId='alias/aws/ebs')['KeyMetadata']['Arn']
             def create(properties, physical_id):
                 gatewayARN = properties['GatewayARN']
                 storageBucketARN = properties['StorageBucketARN']
@@ -638,7 +665,8 @@ Resources:
                 fileShareARN = gatewayClient.create_nfs_file_share(
                     ClientToken='UIPathS3FileStorageGatewayClient',
                     GatewayARN=gatewayARN,
-                    KMSEncrypted=False,
+                    KMSEncrypted=True,
+                    KMSKey=kmsKeyARN,
                     Role=fileShareIAMRole,
                     LocationARN=storageBucketARN,
                     DefaultStorageClass='S3_STANDARD',

@@ -193,6 +193,10 @@ Resources:
   HAMain:
     Type: 'AWS::EC2::Instance'
     Properties:
+      BlockDeviceMappings:
+        - DeviceName: !GetAtt HAInstanceAMI.RootDeviceName
+          Ebs:
+            Encrypted: true
       ImageId: !If 
         - IsMarketplaceDeployment
         - !FindInMap
@@ -260,6 +264,10 @@ Resources:
   HASecondary1:
     Type: 'AWS::EC2::Instance'
     Properties:
+      BlockDeviceMappings:
+        - DeviceName: !GetAtt HAInstanceAMI.RootDeviceName
+          Ebs:
+            Encrypted: true
       ImageId: !If 
         - IsMarketplaceDeployment
         - !FindInMap
@@ -321,6 +329,10 @@ Resources:
   HASecondary2:
     Type: 'AWS::EC2::Instance'
     Properties:
+      BlockDeviceMappings:
+        - DeviceName: !GetAtt HAInstanceAMI.RootDeviceName
+          Ebs:
+            Encrypted: true
       ImageId: !If 
         - IsMarketplaceDeployment
         - !FindInMap
