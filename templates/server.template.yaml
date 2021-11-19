@@ -657,10 +657,10 @@ Resources:
     Properties:
       AssociatePublicIpAddress: false
       BlockDeviceMappings:
-        - DeviceName: /dev/sda1
+        - DeviceName: !GetAtt HostInstanceAMI.RootDeviceName
           Ebs:
             DeleteOnTermination: true
-            Encrypted: false
+            Encrypted: true
             VolumeSize: 100
             VolumeType: gp2
       ImageId: !If 
