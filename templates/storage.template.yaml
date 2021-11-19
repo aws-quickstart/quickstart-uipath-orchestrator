@@ -174,10 +174,6 @@ Resources:
                 Resource: !Sub 'arn:${AWS::Partition}:storagegateway:*:*:*'
               - Effect: Allow
                 Action:
-                  - 'kms:DescribeKey'
-                Resource: !Sub 'arn:${AWS::Partition}:kms:*:*:*'
-              - Effect: Allow
-                Action:
                   - 'ec2:DescribeInstanceStatus'
                   - 'ec2:CreateNetworkInterface'
                   - 'ec2:DescribeNetworkInterfaces'
@@ -245,7 +241,6 @@ Resources:
             def create(properties, physical_id):
                 regionName = properties['RegionName']
                 ssm = boto3.client('ssm', region_name=regionName)
-                ec2 = boto3.client('ec2', region_name=regionName)
                 imageId = ''
                 rootDeviceName = ''
                 try:
@@ -656,7 +651,6 @@ Resources:
             import cfnresponse
             import threading
             gatewayClient = boto3.client('storagegateway')
-            kmsKeyARN = boto3.client('kms').describe_key(KeyId='alias/aws/ebs')['KeyMetadata']['Arn']
             def create(properties, physical_id):
                 gatewayARN = properties['GatewayARN']
                 storageBucketARN = properties['StorageBucketARN']
@@ -665,8 +659,7 @@ Resources:
                 fileShareARN = gatewayClient.create_nfs_file_share(
                     ClientToken='UIPathS3FileStorageGatewayClient',
                     GatewayARN=gatewayARN,
-                    KMSEncrypted=True,
-                    KMSKey=kmsKeyARN,
+                    KMSEncrypted=False,
                     Role=fileShareIAMRole,
                     LocationARN=storageBucketARN,
                     DefaultStorageClass='S3_STANDARD',
