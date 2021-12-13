@@ -825,6 +825,10 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: !Ref HostInstanceAMI
+      BlockDeviceMappings:
+        - DeviceName: !GetAtt HostInstanceAMI.RootDeviceName
+          Ebs:
+            Encrypted: true
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPairName
       NetworkInterfaces:

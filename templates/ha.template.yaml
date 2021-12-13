@@ -232,6 +232,8 @@ Resources:
                         - ''
                         - - '-l '
                           - !Ref HAALicense
+                    - '--accept-license-agreement'
+                    - '--verbose'
         - !Base64
             'Fn::Join':
               - |+
@@ -239,7 +241,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
                 - chmod +x get-haa.sh
                 - !Join
                   - ' '
@@ -255,6 +257,8 @@ Resources:
                         - ''
                         - - '-l '
                           - !Ref HAALicense
+                    - '--accept-license-agreement'
+                    - '--verbose'
       Tags:
         - Key: Name
           Value: !Join
@@ -300,6 +304,8 @@ Resources:
                     - !GetAtt
                       - HAMain
                       - PrivateIp
+                    - '--accept-license-agreement'
+                    - '--verbose'
         - !Base64
             'Fn::Join':
               - |+
@@ -307,7 +313,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
                 - chmod +x get-haa.sh
                 - !Join
                   - ' '
@@ -320,6 +326,8 @@ Resources:
                     - !GetAtt
                       - HAMain
                       - PrivateIp
+                    - '--accept-license-agreement'
+                    - '--verbose'
       Tags:
         - Key: Name
           Value: !Join
@@ -365,6 +373,8 @@ Resources:
                     - !GetAtt
                       - HAMain
                       - PrivateIp
+                    - '--accept-license-agreement'
+                    - '--verbose'
         - !Base64
             'Fn::Join':
               - |+
@@ -372,7 +382,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://raw.githubusercontent.com/UiPath/Infrastructure/main/Setup/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
                 - chmod +x get-haa.sh
                 - !Join
                   - ' '
@@ -385,6 +395,8 @@ Resources:
                     - !GetAtt
                       - HAMain
                       - PrivateIp
+                    - '--accept-license-agreement'
+                    - '--verbose'
       Tags:
         - Key: Name
           Value: !Join
