@@ -186,7 +186,7 @@ Resources:
     Properties:
       ServiceToken: !Ref FindAMIFunctionArn
       RegionName: !Ref 'AWS::Region'
-      ImageName: RHEL-7.7*_HVM_GA*
+      ImageName: RHEL-7.9*_HVM_GA*
       Architecture: x86_64
       VirtualizationType: hvm
       Owners: '309956199498'
