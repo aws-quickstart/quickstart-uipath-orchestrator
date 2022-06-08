@@ -809,9 +809,9 @@ Parameters:
   OrchestratorVersion:
     Description: UIPath Orchestrator version.
     Type: String
-    Default: 21.10.0
+    Default: 22.4.1
     AllowedValues:
-      - 21.10.0
+      - 22.4.1
     ConstraintDescription: UIPath Orchestrator version can only contain characters *0–9* and *.* (period).
   OrchestratorInstanceCount:
     Description: Number of UiPath Orchestrator instances (1–20).

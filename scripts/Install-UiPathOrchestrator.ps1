@@ -135,7 +135,9 @@ param(
 )
 
     try {
-        New-WebBinding -Name $siteName -IPAddress "*" -Port 443 -Protocol "https"
+        if (-not $(Get-WebBinding -Name "UiPath Orchestrator")){
+            New-WebBinding -Name $siteName -IPAddress "*" -Port 443 -Protocol "https"
+        }
         Stop-Website -Name $siteName
         Start-Website -Name $siteName
         Write-Verbose "Adding new binding and restarting Orchestrator WebSite !"
@@ -372,8 +374,8 @@ function Test-OrchestratorInstallation {
                     throw $_
                 }
                 else {
-                    Write-Verbose "Failed to GET $Url. Retrying again in 10 seconds"
-                    Start-Sleep 10
+                    Write-Verbose "Failed to GET $Url. Retrying again in 30 seconds"
+                    Start-Sleep 30
                 }
             }
         }

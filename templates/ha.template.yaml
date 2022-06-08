@@ -122,7 +122,7 @@ Resources:
           CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
           FromPort: 3333
-          ToPort: 3339
+          ToPort: 3344
           CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
           FromPort: 36379
@@ -135,6 +135,10 @@ Resources:
         - IpProtocol: tcp
           FromPort: 8004
           ToPort: 8004
+          CidrIp: !Ref VPCCIDR
+        - IpProtocol: tcp
+          FromPort: 8006
+          ToPort: 8006
           CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
           FromPort: 8443
@@ -181,6 +185,10 @@ Resources:
           FromPort: 0
           ToPort: 65535
           CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: 8
+          ToPort: -1
+          CidrIp: !Ref VPCCIDR
   HAInstanceAMI:
     Type: 'Custom::HAInstanceAMI'
     Properties:
@@ -241,7 +249,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
                 - !Join
                   - ' '
@@ -293,6 +301,27 @@ Resources:
               - - '#!/bin/bash'
                 - cd /home/ec2-user/temp
                 - chmod +x get-haa.sh
+                - tries=0
+                - maxTries=12
+                - !Join
+                  - ''
+                  - - 'until curl -u '
+                    - !Ref HAAUser
+                    - ':'
+                    - !Ref HAAPassword
+                    - ' -k --silent https://'
+                    - !GetAtt
+                      - HAMain
+                      - PrivateIp
+                    - ':9443/v1/bootstrap | tr -d ''[:space:]'' | grep "\"state\":\"completed\""; do'
+                - 'tries=$((tries+1))'
+                - echo "[$tries/$maxTries] Trying to reach the remote API..."
+                - 'if [[ "$tries" == "$maxTries" ]]'
+                - then
+                - 'echo "Timed out while trying to reach cluster API" && exit 1'
+                - fi
+                - sleep 10
+                - done
                 - !Join
                   - ' '
                   - - sh get-haa.sh
@@ -313,8 +342,29 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
+                - tries=0
+                - maxTries=12
+                - !Join
+                  - ''
+                  - - 'until curl -u '
+                    - !Ref HAAUser
+                    - ':'
+                    - !Ref HAAPassword
+                    - ' -k --silent https://'
+                    - !GetAtt
+                      - HAMain
+                      - PrivateIp
+                    - ':9443/v1/bootstrap | tr -d ''[:space:]'' | grep "\"state\":\"completed\""; do'
+                - 'tries=$((tries+1))'
+                - echo "[$tries/$maxTries] Trying to reach the remote API..."
+                - 'if [[ "$tries" == "$maxTries" ]]'
+                - then
+                - 'echo "Timed out while trying to reach cluster API" && exit 1'
+                - fi
+                - sleep 10
+                - done
                 - !Join
                   - ' '
                   - - sh get-haa.sh
@@ -362,6 +412,27 @@ Resources:
               - - '#!/bin/bash'
                 - cd /home/ec2-user/temp
                 - chmod +x get-haa.sh
+                - tries=0
+                - maxTries=12
+                - !Join
+                  - ''
+                  - - 'until curl -u '
+                    - !Ref HAAUser
+                    - ':'
+                    - !Ref HAAPassword
+                    - ' -k --silent https://'
+                    - !GetAtt
+                      - HAMain
+                      - PrivateIp
+                    - ':9443/v1/bootstrap | tr -d ''[:space:]'' | grep "\"state\":\"completed\""; do'
+                - 'tries=$((tries+1))'
+                - echo "[$tries/$maxTries] Trying to reach the remote API..."
+                - 'if [[ "$tries" == "$maxTries" ]]'
+                - then
+                - 'echo "Timed out while trying to reach cluster API" && exit 1'
+                - fi
+                - sleep 10
+                - done
                 - !Join
                   - ' '
                   - - sh get-haa.sh
@@ -382,8 +453,29 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2021.10.1/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
+                - tries=0
+                - maxTries=12
+                - !Join
+                  - ''
+                  - - 'until curl -u '
+                    - !Ref HAAUser
+                    - ':'
+                    - !Ref HAAPassword
+                    - ' -k --silent https://'
+                    - !GetAtt
+                      - HAMain
+                      - PrivateIp
+                    - ':9443/v1/bootstrap | tr -d ''[:space:]'' | grep "\"state\":\"completed\""; do'
+                - 'tries=$((tries+1))'
+                - echo "[$tries/$maxTries] Trying to reach the remote API..."
+                - 'if [[ "$tries" == "$maxTries" ]]'
+                - then
+                - 'echo "Timed out while trying to reach cluster API" && exit 1'
+                - fi
+                - sleep 10
+                - done
                 - !Join
                   - ' '
                   - - sh get-haa.sh
