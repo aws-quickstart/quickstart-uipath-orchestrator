@@ -309,7 +309,7 @@ Resources:
                   status = cfnresponse.FAILED
               finally:
                   cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 30
       TracingConfig:
         Mode: Active
