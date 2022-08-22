@@ -293,7 +293,7 @@ Resources:
                     status = cfnresponse.FAILED
                 finally:
                     cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 300
       TracingConfig:
         Mode: Active
@@ -346,6 +346,7 @@ Resources:
             import boto3
             import cfnresponse
             import threading
+            import urllib3
             ec2 = boto3.client('ec2')
             def create(properties, physical_id):
                 instanceId = properties['InstanceId']
@@ -368,12 +369,13 @@ Resources:
                     time.sleep(30)
                 print('Retrieving activation key ...')
                 activationKey = ''
-                url = 'redirect_url=$(curl -f -s -S -w \'%%{redirect_url}\' "http://%s/?activationRegion=%s")  && echo $redirect_url' % (instanceIP,instanceRegion)
-                redirect_url = os.popen(url).read()
-                if redirect_url == '' or redirect_url is None:
+                http = urllib3.PoolManager()
+                r = http.request('GET', f'http://{instanceIP}/?activationRegion={instanceRegion}', redirect=False)
+                redirect_url = r.get_redirect_location()
+                if not redirect_url:
                     raise Exception(f'No redirect url returned for ip: {instanceIP}')
-                activationKey = redirect_url[redirect_url.find('activationKey=')+14:len(redirect_url)-1]
-                if activationKey is None or activationKey is '':
+                activationKey = redirect_url[redirect_url.find('activationKey=')+14:]
+                if not activationKey:
                     raise Exception(f'Unable to extract the key from the returned redirect url: {redirect_url}')
                 print(f'Activation Key = "{activationKey}"')
                 returnAttribute = {}
@@ -416,7 +418,7 @@ Resources:
                     status = cfnresponse.FAILED
                 finally:
                     cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 900
       TracingConfig:
         Mode: Active
@@ -530,7 +532,7 @@ Resources:
                     status = cfnresponse.FAILED
                 finally:
                     cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 300
       TracingConfig:
         Mode: Active
@@ -627,7 +629,7 @@ Resources:
                     status = cfnresponse.FAILED
                 finally:
                     cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 300
       TracingConfig:
         Mode: Active
@@ -717,7 +719,7 @@ Resources:
                     status = cfnresponse.FAILED
                 finally:
                     cfnresponse.send(event, context, status, returnAttribute, new_physical_id)
-      Runtime: python3.6
+      Runtime: python3.9
       Timeout: 300
       TracingConfig:
         Mode: Active

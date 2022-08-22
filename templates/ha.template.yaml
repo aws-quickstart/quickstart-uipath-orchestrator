@@ -249,7 +249,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.1/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
                 - !Join
                   - ' '
@@ -342,7 +342,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.1/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
                 - tries=0
                 - maxTries=12
@@ -453,7 +453,7 @@ Resources:
               - - '#!/bin/bash'
                 - yum update -y
                 - yum install -y wget
-                - 'wget https://download.uipath.com/haa/2022.4.0/Rhel7/get-haa.sh'
+                - 'wget https://download.uipath.com/haa/2022.4.1/Rhel7/get-haa.sh'
                 - chmod +x get-haa.sh
                 - tries=0
                 - maxTries=12
