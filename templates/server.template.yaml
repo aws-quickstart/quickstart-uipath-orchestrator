@@ -167,7 +167,7 @@ Resources:
     Properties:
       ServiceToken: !Ref FindAMIFunctionArn
       RegionName: !Ref 'AWS::Region'
-      ImageName: Windows_Server-2019-English-Full-Base-*
+      ImageName: Windows_Server-2022-English-Full-Base-*
       Architecture: x86_64
       VirtualizationType: hvm
       Owners: amazon
