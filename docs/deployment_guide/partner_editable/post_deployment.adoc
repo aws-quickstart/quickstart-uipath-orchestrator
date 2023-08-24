@@ -1,0 +1,37 @@
+// Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
+
+== Postdeployment steps
+
+=== Test the deployment
+// If steps are required to test the deployment, add them here. If not, remove the heading
+[start=1]
+. Verify that UiPath Orchestrator is deployed successfully by navigating to the Application Load Balancer endpoint URL. The *Login* screen shown in <<test1>> will display.
+
+:xrefstyle: short
+[#test1]
+.Test the deployment
+image::../docs/deployment_guide/images/test1.png[test1,width=50%,height=50%]
+
+[start=2]
+. Verify that HAA nodes are deployed successfully. From the bastion host, navigate to any endpoint IP address via https://haa-ip:8443. 
+
+:xrefstyle: short
+[#test2]
+.Logging into High Availability Add-on
+image::../docs/deployment_guide/images/test2.png[test2,width=50%,height=50%]
+
+[start=3]
+. Log in, and verify that all nodes are present on the *Nodes* tab.
+
+:xrefstyle: short
+[#test3]
+.Verifying nodes
+image::../docs/deployment_guide/images/test3.png[test3,width=100%,height=100%]
+
+[start=4]
+. Verify that UiPath Orchestrator can upload to the S3 bucket via the file gateway server. To do this, navigate to the Application Load Balancer endpoint URL and log in. Then, choose *Packages> Upload button > Select a NuGet package* and choose *Upload*.
+
+:xrefstyle: short
+[#test4]
+.Test the deployment
+image::../docs/deployment_guide/images/test4.png[test4,width=100%,height=100%]

@@ -1,0 +1,9 @@
+// Include details about any licenses and how to sign up. Provide links as appropriate.
+
+A license for UiPath is required. To sign up, contact https://www.uipath.com/company/contact-us[UiPath sales]. A free 60-day non-production https://www.uipath.com/developers/studio-download[trial license] is available. 
+
+During deployment, provide your UiPath Orchestrator and UiPath High-Availability add-on license keys on the  *Specify stack details* page. Or, manually enter the license keys after the stack is deployed. 
+
+The Partner Solution uses only uses Microsoft Windows images and the Red Hat Enterprise Linux distribution, provided by AWS. An Amazon Machine Image (AMI) subscription is not required.
+
+There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^].

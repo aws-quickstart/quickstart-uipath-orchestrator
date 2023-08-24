@@ -1,0 +1,17 @@
+:partner-solution-project-name: quickstart-uipath-orchestrator
+:partner-solution-github-org: aws-ia
+:partner-product-name: UiPath Orchestrator
+:partner-product-short-name: UiPath Orchestrator
+:partner-company-name: UiPath
+:doc-month: March
+:doc-year: 2021
+:partner-contributors: Andrei Barbu and Adrian Tudoran, {partner-company-name}
+// :other-contributors: Akua Mansa, Trek10
+// :aws-contributors: Janine Singh, AWS IoT Partner team
+:aws-ia-contributors: Shivansh Singh and Tony Bulding, AWS Integration & Automation team
+:deployment_time: 25 minutes
+:default_deployment_region: us-east-1
+// :private_repo:
+
+
+// For instructions on creating this deployment guide, refer to "Build your AWS Partner Solution documentation" (https://aws-ia-us-west-2.s3.us-west-2.amazonaws.com/docs/content/index.html#/).
