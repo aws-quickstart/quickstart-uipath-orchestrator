@@ -1,7 +1,3 @@
-# UIPath Orchestrator on AWS Cloud
-
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/gnRVW).
-
-To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo. 
-
-To submit code for this Quick Start, see the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).
+# quickstart-uipath-orchestrator 
+## This repository has been deprecated in favor of https://github.com/aws-ia/cfn-ps-uipath-orchestrator. 
+***We will archive this repository and keep it publicly available until May 1, 2024.***
